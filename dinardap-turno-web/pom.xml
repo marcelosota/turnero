@@ -113,6 +113,12 @@
 			<artifactId>dinardap-turno-ejb</artifactId>
 			<version>1.0</version>
 		</dependency>
+		<dependency>
+            <groupId>ec.gob.dinardap.clientesw</groupId>
+            <artifactId>clienteInteroperador-V2</artifactId>
+            <version>1.0</version>
+            <type>jar</type>
+        </dependency>
 	</dependencies>
 
 	<build>
