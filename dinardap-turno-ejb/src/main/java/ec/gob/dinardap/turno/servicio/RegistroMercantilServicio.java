@@ -11,4 +11,5 @@ import ec.gob.dinardap.turno.modelo.RegistroMercantil;
 public interface RegistroMercantilServicio extends GenericService<RegistroMercantil, Integer> {
 
 	public List<RegistroMercantil> obtenerRegistrosMercantiles();
+	public List<RegistroMercantil> obtenerRegistros(Short tipo);
 }
