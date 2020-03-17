@@ -1,0 +1,22 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition template="/template/general.xhtml">
+		<ui:define name="content">
+			<h1 class="h-wai">#{etiquetas['nombre.sistema']} - Inicio</h1>
+			<h:form id="formInicio">
+				<h:panelGrid columns="4" id="logueo" style="width:50%;"
+							columnClasses="form-labelnuevo1, form-input,form-labelnuevo1, form-input">
+					<p:outputLabel value="#{etiquetas['usuario']}"/>
+					<p:inputText value=""></p:inputText>
+				</h:panelGrid> 
+			</h:form>
+		</ui:define>
+	</ui:composition>
+	 
+	
+</html>
