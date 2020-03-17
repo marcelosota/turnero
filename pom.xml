@@ -13,7 +13,7 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<nemonico-sistema>dinardap-turno</nemonico-sistema>
-		<path.sistema>/home/marcelo/workspaces/workspacePhoton/</path.sistema>
+		<path.sistema>/home/jadira/Escritorio/proyectos_eclipse/eclipse-workspace/</path.sistema>
 		<path.server.deployments>/opt/wildfly14/</path.server.deployments>
 		<wildfly.user>Administrador</wildfly.user>
 		<wildfly.password>administrador%</wildfly.password>
