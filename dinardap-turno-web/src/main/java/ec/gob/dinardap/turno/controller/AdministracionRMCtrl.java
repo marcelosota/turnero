@@ -12,7 +12,7 @@ import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
-import ec.gob.dinardap.turno.constante.TipoTurnoEnum;
+import ec.gob.dinardap.turno.constante.TipoEntidadEnum;
 import ec.gob.dinardap.turno.modelo.RegistroMercantil;
 import ec.gob.dinardap.turno.servicio.RegistroMercantilServicio;
 
@@ -34,7 +34,7 @@ public class AdministracionRMCtrl extends BaseCtrl {
 	@PostConstruct
 	protected void init() {
 		registroMercantil = new ArrayList<RegistroMercantil>();		
-		registroMercantil = registroMercantilServicio.obtenerRegistros(TipoTurnoEnum.RM.getTipo());
+		registroMercantil = registroMercantilServicio.obtenerRegistros(TipoEntidadEnum.RM.getTipo());
 
 	}
 

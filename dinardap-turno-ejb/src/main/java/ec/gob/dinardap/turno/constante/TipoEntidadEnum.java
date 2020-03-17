@@ -1,12 +1,12 @@
 package ec.gob.dinardap.turno.constante;
 
 
-public enum TipoTurnoEnum {	
+public enum TipoEntidadEnum {	
 
 		RM((short) 1), DINARDAP((short) 0);
 		private Short tipo;
 
-		private TipoTurnoEnum(Short tipo) {
+		private TipoEntidadEnum(Short tipo) {
 			this.tipo = tipo;
 		}
 
@@ -18,9 +18,9 @@ public enum TipoTurnoEnum {
 			this.tipo = tipo;
 		}
 		
-		public static TipoTurnoEnum obtenerTipoPorCodigo(Short tipo) {
-			TipoTurnoEnum valor = null;
-			for (TipoTurnoEnum e : TipoTurnoEnum.values()) {
+		public static TipoEntidadEnum obtenerTipoPorCodigo(Short tipo) {
+			TipoEntidadEnum valor = null;
+			for (TipoEntidadEnum e : TipoEntidadEnum.values()) {
 				if (e.getTipo() == tipo) {
 					valor = e;
 					break;
