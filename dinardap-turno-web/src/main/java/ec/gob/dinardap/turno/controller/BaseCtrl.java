@@ -11,6 +11,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class BaseCtrl implements Serializable {
@@ -204,6 +205,10 @@ public class BaseCtrl implements Serializable {
 
 		return (HttpServletResponse) getExternalContext().getResponse();
 
+	}
+	
+	protected HttpServletRequest getHttpServletRequest() {
+		return (HttpServletRequest) getExternalContext().getRequest();
 	}
 
 
