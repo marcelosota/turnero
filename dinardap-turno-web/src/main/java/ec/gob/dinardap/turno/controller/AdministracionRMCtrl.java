@@ -144,6 +144,8 @@ public class AdministracionRMCtrl extends BaseCtrl {
 			
 			reporteTurnos = turnoDao.reporteAgendamiento(registroMercantilId, new SimpleDateFormat("yyyy-MM-dd").format(fecha),
 					EstadoTurnoEnum.AGENDADO.getEstado(), EstadoTurnoEnum.ATENDIDO.getEstado());
+			System.out.println("tamanio lista"+reporteTurnos.size());
+			
 
 		} catch (Exception e) {
 			// String mensaje = getBundleMensaje("sin.informacion", null);

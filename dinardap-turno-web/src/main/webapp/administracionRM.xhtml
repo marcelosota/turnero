@@ -36,39 +36,39 @@
 			</h:panelGrid>
 			<p:separator />
 			<p:commandButton value="#{etiquetas['buscar']}"
-				update="@form, dtbRegistros"
+				update="dtbRegistros"
 				actionListener="#{administracionRMCtrl.consultar()}"
 				icon="ui-icon-search" process="@this, cmbRegistros, calendario" />
 			<p:separator />
 
-			<h:panelGrid columns="2">
+			<h:panelGrid columns="1">
 				<p:dataTable id="dtbRegistros"
 					value="#{administracionRMCtrl.reporteTurnos}" var="dtb"
 					paginator="true" rows="10"
 					scrollable="true" scrollWidth="99%"
 					emptyMessage="No existen registros">
-					<p:column headerText="#{etiquetas['hora']}" width="40%">
+					<p:column headerText="#{etiquetas['hora']}" width="20%">
 						<h:outputText value="#{dtb.hora}" styleClass="texto-justificado" >						
 						</h:outputText>
 					</p:column>
 					<p:column headerText="#{etiquetas['agendado']}"
-						width="40%">
+						width="20%">
 						<h:outputText value="#{dtb.agendada}" styleClass="texto-justificado" />
 					</p:column>
-					<p:column headerText="#{etiquetas['atendido']}" width="40%">
+					<p:column headerText="#{etiquetas['atendido']}" width="20%">
 						<h:outputText value="#{dtb.atendido}" styleClass="texto-justificado" />
 					</p:column>
 				</p:dataTable>
 			</h:panelGrid>
 			<p:separator />
-			<h:panelGrid columns="3" width="50%" cellpadding="10"
+			<h:panelGrid columns="3" width="30%" cellpadding="10"
 				columnClasses="form-label3, form-input-ajustado, form-input-ajustado">
 				<h:outputLabel value="#{etiquetas['turno']}*" />
 				<p:inputText id="txtTurno" value="#{administracionRMCtrl.validador}" maxlength="20" required="true"
 					required-message="#{etiquetas['turno']} #{mensajes['requerido']}"
 					 />
 				<p:commandButton value="#{etiquetas['atendido']}"
-					icon="ui-icon-document" style="FONT-WEIGHT: bold;" update="@form"
+					icon="ui-icon-document" style="FONT-WEIGHT: bold;" update=""
 					process="@this txtTurno"
 					action="#{administracionRMCtrl.ciudadanoAtendido()}">
 				</p:commandButton>
