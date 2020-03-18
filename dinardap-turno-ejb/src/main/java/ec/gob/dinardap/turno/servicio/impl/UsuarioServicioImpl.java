@@ -9,7 +9,10 @@ import ec.gob.dinardap.persistence.constante.CriteriaTypeEnum;
 import ec.gob.dinardap.persistence.dao.GenericDao;
 import ec.gob.dinardap.persistence.servicio.impl.GenericServiceImpl;
 import ec.gob.dinardap.persistence.util.Criteria;
+import ec.gob.dinardap.seguridad.modelo.Perfil;
 import ec.gob.dinardap.turno.dao.UsuarioDao;
+import ec.gob.dinardap.turno.dto.UsuarioDto;
+import ec.gob.dinardap.turno.modelo.RegistroMercantil;
 import ec.gob.dinardap.turno.modelo.Usuario;
 import ec.gob.dinardap.turno.servicio.UsuarioServicio;
 import ec.gob.dinardap.util.constante.EstadoEnum;
@@ -37,6 +40,21 @@ public class UsuarioServicioImpl extends GenericServiceImpl<Usuario, Integer> im
 			return listado.get(0);
 		}else
 			return null;
+	}
+
+	@Override
+	public void crearUsuario(UsuarioDto usuarioDto) {
+		Usuario usuario = new Usuario();
+		usuario.setPerfil(new Perfil());
+		usuario.setRegistroMercantil(new RegistroMercantil());
+		usuario.setCedula(usuarioDto.getCedula());
+		usuario.setContrasena(usuarioDto.getContrasena());
+		usuario.setNombre(usuarioDto.getNombre());
+		usuario.getRegistroMercantil().setRegistroMercantilId(usuarioDto.getRegistroMercantilId());
+		usuario.getPerfil().setPerfilId(usuarioDto.getPerfilId());
+		usuario.setEstado(EstadoEnum.ACTIVO.getEstado());
+		create(usuario);
+		
 	}
 
 }

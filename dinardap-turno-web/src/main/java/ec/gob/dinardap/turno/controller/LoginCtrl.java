@@ -53,7 +53,8 @@ public class LoginCtrl extends BaseCtrl {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		}
+		}else
+			addErrorMessage(null, getBundleMensaje("error.credenciales", null), null);
 	}
 
 	public String getCedula() {

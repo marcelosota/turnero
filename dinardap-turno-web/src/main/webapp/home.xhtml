@@ -10,13 +10,15 @@
 		<ui:define name="content">
 			<h1 class="h-wai">#{etiquetas['nombre.sistema']} - Inicio</h1>
 			<h:form id="formInicio">
+				<br/> <br/>
 				<h:panelGrid columns="2" id="logueo" style="width:50%;"
-							columnClasses="form-labelnuevo1, form-input, form-labelnuevo1, form-input">
-					<p:outputLabel value="#{etiquetas['usuario']}"/>
+							columnClasses="form-label-derecha ui-grid-col-1, form-input-izquierda, 
+							form-label-derecha ui-grid-col-1, form-input-izquierda">
+					<p:outputLabel value="#{etiquetas['cedula']}:"/>
 					<p:inputText value="#{loginCtrl.cedula}"/>
-					<p:outputLabel value="#{etiquetas['contrasena']}"/>
+					<p:outputLabel value="#{etiquetas['contrasena']}:"/>
 					<p:password value="#{loginCtrl.contrasena}"/>
-					<p:outputLabel value="#{etiquetas['registro.mercantil']}"/>
+					<p:outputLabel value="#{etiquetas['registro.mercantil']}:"/>
 					<b:selectOneMenu id="cmbEntidades"
 						value="#{loginCtrl.entidad}" 
 						required="true"
