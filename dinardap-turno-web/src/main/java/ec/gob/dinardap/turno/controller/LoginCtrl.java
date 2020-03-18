@@ -31,22 +31,21 @@ public class LoginCtrl extends BaseCtrl {
 	@EJB
 	private RegistroMercantilServicio registroMercantilServicio;
 	
-	private String usuario;
+	private String cedula;
 	private String contrasena;
 	private Integer entidad;
 	private List<RegistroMercantil> listaRM;
 	
-	public String  validarUsuario() {
+	public void  validarUsuario() {
 		Usuario usuario = new Usuario();
 		RegistroMercantil registroMercantil = new RegistroMercantil();
-		usuario = usuarioServicio.validarUsuario(getUsuario(), EncriptarCadenas.encriptarCadenaSha1(getContrasena()), getEntidad());
+		usuario = usuarioServicio.validarUsuario(getCedula(), EncriptarCadenas.encriptarCadenaSha1(getContrasena()), getEntidad());
 		if(usuario != null) {
 			registroMercantil = registroMercantilServicio.findByPk(getEntidad());
 			HttpSession session = getHttpServletRequest().getSession(true);
 			session.setAttribute("tipoEntidad", registroMercantil.getTipo());
-			session.setAttribute("usuario", getUsuario());
-			//if(registroEntidad.getTipo = )
-			////FacesContext.getCurrentInstance().getExternalContext().redirect("/paginas/brand.jsf");
+			session.setAttribute("usuario", usuario.getCedula());
+			session.setAttribute("perfil", usuario.getPerfil().getNombre());
 			ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
 			try {
 				context.redirect(context.getRequestContextPath() + "/paginas/brand.jsf");
@@ -55,15 +54,14 @@ public class LoginCtrl extends BaseCtrl {
 				e.printStackTrace();
 			}
 		}
-		return null;
 	}
 
-	public String getUsuario() {
-		return usuario;
+	public String getCedula() {
+		return cedula;
 	}
 
-	public void setUsuario(String usuario) {
-		this.usuario = usuario;
+	public void setCedula(String cedula) {
+		this.cedula = cedula;
 	}
 
 	public String getContrasena() {

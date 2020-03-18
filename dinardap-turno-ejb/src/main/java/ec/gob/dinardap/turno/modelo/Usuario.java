@@ -3,6 +3,8 @@ package ec.gob.dinardap.turno.modelo;
 import java.io.Serializable;
 import javax.persistence.*;
 
+import ec.gob.dinardap.seguridad.modelo.Perfil;
+
 
 /**
  * The persistent class for the usuario database table.
@@ -24,6 +26,13 @@ public class Usuario implements Serializable {
 	private String contrasena;
 
 	private Short estado;
+	
+	private String nombre;
+	
+	//bi-directional many-to-one association to Perfil
+	@ManyToOne
+	@JoinColumn(name="perfil_id")
+	private Perfil perfil;
 
 	//bi-directional many-to-one association to RegistroMercantil
 	@ManyToOne
@@ -63,6 +72,22 @@ public class Usuario implements Serializable {
 
 	public void setEstado(Short estado) {
 		this.estado = estado;
+	}
+	
+	public String getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public Perfil getPerfil() {
+		return this.perfil;
+	}
+
+	public void setPerfil(Perfil perfil) {
+		this.perfil = perfil;
 	}
 
 	public RegistroMercantil getRegistroMercantil() {
