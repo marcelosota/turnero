@@ -29,48 +29,48 @@
 						var="registros" itemLabel="#{registros.nombre}"
 						itemValue="#{registros.registroMercantilId}" />
 				</b:selectOneMenu>
-				<p:outputLabel for="popup" value="#{etiquetas['fecha']}" />
-				<p:calendar id="popup" value="#{administracionRMCtrl.fecha}"
+				<p:outputLabel for="calendario" value="#{etiquetas['fecha']}" />
+				<p:calendar id="calendario" value="#{administracionRMCtrl.fecha}"
 					pattern="yyyy-MM-dd" mindate="#{administracionRMCtrl.fechaInicio}"
 					maxdate="#{administracionRMCtrl.fechaFin}" />
 			</h:panelGrid>
 			<p:separator />
 			<p:commandButton value="#{etiquetas['buscar']}"
-				update="@form, dtbRegistros"
-				actionListener="#{administracionRMCtrl.limpiar()}"
-				icon="ui-icon-search" process="@this, cmbRegistros" />
+				update="dtbRegistros"
+				actionListener="#{administracionRMCtrl.consultar()}"
+				icon="ui-icon-search" process="@this, cmbRegistros, calendario" />
 			<p:separator />
 
-			<h:panelGrid columns="2">
-				<p:dataTable id="dtbRegistros" value="" var="dtb" paginator="true"
-					rows="4" emptyMessage="No existen registros">
-					<p:column headerText="#{etiquetas['hora']}" width="40%">
-						<h:outputText value="" styleClass="texto-justificado" />
+			<h:panelGrid columns="1">
+				<p:dataTable id="dtbRegistros"
+					value="#{administracionRMCtrl.reporteTurnos}" var="dtb"
+					paginator="true" rows="10"
+					scrollable="true" scrollWidth="99%"
+					emptyMessage="No existen registros">
+					<p:column headerText="#{etiquetas['hora']}" width="20%">
+						<h:outputText value="#{dtb.hora}" styleClass="texto-justificado" >						
+						</h:outputText>
 					</p:column>
-					<p:column headerText="#{etiquetas['agendado']}-Registro Civil"
-						width="40%">
-						<h:outputText value="" styleClass="texto-justificado" />
+					<p:column headerText="#{etiquetas['agendado']}"
+						width="20%">
+						<h:outputText value="#{dtb.agendada}" styleClass="texto-justificado" />
 					</p:column>
-					<p:column headerText="#{etiquetas['atendido']}" width="40%">
-						<h:outputText value="" styleClass="texto-justificado" />
+					<p:column headerText="#{etiquetas['atendido']}" width="20%">
+						<h:outputText value="#{dtb.atendido}" styleClass="texto-justificado" />
 					</p:column>
-
 				</p:dataTable>
-
 			</h:panelGrid>
 			<p:separator />
-			<h:panelGrid columns="3" width="50%" cellpadding="10"
+			<h:panelGrid columns="3" width="30%" cellpadding="10"
 				columnClasses="form-label3, form-input-ajustado, form-input-ajustado">
 				<h:outputLabel value="#{etiquetas['turno']}*" />
-				<p:inputText id="txtTurno"
-					value="" maxlength="10"
-					required="true"
+				<p:inputText id="txtTurno" value="#{administracionRMCtrl.validador}" maxlength="20" required="true"
 					required-message="#{etiquetas['turno']} #{mensajes['requerido']}"
-					onkeypress=" if(event.which &lt; 00 || event.which &gt; 57 ) return false; " />
+					 />
 				<p:commandButton value="#{etiquetas['atendido']}"
-					icon="ui-icon-search" style="FONT-WEIGHT: bold;"
-					update="@form" process="@this txtTurno"					
-					action="#{administracionRMCtrl.limpiar()}">
+					icon="ui-icon-document" style="FONT-WEIGHT: bold;" update=""
+					process="@this txtTurno"
+					action="#{administracionRMCtrl.ciudadanoAtendido()}">
 				</p:commandButton>
 
 

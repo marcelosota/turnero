@@ -7,5 +7,6 @@ import ec.gob.dinardap.turno.modelo.Turno;
 
 @Local
 public interface TurnoServicio extends GenericService<Turno, Integer> {
-
+	public Turno buscarTurno(String validador);
+	public Boolean actualizarAtendido(Turno turno);
 }
