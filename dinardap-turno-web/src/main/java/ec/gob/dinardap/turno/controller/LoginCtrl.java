@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.List;
 
 import javax.ejb.EJB;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
@@ -34,23 +36,26 @@ public class LoginCtrl extends BaseCtrl {
 	private Integer entidad;
 	private List<RegistroMercantil> listaRM;
 	
-	public void validarUsuario() {
+	public String  validarUsuario() {
 		Usuario usuario = new Usuario();
 		RegistroMercantil registroMercantil = new RegistroMercantil();
 		usuario = usuarioServicio.validarUsuario(getUsuario(), EncriptarCadenas.encriptarCadenaSha1(getContrasena()), getEntidad());
 		if(usuario != null) {
+			registroMercantil = registroMercantilServicio.findByPk(getEntidad());
+			HttpSession session = getHttpServletRequest().getSession(true);
+			session.setAttribute("tipoEntidad", registroMercantil.getTipo());
+			session.setAttribute("usuario", getUsuario());
+			//if(registroEntidad.getTipo = )
+			////FacesContext.getCurrentInstance().getExternalContext().redirect("/paginas/brand.jsf");
+			ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
 			try {
-				registroMercantil = registroMercantilServicio.findByPk(getEntidad());
-				HttpSession session = getHttpServletRequest().getSession(true);
-				session.setAttribute("tipoEntidad", registroMercantil.getTipo());
-				session.setAttribute("usuario", getUsuario());
-				//if(registroEntidad.getTipo = )
-				getFacesContext().getExternalContext().redirect("/paginas/brand.jsf");
+				context.redirect(context.getRequestContextPath() + "/paginas/brand.jsf");
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
+		return null;
 	}
 
 	public String getUsuario() {
