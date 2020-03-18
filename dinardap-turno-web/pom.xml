@@ -66,7 +66,7 @@
 		<dependency>
 			<groupId>org.primefaces</groupId>
 			<artifactId>primefaces</artifactId>
-			<version>6.2</version>
+			<version>7.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.primefaces.themes</groupId>
@@ -106,7 +106,7 @@
 		<dependency>
 			<groupId>ec.gob.dinardap.autorizacion</groupId>
 			<artifactId>dinardap-autorizacion</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>1.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>ec.gob.dinardap.turno</groupId>

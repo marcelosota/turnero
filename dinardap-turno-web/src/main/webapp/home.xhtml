@@ -2,9 +2,38 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:h="http://java.sun.com/jsf/html">
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:p="http://primefaces.org/ui">
 
-	
-	 <p>hola mundo</p>
+	<ui:composition template="/template/general.xhtml">
+		<ui:define name="content">
+			<h1 class="h-wai">#{etiquetas['nombre.sistema']} - Inicio</h1>
+			<h:form id="formInicio">
+				<h:panelGrid columns="2" id="logueo" style="width:50%;"
+							columnClasses="form-labelnuevo1, form-input, form-labelnuevo1, form-input">
+					<p:outputLabel value="#{etiquetas['usuario']}"/>
+					<p:inputText value="#{loginCtrl.cedula}"/>
+					<p:outputLabel value="#{etiquetas['contrasena']}"/>
+					<p:password value="#{loginCtrl.contrasena}"/>
+					<p:outputLabel value="#{etiquetas['registro.mercantil']}"/>
+					<b:selectOneMenu id="cmbEntidades"
+						value="#{loginCtrl.entidad}" 
+						required="true"
+						required-message="#{etiquetas['registro.mercantil']} #{mensajes['requerido']}"
+						styleClass="form-combo-centrado">
+						<f:selectItem itemLabel="#{etiquetas['seleccionar']}" itemValue="-1" noSelectionOption="true" />
+						<f:selectItems value="#{loginCtrl.listaRM}"
+							var="rm" 
+							itemLabel="#{rm.nombre}"
+							itemValue="#{rm.registroMercantilId}" />
+					</b:selectOneMenu>
+				</h:panelGrid> 
+				<p:commandButton value="#{etiquetas['aceptar']}"
+					actionListener="#{loginCtrl.validarUsuario}"/>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+	 
 	
 </html>

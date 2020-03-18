@@ -131,11 +131,11 @@
 	</filter-mapping>
 	
 	<filter>
-		<filter-name>FiltroAutorizacion</filter-name>
-		<filter-class>ec.gob.dinardap.autorizacion.util.FiltroAutorizacion</filter-class>
+		<filter-name>FiltroAutorizacionBasico</filter-name>
+		<filter-class>ec.gob.dinardap.autorizacion.util.FiltroAutorizacionBasico</filter-class>
 	</filter>
 	<filter-mapping>
-		<filter-name>FiltroAutorizacion</filter-name>
+		<filter-name>FiltroAutorizacionBasico</filter-name>
 		<url-pattern>/paginas/*</url-pattern>
 	</filter-mapping>
 

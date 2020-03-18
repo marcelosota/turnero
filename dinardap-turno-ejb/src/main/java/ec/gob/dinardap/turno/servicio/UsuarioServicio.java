@@ -8,4 +8,5 @@ import ec.gob.dinardap.turno.modelo.Usuario;
 @Local
 public interface UsuarioServicio extends GenericService<Usuario, Integer> {
 
+	public Usuario validarUsuario(String usuario, String contrasena, Integer entidad);
 }
