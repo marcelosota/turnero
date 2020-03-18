@@ -12,9 +12,14 @@ import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
+import ec.gob.dinardap.turno.constante.EstadoTurnoEnum;
 import ec.gob.dinardap.turno.constante.TipoEntidadEnum;
+import ec.gob.dinardap.turno.dao.TurnoDao;
+import ec.gob.dinardap.turno.dto.AgendadaAtendidasDto;
 import ec.gob.dinardap.turno.modelo.RegistroMercantil;
+import ec.gob.dinardap.turno.modelo.Turno;
 import ec.gob.dinardap.turno.servicio.RegistroMercantilServicio;
+import ec.gob.dinardap.turno.servicio.TurnoServicio;
 
 @Named(value = "administracionRMCtrl")
 @ViewScoped
@@ -24,18 +29,24 @@ public class AdministracionRMCtrl extends BaseCtrl {
 
 	@EJB
 	private RegistroMercantilServicio registroMercantilServicio;
+	@EJB
+	private TurnoDao turnoDao;
+	@EJB
+	private TurnoServicio turnoServicio;
 
 	private List<RegistroMercantil> registroMercantil;
 	private Integer registroMercantilId;
 	private Date fecha;
 	private Date fechaInicio;
 	private Date fechaFin;
+	private List<AgendadaAtendidasDto> reporteTurnos;
+	private String validador;
 
 	@PostConstruct
 	protected void init() {
-		registroMercantil = new ArrayList<RegistroMercantil>();		
+		registroMercantil = new ArrayList<>();
 		registroMercantil = registroMercantilServicio.obtenerRegistros(TipoEntidadEnum.RM.getTipo());
-
+		reporteTurnos = new ArrayList<>();
 	}
 
 	public List<RegistroMercantil> getRegistroMercantil() {
@@ -62,44 +73,59 @@ public class AdministracionRMCtrl extends BaseCtrl {
 		this.fecha = fecha;
 	}
 
+	public List<AgendadaAtendidasDto> getReporteTurnos() {
+		return reporteTurnos;
+	}
+
+	public void setReporteTurnos(List<AgendadaAtendidasDto> reporteTurnos) {
+		this.reporteTurnos = reporteTurnos;
+	}
+
+	public String getValidador() {
+		return validador;
+	}
+
+	public void setValidador(String validador) {
+		this.validador = validador;
+	}
+
 	//////// funciones
 
 	public Date getFechaInicio() {
 
 		Calendar c = Calendar.getInstance();
 		/// calcula la fecha actual fechaInicio = c.getTime();
-		  int anio = c.get(Calendar.YEAR);		
-		  
-		 try {
-			 SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
-			  String year = String.valueOf(anio);
-			  String strFecha = year + "-01-01";
-			 fechaInicio = formato.parse(strFecha);
-			} catch (ParseException ex) {
-				ex.printStackTrace();
-			}
-		
+		int anio = c.get(Calendar.YEAR);
+
+		try {
+			SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
+			String year = String.valueOf(anio);
+			String strFecha = year + "-01-01";
+			fechaInicio = formato.parse(strFecha);
+		} catch (ParseException ex) {
+			ex.printStackTrace();
+		}
+
 		return fechaInicio;
 	}
 
 	public void setFechaInicio(Date fechaInicio) {
 		this.fechaInicio = fechaInicio;
 	}
-	
 
 	public Date getFechaFin() {
 		Calendar c = Calendar.getInstance();
 		/// calcula la fecha actual fechaInicio = c.getTime();
-		  int anio = c.get(Calendar.YEAR);	
-		 
-		 try {
-			 SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
-			  String periodo = String.valueOf(anio);
-			  String strFecha = periodo + "-12-31";
-			 fechaFin = formato.parse(strFecha);
-			} catch (ParseException ex) {
-				ex.printStackTrace();
-			}
+		int anio = c.get(Calendar.YEAR);
+
+		try {
+			SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
+			String periodo = String.valueOf(anio);
+			String strFecha = periodo + "-12-31";
+			fechaFin = formato.parse(strFecha);
+		} catch (ParseException ex) {
+			ex.printStackTrace();
+		}
 
 		return fechaFin;
 	}
@@ -109,11 +135,60 @@ public class AdministracionRMCtrl extends BaseCtrl {
 	}
 
 	public void limpiar() {
-		// resumenBeneficio = new ArrayList<>();
+		reporteTurnos = new ArrayList<>();
 
 	}
 
 	public void consultar() {
+		try {
+			
+			reporteTurnos = turnoDao.reporteAgendamiento(registroMercantilId, new SimpleDateFormat("yyyy-MM-dd").format(fecha),
+					EstadoTurnoEnum.AGENDADO.getEstado(), EstadoTurnoEnum.ATENDIDO.getEstado());
+
+		} catch (Exception e) {
+			// String mensaje = getBundleMensaje("sin.informacion", null);
+			// addErrorMessage(null, mensaje, null);
+			e.printStackTrace();
+
+		}
+
+	}
+
+	public void ciudadanoAtendido() {
+		try {
+			Short atendido = EstadoTurnoEnum.ATENDIDO.getEstado();
+			Short agendado = EstadoTurnoEnum.AGENDADO.getEstado();
+			Turno objTurno = new Turno();
+			objTurno = turnoServicio.buscarTurno(validador);
+			
+			if (objTurno != null) {
+				System.out.println("obj"+objTurno.getEstado());
+				if (objTurno.getEstado() == atendido) {
+					String mensaje = getBundleMensaje("error.atendido", null);
+					addErrorMessage(null, mensaje, null);
+				}
+				if (objTurno.getEstado() == agendado) {
+					objTurno.setEstado(atendido);
+					if (turnoServicio.actualizarAtendido(objTurno) == true) {
+						String mensaje = getBundleMensaje("ciudadano.atendido", null);
+						addInfoMessage(mensaje, null);
+					} else {
+						String mensaje = getBundleMensaje("error.actualizar.ciudadano", null);
+						addErrorMessage(null, mensaje, null);
+					}
+				}
+
+			} else {
+				String mensaje = getBundleMensaje("sin.informacion", null);
+				addErrorMessage(null, mensaje, null);
+			}
+
+		} catch (Exception e) {
+			// String mensaje = getBundleMensaje("sin.informacion", null);
+			// addErrorMessage(null, mensaje, null);
+			e.printStackTrace();
+
+		}
 
 	}
 }
