@@ -9,7 +9,7 @@
         <ui:define name="content">
             <h1 class="h-wai">#{etiquetas['nombre.sistema']} - #{agendamientoCiudadanoCtrl.tituloPagina}</h1>
             <h:form id="formRegistroCiudadano" >
-                <b:panel style="width: 60%">
+                <b:panel style="width: 60%" title="Registro de información del Ciudadano">
                     <b:panelGrid colSpans="3,9" style="width: 100%; margin: 4px 5px;">
                         <p:outputLabel for="registroMercantil" value="Registro Mercatil:" />
                         <p:autoComplete id="registroMercantil"
@@ -61,10 +61,59 @@
                     <b:panelGrid colSpans="12" style="width: 100%; margin: 4px 5px; text-align: center;">                        
                         <p:commandButton value="Buscar disponibilidad" id="buscarDisponiblidadBtn" 
                                          style="margin-right:20px;" icon="fa fa-fw fa-th"
-                                         update="formRegistroCiudadano, msgMensajes"
+                                         update="formRegistroCiudadano, formHorarios, msgMensajes"
                                          action="#{agendamientoCiudadanoCtrl.buscarDisponilidad}"/>
                     </b:panelGrid>
                 </b:panel>
+            </h:form>
+
+            <h:form id="formHorarios">                
+                <b:panel style="width: 60%" title="Horarios disponibles" rendered="#{agendamientoCiudadanoCtrl.renderHorarios}">
+                    <h:panelGrid columns="1" style="width: 100%;">
+                        <p:messages id="messagesHorarios" showDetail="true" closable="true"/>
+                        <p:dataTable 
+                            id="horarioTbl"
+                            value="#{agendamientoCiudadanoCtrl.horarioDTOList}"
+                            var="horario"                            
+                            selection="#{agendamientoCiudadanoCtrl.horarioDTOSelected}"
+                            reflow="true" rows="5" paginator="true"
+                            paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                            rowsPerPageTemplate="5,10,25,50"
+                            tableStyle="width:auto">
+                            <f:facet name="header">Horarios Disponibles</f:facet>                            
+                            <!--<p:ajax event="rowSelect" listener="{egresosCtrl.onRowSelectNomina}" update="formNomina, formNominaSelected"/>-->                            
+                            <p:column headerText="Hora" sortBy="#{horario.hora}"
+                                      width="40%" style="text-align: center">
+                                <h:outputText value="#{horario.hora}" />
+                            </p:column>
+                            <p:column headerText="Máximo de turnos" sortBy="#{horario.numeroVentanillas}" 
+                                      width="40%" style="text-align: left">
+                                <h:outputText value="#{horario.numeroVentanillas}" />
+                            </p:column>
+                            <p:column headerText="Turnos disponibles" sortBy="#{horario.turnosDisponibles}" 
+                                      width="20%" style="text-align: right">
+                                <h:outputText value="#{horario.turnosDisponibles}" >
+                                    <f:convertNumber type="currency" currencySymbol="$" maxIntegerDigits="10" maxFractionDigits="2"/>
+                                </h:outputText>
+                            </p:column>
+                        </p:dataTable>        
+                    </h:panelGrid>
+
+                    <b:panelGrid id="btnPnl" colSpans="6,6" style="width: 75%; margin: 4px 5px;">
+                        <p:commandButton value="Agendar"
+                                         style="margin-right:20px; width: 100%"                                          
+                                         icon="fa fa-fw fa-plus-square"/>
+                        <p:commandButton value="Cancelar"
+                                         style="margin-right:20px; width: 100%"                                         
+                                         icon="fa fa-fw fa-trash">
+                            <p:confirm header="Confirmación" message="¿Está seguro que desea eliminar los registros seleccionados?" icon="fa fa-fw fa-warning" />
+                        </p:commandButton>                        
+                        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                            <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="fa fa-fw fa-check" />
+                            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="fa fa-fw fa-remove" />
+                        </p:confirmDialog>
+                    </b:panelGrid>
+                </b:panel>                
             </h:form>
         </ui:define>
     </ui:composition>

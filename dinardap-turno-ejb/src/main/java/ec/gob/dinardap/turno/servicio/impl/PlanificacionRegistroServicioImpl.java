@@ -36,9 +36,9 @@ public class PlanificacionRegistroServicioImpl extends GenericServiceImpl<Planif
         String[] orderBy = {"planificacionId"};
         boolean[] asc = {true};
         Criteria criteria = new Criteria(criteriaNombres, criteriaTipos, criteriaValores, orderBy, asc);
-        planificacionRegistroList = findByCriterias(criteria);
-        if (planificacionRegistroList.size() != 0) {
-            planificacionRegistro = planificacionRegistroList.get(0);
+        planificacionRegistroList = findByCriterias(criteria);        
+        if (!planificacionRegistroList.isEmpty()) {
+            planificacionRegistro = planificacionRegistroList.get(0);            
         }
         return planificacionRegistro;
     }

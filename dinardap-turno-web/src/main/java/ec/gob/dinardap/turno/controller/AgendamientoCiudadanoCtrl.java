@@ -2,6 +2,7 @@ package ec.gob.dinardap.turno.controller;
 
 import ec.gob.dinardap.interoperadorv2.cliente.servicio.ServicioDINARDAP;
 import ec.gob.dinardap.interoperadorv2.ws.ConsultarResponse;
+import ec.gob.dinardap.turno.dto.HorarioDTO;
 import ec.gob.dinardap.turno.modelo.PlanificacionRegistro;
 import ec.gob.dinardap.turno.modelo.RegistroMercantil;
 import ec.gob.dinardap.turno.modelo.Turno;
@@ -29,6 +30,8 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
 
     private String fechaMin;
 
+    private Boolean renderHorarios;
+
 //    private String tituloNomina;
 //    private String tituloFacturaPagada;
 //    private String strBtnGuardar;
@@ -49,6 +52,7 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
 //    private Boolean onEditFacturaPagada;
     //Variables de negocio
     private Turno turno;
+    private HorarioDTO horarioDTOSelected;
     //    private Date fechaSeleccionada;
     //    private Integer año;
     //    private Integer mes;
@@ -58,6 +62,7 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
     //    private FacturaPagada facturaPagadaSelected;
     //Listas    
     private List<RegistroMercantil> registroMercantilList;
+    private List<HorarioDTO> horarioDTOList;
 //    private List<Nomina> nominaSelectedList;
 //    private List<FacturaPagada> facturaPagadaList;
 //    private List<FacturaPagada> facturaPagadaSelectedList;
@@ -86,14 +91,17 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
     @PostConstruct
     protected void init() {
         tituloPagina = "Agendamiento de Turnos";
+        renderHorarios = Boolean.FALSE;
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
         fechaMin = calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.DAY_OF_MONTH);
 
         turno = new Turno();
+        horarioDTOSelected = new HorarioDTO();
         registroMercantilList = new ArrayList<RegistroMercantil>();
         registroMercantilList = registroMercantilServicio.getRegistrosMercantiles();
+        horarioDTOList = new ArrayList<HorarioDTO>();
     }
 
     public List<RegistroMercantil> completeNombreRegistroMercantil(String query) {
@@ -108,29 +116,19 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
     }
 
     public void buscarDisponilidad() {
-        System.out.println("Cita: " + turno.getRegistroMercantil().getNombre());
-        System.out.println("Cita: " + turno.getCedula());
-        System.out.println("Cita: " + turno.getDia());
-        System.out.println("Cita: " + turno.getCorreoElectronico());
-        System.out.println("Cita: " + turno.getCelular());
-        String nombreCiudadano = "Chris";
-        if (nombreCiudadano != null) {
-            System.out.println("NombreCiudadano");
-            PlanificacionRegistro planificacionRegistro = new PlanificacionRegistro();
-            planificacionRegistro
-                    = planificacionRegistroServicio.getPlanificacionRegistro(turno.getRegistroMercantil().getRegistroMercantilId());
-            if (planificacionRegistro != null) {
-                System.out.println("Planificacion: " + planificacionRegistro.getPlanificacionId());
-                System.out.println("Planificacion: " + planificacionRegistro.getRegistroMercantil().getNombre());
-                System.out.println("Planificacion: " + planificacionRegistro.getVentanilla());
-                System.out.println("Planificacion: " + planificacionRegistro.getDuracionTramite());
-                System.out.println("Planificacion: " + planificacionRegistro.getHoraInicio());
-                System.out.println("Planificacion: " + planificacionRegistro.getHoraFin());
+        PlanificacionRegistro planificacionRegistro = null;
+        planificacionRegistro = planificacionRegistroServicio.getPlanificacionRegistro(turno.getRegistroMercantil().getRegistroMercantilId());
+        String nombreCiudadano = "Chris";//Añadir el metodo getNombreCiudadano para consumir el ws de Jady
+//        String nombreCiudadano = getNombreCiudadano();
+        if (planificacionRegistro.getPlanificacionId() != null) {
+            renderHorarios = Boolean.TRUE;
+            if (nombreCiudadano != null) {
+                //Creación del array de Horarios
             } else {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El Registro Mercantil seleccionado no cuenta con planificación"));
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: El Registro Mercantil seleccionado no cuenta con una planificación", "El Registro Mercantil seleccionado no cuenta con planificación"));
             }
         } else {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Cédula inválida"));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: El Registro Mercantil seleccionado no cuenta con una planificación", "El Registro Mercantil seleccionado no cuenta con planificación"));
         }
     }
 
@@ -146,6 +144,11 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
             }
         }
         return nombreCiudadano;
+    }
+
+    private List<HorarioDTO> generacionListadoHorario(PlanificacionRegistro pr) {
+
+        return null;
     }
 
     //Getters & Setters
@@ -179,6 +182,30 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
 
     public void setFechaMin(String fechaMin) {
         this.fechaMin = fechaMin;
+    }
+
+    public Boolean getRenderHorarios() {
+        return renderHorarios;
+    }
+
+    public void setRenderHorarios(Boolean renderHorarios) {
+        this.renderHorarios = renderHorarios;
+    }
+
+    public List<HorarioDTO> getHorarioDTOList() {
+        return horarioDTOList;
+    }
+
+    public void setHorarioDTOList(List<HorarioDTO> horarioDTOList) {
+        this.horarioDTOList = horarioDTOList;
+    }
+
+    public HorarioDTO getHorarioDTOSelected() {
+        return horarioDTOSelected;
+    }
+
+    public void setHorarioDTOSelected(HorarioDTO horarioDTOSelected) {
+        this.horarioDTOSelected = horarioDTOSelected;
     }
 
 }
