@@ -1,12 +1,10 @@
 package ec.gob.dinardap.turno.dao.ejb;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.persistence.Query;
-
 
 import ec.gob.dinardap.persistence.dao.ejb.GenericDaoEjb;
 import ec.gob.dinardap.turno.dao.TurnoDao;

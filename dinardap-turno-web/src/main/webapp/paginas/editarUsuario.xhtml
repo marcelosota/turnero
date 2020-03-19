@@ -14,43 +14,46 @@
 						form-label-derecha ui-grid-col-1, form-input-izquierda">
 				<p:outputLabel value="#{etiquetas['cedula']}:" />
 				<p:inputText id="txtCedula"
-					value="#{registroUsuarioCtrl.usuarioDto.cedula}"
-					maxlength="10"  
-					required="true"
-					required-message="#{etiquetas['cedula']} #{mensajes['requerido']}" >
-					<f:validateRegex pattern="[0-9]+" />
-					<p:ajax event="blur" listener="#{registroUsuarioCtrl.buscarUsuario}" update="txtNombre	"/>
+					value="#{editarUsuarioCtrl.usuarioDto.cedula}"
+					disabled="true"
+					maxlength="10" >
 				</p:inputText>
 				<p:outputLabel value="#{etiquetas['nombre']}:" />
 				<p:inputText id="txtNombre" 
-					value="#{registroUsuarioCtrl.usuarioDto.nombre}"
+					value="#{editarUsuarioCtrl.usuarioDto.nombre}"
 					disabled="true"
-					required="true"
-					required-message="#{etiquetas['cedula']} #{mensajes['requerido']}"
 					size="40" />
 				<p:outputLabel value="#{etiquetas['contrasena']}:" />
 				<p:password id="txtContrasena" 
-					value="#{registroUsuarioCtrl.usuarioDto.contrasena}" 
-					required="true"
-					required-message="#{etiquetas['contrasena']} #{mensajes['requerido']}"
+					value="#{editarUsuarioCtrl.usuarioDto.contrasena}" 
 					size="40" />
 				<p:outputLabel value="#{etiquetas['registro.mercantil']}:" />
 				<b:selectOneMenu id="cmbEntidades" 
-					value="#{registroUsuarioCtrl.usuarioDto.registroMercantilId}"
+					value="#{editarUsuarioCtrl.usuarioDto.registroMercantilId}"
 					required="true"
 					required-message="#{etiquetas['registro.mercantil']} #{mensajes['requerido']}"
 					styleClass="form-combo-centrado">
 					<f:selectItem itemLabel="#{etiquetas['seleccionar']}" itemValue="-1" noSelectionOption="true" />
-					<f:selectItems value="#{registroUsuarioCtrl.listaRM}" var="rm" 
+					<f:selectItems value="#{editarUsuarioCtrl.listaRM}" var="rm" 
 						itemLabel="#{rm.nombre}" itemValue="#{rm.registroMercantilId}" />
+				</b:selectOneMenu>
+				<p:outputLabel value="#{etiquetas['estado']}:" />
+				<b:selectOneMenu id="cmbEstado" 
+					value="#{editarUsuarioCtrl.usuarioDto.estado}"
+					required="true"
+					required-message="#{etiquetas['estado']} #{mensajes['requerido']}"
+					styleClass="form-combo-centrado"
+					process="@this">
+					<f:selectItem itemLabel="#{etiquetas['seleccionar']}" itemValue="-1" noSelectionOption="true" />
+					<f:selectItems value="#{editarUsuarioCtrl.estado}" />
 				</b:selectOneMenu>
 			</h:panelGrid>
 			<p:commandButton value="#{etiquetas['guardar']}"
-				actionListener="#{registroUsuarioCtrl.guardarUsuario}"
+				actionListener="#{editarUsuarioCtrl.guardarUsuario}"
 				update="txtCedula txtNombre txtContrasena cmbEntidades"/>
 			<p:spacer width="10px" />
 			<p:commandButton value="#{etiquetas['cancelar']}"
-				actionListener="#{registroUsuarioCtrl.limpiarCampos}"
+				actionListener="#{editarUsuarioCtrl.limpiarCampos}"
 				update="txtCedula txtNombre txtContrasena cmbEntidades" />
 		</h:form>
 	</ui:define>

@@ -2,12 +2,20 @@ package ec.gob.dinardap.turno.dto;
 
 public class UsuarioDto {
 
+	private Integer usuarioId;
 	private String cedula;
 	private String nombre;
 	private String contrasena;
 	private Integer registroMercantilId;
 	private Integer perfilId;
+	private Short estado;
 	
+	public Integer getUsuarioId() {
+		return usuarioId;
+	}
+	public void setUsuarioId(Integer usuarioId) {
+		this.usuarioId = usuarioId;
+	}
 	public String getCedula() {
 		return cedula;
 	}
@@ -37,5 +45,11 @@ public class UsuarioDto {
 	}
 	public void setPerfilId(Integer perfilId) {
 		this.perfilId = perfilId;
+	}
+	public Short getEstado() {
+		return estado;
+	}
+	public void setEstado(Short estado) {
+		this.estado = estado;
 	}
 }

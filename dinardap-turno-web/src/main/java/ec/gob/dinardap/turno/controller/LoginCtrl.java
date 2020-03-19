@@ -35,6 +35,7 @@ public class LoginCtrl extends BaseCtrl {
 	private String contrasena;
 	private Integer entidad;
 	private List<RegistroMercantil> listaRM;
+	private String nuevaContrasena;
 	
 	public void  validarUsuario() {
 		Usuario usuario = new Usuario();
@@ -55,6 +56,10 @@ public class LoginCtrl extends BaseCtrl {
 			}
 		}else
 			addErrorMessage(null, getBundleMensaje("error.credenciales", null), null);
+	}
+	
+	public void cambiarContrasena() {
+		
 	}
 
 	public String getCedula() {
@@ -89,5 +94,13 @@ public class LoginCtrl extends BaseCtrl {
 
 	public void setListaRM(List<RegistroMercantil> listaRM) {
 		this.listaRM = listaRM;
+	}
+
+	public String getNuevaContrasena() {
+		return nuevaContrasena;
+	}
+
+	public void setNuevaContrasena(String nuevaContrasena) {
+		this.nuevaContrasena = nuevaContrasena;
 	}
 }

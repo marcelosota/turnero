@@ -57,4 +57,19 @@ public class UsuarioServicioImpl extends GenericServiceImpl<Usuario, Integer> im
 		
 	}
 
+	@Override
+	public void modificarUsuario(UsuarioDto usuarioDto) {
+		Usuario usuario = new Usuario();
+		usuario.setPerfil(new Perfil());
+		usuario.setRegistroMercantil(new RegistroMercantil());
+		usuario.setUsuarioId(usuarioDto.getUsuarioId());
+		usuario.setCedula(usuarioDto.getCedula());
+		usuario.setNombre(usuarioDto.getNombre());
+		usuario.setContrasena(usuarioDto.getContrasena());
+		usuario.getRegistroMercantil().setRegistroMercantilId(usuarioDto.getRegistroMercantilId());
+		usuario.getPerfil().setPerfilId(usuarioDto.getPerfilId());
+		usuario.setEstado(usuarioDto.getEstado());
+		update(usuario);
+	}
+
 }
