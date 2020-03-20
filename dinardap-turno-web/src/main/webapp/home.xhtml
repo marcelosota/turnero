@@ -11,8 +11,8 @@
 			<h1 class="h-wai">#{etiquetas['nombre.sistema']} - Inicio</h1>
 			<h:form id="formInicio">
 				<br/> <br/>
-				<div align="center"">
-				<b:panel style="max-width:40pc;vertical-align:middle;width:40pc;border-color:#023767;border-style:ridge;">
+				<div align="center">
+				<p:panel style="max-width:40pc;vertical-align:middle;width:40pc;border-color:#023767;border-style:ridge;">
 					<h:panelGrid columns="2" id="logueo" style="width:50%;"
 								columnClasses="form-label-derecha ui-grid-col-1, form-input-izquierda, 
 								form-label-derecha ui-grid-col-1, form-input-izquierda">
@@ -35,35 +35,14 @@
 					</h:panelGrid> 
 					<p:commandButton value="#{etiquetas['aceptar']}"
 						actionListener="#{loginCtrl.validarUsuario}"/>
-					<p:spacer width="10px" />
+					<!--<p:spacer width="10px" />
 					<p:commandButton value="#{etiquetas['cambiar.contrasena']}"
-						type="button"
-						onclick="PF('dlgCambiarContrasena').show();"/>
-				</b:panel>
+						actionListener="#{loginCtrl.abrirDialogo}"
+						oncomplete="PF('dlgCambiarContrasena').show();"/>-->
+					<p:commandButton value="#{etiquetas['cambiar.contrasena']}"
+						actionListener="#{loginCtrl.cambiarContrasena}"/>
+				</p:panel>
 				</div>
-				
-				<p:dialog id="dlgCambiarContrasena"
-					header="#{etiquetas['cambiar.contrasena']}" 
-					height="40"
-					modal="true">
-					<h:form id="contrasena">
-						<h:panelGrid columns="2" 
-							columnClasses="form-label-derecha ui-grid-col-1, form-input-izquierda">
-							<h:outputText value="#{etiquetas['cedula']}:" />
-							<h:inputText value="#{loginCtrl.cedula}" />
-							<h:outputText value="#{etiquetas['contrasena.actual']}:" />
-							<h:inputText value="#{loginCtrl.contrasena}" />
-							<h:outputText value="#{etiquetas['contrasena.nueva']}:" />
-							<h:inputText value="#{loginCtrl.contrasena}" />
-						</h:panelGrid>
-	
-						<p:commandButton
-							actionListener="#{loginCtrl.cambiarContrasena()}"
-							value="#{etiquetas['cambiar.contrasena']}" icon="ui-icon-disk"
-							title="#{mensajes['cambiar.contrasena']}"
-							onclick="PF('dlgCambiarContrasena').hide();" />
-					</h:form>
-				</p:dialog>
 				
 			</h:form>
 	

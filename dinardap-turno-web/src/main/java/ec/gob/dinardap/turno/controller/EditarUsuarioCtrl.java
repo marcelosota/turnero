@@ -120,7 +120,7 @@ public class EditarUsuarioCtrl extends BaseCtrl {
 
 	public List<RegistroMercantil> getListaRM() {
 		if(listaRM == null) 
-			listaRM = registroMercantilServicio.obtenerRegistrosMercantiles();
+			listaRM = registroMercantilServicio.findAll();
 		return listaRM;
 	}
 

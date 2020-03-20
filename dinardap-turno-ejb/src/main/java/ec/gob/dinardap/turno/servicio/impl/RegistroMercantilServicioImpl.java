@@ -45,5 +45,16 @@ public class RegistroMercantilServicioImpl extends GenericServiceImpl<RegistroMe
 		Criteria criteria = new Criteria(criteriaNombres, criteriaTipos, criteriaValores);
 		return findByCriterias(criteria);
 	}
+	
+	/*@Override
+	public List<RegistroMercantil> obtenerEntidadesActivas() {
+		String[] criteriaNombres = {"estado"};
+		CriteriaTypeEnum[] criteriaTipos = {CriteriaTypeEnum.SHORT_EQUALS};
+		Object[] criteriaValores = {EstadoEnum.ACTIVO.getEstado()};
+		String[] orderBy = {"nombre"};
+		boolean[] asc = {true};
+		Criteria criteria = new Criteria(criteriaNombres, criteriaTipos, criteriaValores, orderBy, asc);
+		return findByCriterias(criteria);
+	}*/
 
 }

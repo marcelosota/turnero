@@ -72,4 +72,32 @@ public class UsuarioServicioImpl extends GenericServiceImpl<Usuario, Integer> im
 		update(usuario);
 	}
 
+	@Override
+	public Usuario buscarPorCedula(String cedula) {
+		String[] criteriaNombres = {"cedula"};
+		CriteriaTypeEnum[] criteriaTipos = {CriteriaTypeEnum.STRING_EQUALS};
+		Object[] criteriaValores = {cedula};
+		
+		Criteria criteria = new Criteria(criteriaNombres, criteriaTipos, criteriaValores);
+		List<Usuario> listado = findByCriterias(criteria);
+		if(listado != null && listado.size() == 1) {
+			return listado.get(0);
+		}else
+			return null;
+	}
+
+	@Override
+	public Usuario verificarCredenciales(String cedula, String contrasena) {
+		String[] criteriaNombres = {"cedula","contrasena"};
+		CriteriaTypeEnum[] criteriaTipos = {CriteriaTypeEnum.STRING_EQUALS, CriteriaTypeEnum.STRING_EQUALS};
+		Object[] criteriaValores = {cedula, contrasena};
+		
+		Criteria criteria = new Criteria(criteriaNombres, criteriaTipos, criteriaValores);
+		List<Usuario> listado = findByCriterias(criteria);
+		if(listado != null && listado.size() == 1) {
+			return listado.get(0);
+		}else
+			return null;
+	}
+
 }
