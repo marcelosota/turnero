@@ -13,45 +13,56 @@ import ec.gob.dinardap.turno.dao.TurnoDao;
 import ec.gob.dinardap.turno.modelo.Turno;
 import ec.gob.dinardap.turno.servicio.TurnoServicio;
 
-@Stateless(name="TurnoServicio")
+@Stateless(name = "TurnoServicio")
 public class TurnoServicioImpl extends GenericServiceImpl<Turno, Integer> implements TurnoServicio {
 
 	@EJB
 	private TurnoDao turnoDao;
-	
+
 	@Override
 	public GenericDao<Turno, Integer> getDao() {
 		return turnoDao;
-	}	
+	}
+
 	@Override
-	public Boolean actualizarAtendido(Turno turno){
-		try{
+	public Boolean actualizarAtendido(Turno turno) {
+		try {
 			update(turno);
-			
+
 			return true;
-		}catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}
 	}
-	
+
 	@Override
-	public Turno buscarTurno(String validador)
-	{
-		String[] criteriasPropiedad = { "validador" };
-		CriteriaTypeEnum[] citeriaOperador = { CriteriaTypeEnum.STRING_EQUALS };
-		Object[] criteriaValores = { validador };
+	public Turno buscarTurno(String validador) {
+		try {
+			String[] criteriasPropiedad = { "validador" };
+			CriteriaTypeEnum[] citeriaOperador = { CriteriaTypeEnum.STRING_EQUALS };
+			Object[] criteriaValores = { validador };
 
-		Criteria criteria = new Criteria(criteriasPropiedad, citeriaOperador,criteriaValores);
+			Criteria criteria = new Criteria(criteriasPropiedad, citeriaOperador, criteriaValores);
 
-		List<Turno> lista = findByCriterias(criteria);
-		Turno turno = new Turno();
-		if(lista != null && lista.size() > 0){
-			for(Turno item : lista)
-				turno = item;
+			List<Turno> lista = findByCriterias(criteria);
+			Turno turno = new Turno();
+			if (lista.isEmpty()) {
+				System.out.println("vacío");
+				return null;
+			} else {
+				System.out.println("lleno");
+				System.out.println("list"+lista.get(0));
+				turno = lista.get(0);
+				System.out.println("list"+turno.getEstado());
+				return turno;
+			}
+		} catch (Exception e) {
+
+			System.out.println(e.toString());
+			return null;
 		}
-		return turno;
-		
+
 	}
 
 }
