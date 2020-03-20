@@ -8,7 +8,9 @@ import ec.gob.dinardap.turno.modelo.RegistroMercantil;
 import ec.gob.dinardap.turno.modelo.Turno;
 import ec.gob.dinardap.turno.servicio.PlanificacionRegistroServicio;
 import ec.gob.dinardap.turno.servicio.RegistroMercantilServicio;
+import ec.gob.dinardap.turno.servicio.TurnoServicio;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -72,6 +74,9 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
 
     @EJB
     private PlanificacionRegistroServicio planificacionRegistroServicio;
+
+    @EJB
+    private TurnoServicio turnoServicio;
 //
 //    @EJB
 //    private TransaccionServicio transaccionServicio;
@@ -115,21 +120,34 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
         return filteredRegistroMercantil;
     }
 
-    public void buscarDisponilidad() {
+    public void buscarDisponibilidad() {
         PlanificacionRegistro planificacionRegistro = null;
         planificacionRegistro = planificacionRegistroServicio.getPlanificacionRegistro(turno.getRegistroMercantil().getRegistroMercantilId());
         String nombreCiudadano = "Chris";//Añadir el metodo getNombreCiudadano para consumir el ws de Jady
 //        String nombreCiudadano = getNombreCiudadano();
+        horarioDTOList = new ArrayList<HorarioDTO>();
         if (planificacionRegistro.getPlanificacionId() != null) {
-            renderHorarios = Boolean.TRUE;
             if (nombreCiudadano != null) {
                 //Creación del array de Horarios
+                turno.setNombre(nombreCiudadano);
+                horarioDTOList = generacionListadoHorario(planificacionRegistro);
             } else {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: El Registro Mercantil seleccionado no cuenta con una planificación", "El Registro Mercantil seleccionado no cuenta con planificación"));
             }
         } else {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: El Registro Mercantil seleccionado no cuenta con una planificación", "El Registro Mercantil seleccionado no cuenta con planificación"));
         }
+    }
+
+    public void seleccionarHorario() {
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información: Usted a seleccionado el horario de " + horarioDTOSelected.getHora(), ""));
+        turno.setHora(horarioDTOSelected.getHora());
+    }
+
+    public void agendarHorario() {
+        turno.setEstado((short) 1);
+        turno.setValidador(getGeneracionValidacion());
+        turnoServicio.create(turno);
     }
 
     private String getNombreCiudadano() {
@@ -147,8 +165,52 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
     }
 
     private List<HorarioDTO> generacionListadoHorario(PlanificacionRegistro pr) {
+        List<HorarioDTO> horarioList = new ArrayList<>();
 
-        return null;
+        Calendar horaActual = Calendar.getInstance();
+
+        Calendar horaInicio = Calendar.getInstance();
+        horaInicio.setTime(turno.getDia());
+        Short horaInicial = pr.getHoraInicio();
+
+        horaInicio.set(Calendar.HOUR_OF_DAY, horaInicial);
+        horaInicio.set(Calendar.MINUTE, 0);
+        horaInicio.set(Calendar.SECOND, 0);
+        horaInicio.set(Calendar.MILLISECOND, 0);
+
+        Calendar horaFin = Calendar.getInstance();
+        horaFin.setTime(turno.getDia());
+        Short horaFinal = pr.getHoraFin();
+        horaFin.set(Calendar.HOUR_OF_DAY, horaFinal);
+        horaFin.set(Calendar.MINUTE, 0);
+        horaFin.set(Calendar.SECOND, 0);
+        horaFin.set(Calendar.MILLISECOND, 0);
+
+        while (horaInicio.getTime().before(horaFin.getTime())) {
+            String hora = new SimpleDateFormat("HH:mm").format(horaInicio.getTime());
+            HorarioDTO horario = new HorarioDTO(hora, pr.getVentanilla().intValue(), turnoServicio.getTurnosDisponibles(pr.getVentanilla().intValue(), turno.getDia(), hora));
+            if (turnoServicio.validacionDiariaPersona(turno.getDia(), turno.getCedula())) {
+                renderHorarios = Boolean.TRUE;
+                if (horaActual.getTime().before(horaInicio.getTime())) {
+                    horarioList.add(horario);
+                }
+                horaInicio.add(Calendar.MINUTE, pr.getDuracionTramite());
+            } else {
+                System.out.println("Generar forma para que pueda anular su turno");
+            }
+        }
+        return horarioList;
+    }
+
+    public static String getGeneracionValidacion() {
+        String str = "DAYSI1234567890";
+        String claveGenerada = "";
+        int numero;
+        for (Integer i = 0; i < 6; i++) {
+            numero = (int) (Math.random() * 15);
+            claveGenerada = claveGenerada + str.substring(numero, numero + 1);
+        }
+        return claveGenerada;
     }
 
     //Getters & Setters
