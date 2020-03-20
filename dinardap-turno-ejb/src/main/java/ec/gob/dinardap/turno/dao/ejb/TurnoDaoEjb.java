@@ -32,14 +32,25 @@ public class TurnoDaoEjb extends GenericDaoEjb<Turno, Integer> implements TurnoD
         return turnosDisponibles;
     }
 
+//    @Override
+//    public Boolean validacionDiariaPersona(Turno turno) {
+//        Query query = em.createQuery("SELECT t FROM Turno t WHERE t.cedula=:cedula AND t.dia=:dia AND t.registroMercantil.registroMercantilId=:registroMercantil");
+//        query.setParameter("dia", turno.getDia());
+//        query.setParameter("cedula", turno.getCedula());
+//        query.setParameter("registroMercantil", turno.getRegistroMercantil().getRegistroMercantilId());
+//        List<Turno> turnoList = new ArrayList<Turno>();
+//        turnoList = query.getResultList();
+//        return turnoList.isEmpty() ? Boolean.TRUE : Boolean.FALSE;
+//    }
     @Override
-    public Boolean validacionDiariaPersona(Date dia, String cedula) {
-        Query query = em.createQuery("SELECT t FROM Turno t WHERE t.cedula=:cedula AND t.dia=:dia");
-        query.setParameter("dia", dia);
-        query.setParameter("cedula", cedula);
+    public List<Turno> getTurnos(Turno turno) {
+        Query query = em.createQuery("SELECT t FROM Turno t WHERE t.cedula=:cedula AND t.dia=:dia AND t.registroMercantil.registroMercantilId=:registroMercantil");
+        query.setParameter("dia", turno.getDia());
+        query.setParameter("cedula", turno.getCedula());
+        query.setParameter("registroMercantil", turno.getRegistroMercantil().getRegistroMercantilId());
         List<Turno> turnoList = new ArrayList<Turno>();
         turnoList = query.getResultList();
-        return turnoList.isEmpty() ? Boolean.TRUE : Boolean.FALSE;
+        return turnoList;
     }
 
 }

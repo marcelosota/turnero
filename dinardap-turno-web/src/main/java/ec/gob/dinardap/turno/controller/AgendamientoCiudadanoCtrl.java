@@ -33,41 +33,18 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
     private String fechaMin;
 
     private Boolean renderHorarios;
-
-//    private String tituloNomina;
-//    private String tituloFacturaPagada;
-//    private String strBtnGuardar;
-//
-//    private Boolean disableNuevoEgreso;
-//
-//    private Boolean disabledDeleteNomina;
-//    private Boolean disabledDeleteNominaTodos;
-//
-//    private Boolean disabledDeleteFacturaPagada;
-//    private Boolean disabledDeleteFacturaPagadaTodos;
-//    private Boolean renderEdition;
-//
-//    private Boolean onCreateNomina;
-//    private Boolean onEditNomina;
-//
-//    private Boolean onCreateFacturaPagada;
-//    private Boolean onEditFacturaPagada;
+    private Boolean renderInformacionTurno;
+    private Boolean turnoAgendado;
+    private Boolean renderCancelacionTurno;
     //Variables de negocio
     private Turno turno;
+    private Turno turnoGenerado;
     private HorarioDTO horarioDTOSelected;
-    //    private Date fechaSeleccionada;
-    //    private Integer año;
-    //    private Integer mes;
-    //    private RemanenteMensual remanenteMensualSelected;
-    //
-    //    private Nomina nominaSelected;
-    //    private FacturaPagada facturaPagadaSelected;
+    private String codigoIngresado;
+
     //Listas    
     private List<RegistroMercantil> registroMercantilList;
     private List<HorarioDTO> horarioDTOList;
-//    private List<Nomina> nominaSelectedList;
-//    private List<FacturaPagada> facturaPagadaList;
-//    private List<FacturaPagada> facturaPagadaSelectedList;
 
     @EJB
     private RegistroMercantilServicio registroMercantilServicio;
@@ -97,16 +74,21 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
     protected void init() {
         tituloPagina = "Agendamiento de Turnos";
         renderHorarios = Boolean.FALSE;
+        renderInformacionTurno = Boolean.FALSE;
+        turnoAgendado = Boolean.FALSE;
+        renderCancelacionTurno = Boolean.FALSE;
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
         fechaMin = calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.DAY_OF_MONTH);
 
         turno = new Turno();
+        turnoGenerado = new Turno();
         horarioDTOSelected = new HorarioDTO();
         registroMercantilList = new ArrayList<RegistroMercantil>();
         registroMercantilList = registroMercantilServicio.getRegistrosMercantiles();
         horarioDTOList = new ArrayList<HorarioDTO>();
+        codigoIngresado = "";
     }
 
     public List<RegistroMercantil> completeNombreRegistroMercantil(String query) {
@@ -121,6 +103,7 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
     }
 
     public void buscarDisponibilidad() {
+        turnoGenerado = new Turno();
         PlanificacionRegistro planificacionRegistro = null;
         planificacionRegistro = planificacionRegistroServicio.getPlanificacionRegistro(turno.getRegistroMercantil().getRegistroMercantilId());
         String nombreCiudadano = "Chris";//Añadir el metodo getNombreCiudadano para consumir el ws de Jady
@@ -140,14 +123,39 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
     }
 
     public void seleccionarHorario() {
+        turnoGenerado = new Turno();
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información: Usted a seleccionado el horario de " + horarioDTOSelected.getHora(), ""));
         turno.setHora(horarioDTOSelected.getHora());
     }
 
     public void agendarHorario() {
+        turno.setTurnoId(null);
         turno.setEstado((short) 1);
         turno.setValidador(getGeneracionValidacion());
-        turnoServicio.create(turno);
+        PlanificacionRegistro pr = null;
+        pr = planificacionRegistroServicio.getPlanificacionRegistro(turno.getRegistroMercantil().getRegistroMercantilId());
+        if (turnoServicio.getTurnosDisponibles(pr.getVentanilla().intValue(), turno.getDia(), turno.getHora()) > 0) {
+            turnoAgendado = Boolean.TRUE;
+            turnoServicio.create(turno);
+            turnoGenerado = turno;
+            turno = new Turno();
+            renderHorarios = Boolean.FALSE;
+            renderInformacionTurno = Boolean.FALSE;
+        } else {
+            turnoAgendado = Boolean.FALSE;
+            buscarDisponibilidad();
+//            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Advertencia: Lo sentimos su turno no fue generado, ya no existe disponibilidad para el horario seleccionado, por favor seleccione otro horario", "Advertencia: Lo sentimos su turno no fue generado, ya no existe disponibilidad para el horario seleccionado, por favor seleccione otro horario"));
+        }
+
+    }
+
+    public void cancelarTurno() {
+        System.out.println("CancelarTurno");
+        renderCancelacionTurno = Boolean.TRUE;
+    }
+
+    public void confirmaCancelacionTurno() {
+        System.out.println("ConfirmadoCancelarTurno");
     }
 
     private String getNombreCiudadano() {
@@ -186,18 +194,21 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
         horaFin.set(Calendar.SECOND, 0);
         horaFin.set(Calendar.MILLISECOND, 0);
 
-        while (horaInicio.getTime().before(horaFin.getTime())) {
-            String hora = new SimpleDateFormat("HH:mm").format(horaInicio.getTime());
-            HorarioDTO horario = new HorarioDTO(hora, pr.getVentanilla().intValue(), turnoServicio.getTurnosDisponibles(pr.getVentanilla().intValue(), turno.getDia(), hora));
-            if (turnoServicio.validacionDiariaPersona(turno.getDia(), turno.getCedula())) {
-                renderHorarios = Boolean.TRUE;
+        if (turnoServicio.validacionDiariaPersona(turno)) {
+            renderHorarios = Boolean.TRUE;
+            renderInformacionTurno = Boolean.FALSE;
+            while (horaInicio.getTime().before(horaFin.getTime())) {
+                String hora = new SimpleDateFormat("HH:mm").format(horaInicio.getTime());
+                HorarioDTO horario = new HorarioDTO(hora, pr.getVentanilla().intValue(), turnoServicio.getTurnosDisponibles(pr.getVentanilla().intValue(), turno.getDia(), hora));
                 if (horaActual.getTime().before(horaInicio.getTime())) {
                     horarioList.add(horario);
                 }
                 horaInicio.add(Calendar.MINUTE, pr.getDuracionTramite());
-            } else {
-                System.out.println("Generar forma para que pueda anular su turno");
             }
+        } else {
+            renderHorarios = Boolean.FALSE;
+            renderInformacionTurno = Boolean.TRUE;
+            turno = turnoServicio.getTurno(turno);
         }
         return horarioList;
     }
@@ -268,6 +279,46 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
 
     public void setHorarioDTOSelected(HorarioDTO horarioDTOSelected) {
         this.horarioDTOSelected = horarioDTOSelected;
+    }
+
+    public Boolean getRenderInformacionTurno() {
+        return renderInformacionTurno;
+    }
+
+    public void setRenderInformacionTurno(Boolean renderInformacionTurno) {
+        this.renderInformacionTurno = renderInformacionTurno;
+    }
+
+    public Turno getTurnoGenerado() {
+        return turnoGenerado;
+    }
+
+    public void setTurnoGenerado(Turno turnoGenerado) {
+        this.turnoGenerado = turnoGenerado;
+    }
+
+    public Boolean getTurnoAgendado() {
+        return turnoAgendado;
+    }
+
+    public void setTurnoAgendado(Boolean turnoAgendado) {
+        this.turnoAgendado = turnoAgendado;
+    }
+
+    public Boolean getRenderCancelacionTurno() {
+        return renderCancelacionTurno;
+    }
+
+    public void setRenderCancelacionTurno(Boolean renderCancelacionTurno) {
+        this.renderCancelacionTurno = renderCancelacionTurno;
+    }
+
+    public String getCodigoIngresado() {
+        return codigoIngresado;
+    }
+
+    public void setCodigoIngresado(String codigoIngresado) {
+        this.codigoIngresado = codigoIngresado;
     }
 
 }

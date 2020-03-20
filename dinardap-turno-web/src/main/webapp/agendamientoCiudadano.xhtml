@@ -13,44 +13,55 @@
                       modal="true"
                       widgetVar="generacionTurnoDlg" 
                       width="35%"
-                      position="center"
-                      height="275"
+                      position="top"
+                      height="auto"
                       blockScroll="true"
                       resizable="false">
                 <h:form id="formGeneracionTurnoDlg">
-                    <p:outputPanel id="turnoGenerado" style="text-align:center;">
-                        <p:panelGrid  columns="2">
-                            <f:facet name="header">
-                                <h:outputText value="Agendamiento de Turno" />
-                            </f:facet>
+                    <b:panel style="width: 100%" title="Turno Generado" rendered="#{agendamientoCiudadanoCtrl.turnoAgendado}">
+                        <h:panelGrid columns="1" style="width: 100%;">
+                            <p:panelGrid id="turnoGenerado" columns="2" >
+                                <f:facet name="header">
+                                    <h:outputText value="Agendamiento de Turno" />
+                                </f:facet>
 
-                            <h:outputText value="Registro Mercantil:" />
-                            <h:outputText value="#{agendamientoCiudadanoCtrl.turno.registroMercantil.nombre}" />
+                                <h:outputText value="Registro Mercantil:" />
+                                <h:outputText value="#{agendamientoCiudadanoCtrl.turnoGenerado.registroMercantil.nombre}" />
 
-                            <h:outputText value="Cédula:" />
-                            <h:outputText value="#{agendamientoCiudadanoCtrl.turno.cedula}"/>
+                                <h:outputText value="Cédula:" />
+                                <h:outputText value="#{agendamientoCiudadanoCtrl.turnoGenerado.cedula}"/>
 
-                            <h:outputText value="Nombre:" />
-                            <h:outputText value="#{agendamientoCiudadanoCtrl.turno.nombre}"/>
+                                <h:outputText value="Nombre:" />
+                                <h:outputText value="#{agendamientoCiudadanoCtrl.turnoGenerado.nombre}"/>
 
-                            <h:outputText value="Fecha:" />
-                            <h:outputText value="#{agendamientoCiudadanoCtrl.turno.dia}">
-                                <f:convertDateTime pattern="yyyy-MM-dd" />
-                            </h:outputText>
+                                <h:outputText value="Fecha:" />
+                                <h:outputText value="#{agendamientoCiudadanoCtrl.turnoGenerado.dia}">
+                                    <f:convertDateTime pattern="yyyy-MM-dd" />
+                                </h:outputText>
 
-                            <h:outputText value="Hora aproximada:" />
-                            <h:outputText value="#{agendamientoCiudadanoCtrl.turno.hora}"/>
+                                <h:outputText value="Hora aproximada:" />
+                                <h:outputText value="#{agendamientoCiudadanoCtrl.turnoGenerado.hora}"/>
 
-                            <h:outputText value="Código de validación:" />
-                            <h:outputText value="#{agendamientoCiudadanoCtrl.turno.validador}"/>
-                        </p:panelGrid>
-                    </p:outputPanel>
-                    <b:panelGrid colSpans="12" style="width: 100%; margin: 4px 5px; text-align: center;">                        
-                        <p:commandButton value="Imprimir" type="button" icon="pi pi-print" style="display:block;margin-bottom: 20px">
-                            <p:printer target="turnoGenerado" />
-                        </p:commandButton>
-                    </b:panelGrid>
-                </h:form>                              
+                                <h:outputText value="Código de validación:" />
+                                <h:outputText value="#{agendamientoCiudadanoCtrl.turnoGenerado.validador}"/>
+                            </p:panelGrid>
+                            <b:panelGrid colSpans="12" style="width: 100%; margin: 4px 5px; text-align: center;">                        
+                                <p:commandButton value="Imprimir" type="button" icon="pi pi-print" style="display:block;margin-bottom: 20px">
+                                    <p:printer target="turnoGenerado" />
+                                </p:commandButton>
+                            </b:panelGrid>
+                        </h:panelGrid>                        
+                    </b:panel>
+                    <b:panel style="width: 100%" title="Turno no generado" rendered="#{!agendamientoCiudadanoCtrl.turnoAgendado}">
+                        <h:panelGrid columns="1" style="width: 100%;">
+                            <p:panelGrid id="turnoNoGenerado" columns="1" >
+                                <f:facet name="header">
+                                    <h:outputText value="Su turno no fue generado, ya no existe disponibilidad para el horario seleccionado, por favor seleccione otro horario" />
+                                </f:facet>                                
+                            </p:panelGrid>                            
+                        </h:panelGrid>                        
+                    </b:panel>
+                </h:form>
             </p:dialog>
 
 
@@ -107,8 +118,8 @@
                     </b:panelGrid>
                     <b:panelGrid colSpans="12" style="width: 100%; margin: 4px 5px; text-align: center;">                        
                         <p:commandButton value="Buscar disponibilidad" id="buscarDisponiblidadBtn" 
-                                         style="margin-right:20px;" icon="fa fa-fw fa-th"
-                                         update="formRegistroCiudadano, formHorarios, msgMensajes"
+                                         style="margin-right:20px;" icon="fa fa-fw fa-th"                                         
+                                         update="formRegistroCiudadano, formHorarios, formInformacionTurno, msgMensajes"
                                          action="#{agendamientoCiudadanoCtrl.buscarDisponibilidad}"/>
                     </b:panelGrid>
                 </b:panel>
@@ -142,9 +153,10 @@
                             </p:column>
                             <p:column style="width:10%">                                
                                 <p:commandButton value="Seleccionar"
-                                                 title="Seleccionar horario #{horario.hora}"                                                  
+                                                 title="Seleccionar horario #{horario.hora}"
                                                  style="width: auto;"
                                                  action="#{agendamientoCiudadanoCtrl.seleccionarHorario}"
+                                                 disabled="#{horario.turnosDisponibles eq 0? true:false}"
                                                  update="msgMensajes">
                                     <f:setPropertyActionListener value="#{horario}" target="#{agendamientoCiudadanoCtrl.horarioDTOSelected}" />
                                 </p:commandButton>
@@ -157,8 +169,8 @@
                                          style="margin-right:20px;"                
                                          icon="fa fa-fw fa-pencil-square-o"
                                          action="#{agendamientoCiudadanoCtrl.agendarHorario}"
-                                         onclick="PF('generacionTurnoDlg').show();"
-                                         update="formRegistroCiudadano, formHorarios, formGeneracionTurnoDlg">
+                                         onclick="PF('generacionTurnoDlg').show()"
+                                         update="formRegistroCiudadano, formHorarios, formGeneracionTurnoDlg, msgMensajes">
                             <p:confirm header="Confirmación" message="¿Está segur@ que desea agendar su cita para la hora Seleccionada?" icon="fa fa-fw fa-warning" />
                         </p:commandButton>                                                
                         <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
@@ -167,6 +179,61 @@
                         </p:confirmDialog>
                     </b:panelGrid>
                 </b:panel>                
+            </h:form>
+
+            <h:form id="formInformacionTurno">
+                <b:panel style="width: 60%" title="Información del turno Agendado" rendered="#{agendamientoCiudadanoCtrl.renderInformacionTurno}">
+                    <b:panelGrid colSpans="12">
+                        <p:outputPanel style="text-align:center;">
+                            <p:panelGrid id="turnoGenerado" columns="2" style="text-align: center; margin: 5px auto">
+                                <f:facet name="header">
+                                    <h:outputText value="Agendamiento de Turno" />
+                                </f:facet>
+
+                                <h:outputText value="Registro Mercantil:" />
+                                <h:outputText value="#{agendamientoCiudadanoCtrl.turno.registroMercantil.nombre}" />
+
+                                <h:outputText value="Cédula:" />
+                                <h:outputText value="#{agendamientoCiudadanoCtrl.turno.cedula}"/>
+
+                                <h:outputText value="Nombre:" />
+                                <h:outputText value="#{agendamientoCiudadanoCtrl.turno.nombre}"/>
+
+                                <h:outputText value="Fecha:" />
+                                <h:outputText value="#{agendamientoCiudadanoCtrl.turno.dia}">
+                                    <f:convertDateTime pattern="yyyy-MM-dd" />
+                                </h:outputText>
+
+                                <h:outputText value="Hora aproximada:" />
+                                <h:outputText value="#{agendamientoCiudadanoCtrl.turno.hora}"/>
+
+                                <h:outputText value="Código de validación:" rendered="false"/>
+                                <h:outputText value="#{agendamientoCiudadanoCtrl.turno.validador}" rendered="falase"/>
+                            </p:panelGrid>
+                            <b:panelGrid colSpans="6,6" style="width: 100%; text-align: center;">
+                                <p:commandButton value="Imprimir"
+                                                 style="margin-right:20px;"
+                                                 icon="fa fa-fw fa-print"
+                                                 type="button">
+                                    <p:printer target="turnoGenerado" />
+                                </p:commandButton>
+                                <p:commandButton value="Cancelar turno" 
+                                                 style="margin-right:20px;" 
+                                                 icon="fa fa-fw fa-th"
+                                                 action="#{agendamientoCiudadanoCtrl.cancelarTurno}"
+                                                 update="formInformacionTurno"/>
+
+                            </b:panelGrid>
+                            <b:panelGrid colSpans="3,9" style="width: 100%; margin: 4px 5px;" rendered="#{agendamientoCiudadanoCtrl.renderCancelacionTurno}">
+                                <p:outputLabel for="codigoValidacion" value="Código de validación:" />
+                                <p:inputText id="codigoValidacion" value="#{agendamientoCiudadanoCtrl.codigoIngresado}"
+                                             maxlength="300" 
+                                             style="width: 75%" required="true">                             
+                                </p:inputText>
+                            </b:panelGrid>
+                        </p:outputPanel>
+                    </b:panelGrid>                    
+                </b:panel>
             </h:form>
         </ui:define>
     </ui:composition>

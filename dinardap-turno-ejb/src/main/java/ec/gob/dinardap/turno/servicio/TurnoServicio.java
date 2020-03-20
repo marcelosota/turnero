@@ -11,6 +11,8 @@ public interface TurnoServicio extends GenericService<Turno, Integer> {
 
     public Integer getTurnosDisponibles(Integer ventanillas, Date dia, String hora);
 
-    public Boolean validacionDiariaPersona(Date dia, String cedula);
+    public Boolean validacionDiariaPersona(Turno turno);
+
+    public Turno getTurno(Turno turno);
 
 }

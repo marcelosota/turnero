@@ -32,8 +32,13 @@ public class TurnoServicioImpl extends GenericServiceImpl<Turno, Integer> implem
     }
 
     @Override
-    public Boolean validacionDiariaPersona(Date dia, String cedula) {
-        return turnoDao.validacionDiariaPersona(dia, cedula);
+    public Boolean validacionDiariaPersona(Turno turno) {
+        return turnoDao.getTurnos(turno).isEmpty() ? Boolean.TRUE : Boolean.FALSE;
+    }
+
+    @Override
+    public Turno getTurno(Turno turno) {
+        return turnoDao.getTurnos(turno).isEmpty() ? null : turnoDao.getTurnos(turno).get(0);
     }
 
 }
