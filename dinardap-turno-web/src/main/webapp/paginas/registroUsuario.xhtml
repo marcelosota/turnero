@@ -1,58 +1,58 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui">
 
-<ui:composition template="/template/general.xhtml">
-	<ui:define name="content">
-		<h1 class="h-wai">#{etiquetas['nombre.sistema']} - Inicio</h1>
-		<h:form id="formInicio">
-			<h:panelGrid columns="2" id="logueo" style="width:50%;"
-				columnClasses="form-label-derecha ui-grid-col-1, form-input-izquierda, 
-						form-label-derecha ui-grid-col-1, form-input-izquierda">
-				<p:outputLabel value="#{etiquetas['cedula']}:" />
-				<p:inputText id="txtCedula"
-					value="#{registroUsuarioCtrl.usuarioDto.cedula}"
-					maxlength="10"  
-					required="true"
-					required-message="#{etiquetas['cedula']} #{mensajes['requerido']}" >
-					<f:validateRegex pattern="[0-9]+" />
-					<p:ajax event="blur" listener="#{registroUsuarioCtrl.buscarUsuario}" update="txtNombre	"/>
-				</p:inputText>
-				<p:outputLabel value="#{etiquetas['nombre']}:" />
-				<p:inputText id="txtNombre" 
-					value="#{registroUsuarioCtrl.usuarioDto.nombre}"
-					disabled="true"
-					required="true"
-					required-message="#{etiquetas['cedula']} #{mensajes['requerido']}"
-					size="40" />
-				<p:outputLabel value="#{etiquetas['contrasena']}:" />
-				<p:password id="txtContrasena" 
-					value="#{registroUsuarioCtrl.usuarioDto.contrasena}" 
-					required="true"
-					required-message="#{etiquetas['contrasena']} #{mensajes['requerido']}"
-					size="40" />
-				<p:outputLabel value="#{etiquetas['registro.mercantil']}:" />
-				<b:selectOneMenu id="cmbEntidades" 
-					value="#{registroUsuarioCtrl.usuarioDto.registroMercantilId}"
-					required="true"
-					required-message="#{etiquetas['registro.mercantil']} #{mensajes['requerido']}"
-					styleClass="form-combo-centrado">
-					<f:selectItem itemLabel="#{etiquetas['seleccionar']}" itemValue="-1" noSelectionOption="true" />
-					<f:selectItems value="#{registroUsuarioCtrl.listaRM}" var="rm" 
-						itemLabel="#{rm.nombre}" itemValue="#{rm.registroMercantilId}" />
-				</b:selectOneMenu>
-			</h:panelGrid>
-			<p:commandButton value="#{etiquetas['guardar']}"
-				actionListener="#{registroUsuarioCtrl.guardarUsuario}"
-				update="txtCedula txtNombre txtContrasena cmbEntidades"/>
-			<p:spacer width="10px" />
-			<p:commandButton value="#{etiquetas['cancelar']}"
-				actionListener="#{registroUsuarioCtrl.limpiarCampos}"
-				update="txtCedula txtNombre txtContrasena cmbEntidades" />
-		</h:form>
-	</ui:define>
-</ui:composition>
+    <ui:composition template="/template/general.xhtml">
+        <ui:define name="content">
+            <h1 class="h-wai">#{etiquetas['nombre.sistema']} - Inicio</h1>
+            <h:form id="formInicio">
+                <h:panelGrid columns="2" id="logueo" style="width:50%;"
+                             columnClasses="form-label-derecha ui-grid-col-1, form-input-izquierda, 
+                             form-label-derecha ui-grid-col-1, form-input-izquierda">
+                    <p:outputLabel value="#{etiquetas['cedula']}:" />
+                    <p:inputText id="txtCedula"
+                                 value="#{registroUsuarioCtrl.usuarioDto.cedula}"
+                                 maxlength="10"  
+                                 required="true"
+                                 requiredMessage="#{etiquetas['cedula']} #{mensajes['requerido']}">
+                        <f:validateRegex pattern="[0-9]+" />
+                        <p:ajax event="blur" listener="#{registroUsuarioCtrl.buscarUsuario}" update="txtNombre	"/>
+                    </p:inputText>
+                    <p:outputLabel value="#{etiquetas['nombre']}:" />
+                    <p:inputText id="txtNombre" 
+                                 value="#{registroUsuarioCtrl.usuarioDto.nombre}"
+                                 disabled="true"
+                                 required="true"
+                                 requiredMessage="#{etiquetas['cedula']} #{mensajes['requerido']}"
+                                 size="40" />
+                    <p:outputLabel value="#{etiquetas['contrasena']}:" />
+                    <p:password id="txtContrasena" 
+                                value="#{registroUsuarioCtrl.usuarioDto.contrasena}" 
+                                required="true"
+                                requiredMessage="#{etiquetas['contrasena']} #{mensajes['requerido']}"
+                                size="40" />
+                    <p:outputLabel value="#{etiquetas['registro.mercantil']}:" />
+                    <b:selectOneMenu id="cmbEntidades" 
+                                     value="#{registroUsuarioCtrl.usuarioDto.registroMercantilId}"
+                                     required="true"
+                                     required-message="#{etiquetas['registro.mercantil']} #{mensajes['requerido']}"
+                                     styleClass="form-combo-centrado">
+                        <f:selectItem itemLabel="#{etiquetas['seleccionar']}" itemValue="-1" noSelectionOption="true" />
+                        <f:selectItems value="#{registroUsuarioCtrl.listaRM}" var="rm" 
+                                       itemLabel="#{rm.nombre}" itemValue="#{rm.registroMercantilId}" />
+                    </b:selectOneMenu>
+                </h:panelGrid>
+                <p:commandButton value="#{etiquetas['guardar']}"
+                                 actionListener="#{registroUsuarioCtrl.guardarUsuario}"
+                                 update="txtCedula txtNombre txtContrasena cmbEntidades"/>
+                <p:spacer width="10px" />
+                <p:commandButton value="#{etiquetas['cancelar']}"
+                                 actionListener="#{registroUsuarioCtrl.limpiarCampos}"
+                                 update="txtCedula txtNombre txtContrasena cmbEntidades" />
+            </h:form>
+        </ui:define>
+    </ui:composition>
 </html>
