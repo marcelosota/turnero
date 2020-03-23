@@ -64,86 +64,8 @@
                 </h:form>
             </p:dialog>
 
-            <p:dialog id="agendarTurnoDlg"
-                      header="Agendamiento de Turno"
-                      modal="true"
-                      widgetVar="agendarTurnoDlg" 
-                      resizable="false">
-                <h:form id="formAgendarTurno">
-                    <b:panel style="width: 100%">
-                        <b:panelGrid colSpans="12">
-                            <h:outputLabel value="Usted seleccionó el horario de: #{agendamientoCiudadanoCtrl.horarioDTOSelected.hora}.¿Desea agendar su Turno para este Horario?"/>
-                        </b:panelGrid>
-                        <b:panelGrid colSpans="6,6" style="width: 100%; margin: 4px 5px; text-align: center;">                        
-                            <p:commandButton value="Agendar"
-                                             style="margin-right:20px;"                
-                                             icon="fa fa-fw fa-pencil-square-o"
-                                             action="#{agendamientoCiudadanoCtrl.agendarHorario}"
-                                             onclick="PF('generacionTurnoDlg').show()"
-                                             update="formRegistroCiudadano, formHorarios, formGeneracionTurnoDlg, msgMensajes">
-                                <p:confirm header="Confirmación" message="¿Está segur@ que desea agendar su cita para la hora Seleccionada?" icon="fa fa-fw fa-warning" />
-                            </p:commandButton>
-                            <p:commandButton value="Cancelar"
-                                             style="margin-right:20px;"                
-                                             icon="fa fa-fw fa-close"                                             
-                                             onclick="agendarTurnoDlg.hide()"
-                                             update="formRegistroCiudadano, formHorarios, formGeneracionTurnoDlg, msgMensajes">                                
-                            </p:commandButton>
-                            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-                                <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="fa fa-fw fa-check" />
-                                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="fa fa-fw fa-remove" />
-                            </p:confirmDialog>
-                        </b:panelGrid>
-                    </b:panel>
-                </h:form>               
-            </p:dialog>
-
 
             <h1 class="h-wai">#{etiquetas['nombre.sistema']} - #{agendamientoCiudadanoCtrl.tituloPagina}</h1>
-
-            <script type="text/javascript">
-                //<![CDATA[
-                /**
-                 * Faces Validator
-                 */
-                PrimeFaces.validator['custom.emailValidator'] = {
-
-                    pattern: /\S+@\S+/,
-
-                    validate: function (element, value) {
-                        //use element.data() to access validation metadata, in this case there is none.
-                        if (!this.pattern.test(value)) {
-                            throw {
-                                summary: 'Validation Error',
-                                detail: value + ' is not a valid email.'
-                            }
-                        }
-                    }
-                };
-
-                /**
-                 * Bean validator
-                 */
-                PrimeFaces.validator['Email'] = {
-
-                    pattern: /\S+@\S+/,
-
-                    MESSAGE_ID: 'org.primefaces.examples.validate.email.message',
-
-                    validate: function (element, value) {
-                        var vc = PrimeFaces.util.ValidationContext;
-
-                        if (!this.pattern.test(value)) {
-                            var msgStr = element.data('p-email-msg'),
-                                    msg = msgStr ? {summary: msgStr, detail: msgStr} : vc.getMessage(this.MESSAGE_ID);
-
-                            throw msg;
-                        }
-                    }
-                };
-                //]]>
-            </script>
-
             <h:form id="formRegistroCiudadano" >
                 <b:panel style="width: 60%" title="Registro de información del Ciudadano">
                     <b:panelGrid colSpans="3,9" style="width: 100%; margin: 4px 5px;">
@@ -184,16 +106,14 @@
                         <p:outputLabel for="correoElectronico" value="Correo electrónico:" />
                         <p:inputText id="correoElectronico" value="#{agendamientoCiudadanoCtrl.turno.correoElectronico}" 
                                      maxlength="300" 
-                                     style="width: 75%" required="true">
-                            <f:validator validatorId="emailValidator"></f:validator>
+                                     style="width: 75%" required="true">                             
                         </p:inputText>                        
 
                         <p:outputLabel for="celular" value="Celular:" />
                         <p:inputText id="celular" value="#{agendamientoCiudadanoCtrl.turno.celular}" 
                                      maxlength="10" 
                                      style="width: 75%" required="true">
-                            <p:keyFilter regEx="/[\d]/"/>
-                            <f:validator validatorId="cellPhoneValidator"></f:validator>                            
+                            <p:keyFilter regEx="/[\d]/"/>  
                         </p:inputText>                        
                     </b:panelGrid>
                     <b:panelGrid colSpans="12" style="width: 100%; margin: 4px 5px; text-align: center;">                        
@@ -237,14 +157,27 @@
                                                  style="width: auto;"
                                                  action="#{agendamientoCiudadanoCtrl.seleccionarHorario}"
                                                  disabled="#{horario.turnosDisponibles eq 0? true:false}"
-                                                 onclick="PF('agendarTurnoDlg').show()"
-                                                 update="formRegistroCiudadano, formAgendarTurno"> 
-                                    <!--formHorarios, formGeneracionTurnoDlg-->
+                                                 update="msgMensajes">
                                     <f:setPropertyActionListener value="#{horario}" target="#{agendamientoCiudadanoCtrl.horarioDTOSelected}" />
                                 </p:commandButton>
                             </p:column>
                         </p:dataTable>        
                     </h:panelGrid>
+
+                    <b:panelGrid colSpans="12" style="width: 100%; margin: 4px 5px; text-align: center;">
+                        <p:commandButton value="Agendar"
+                                         style="margin-right:20px;"                
+                                         icon="fa fa-fw fa-pencil-square-o"
+                                         action="#{agendamientoCiudadanoCtrl.agendarHorario}"
+                                         onclick="PF('generacionTurnoDlg').show()"
+                                         update="formRegistroCiudadano, formHorarios, formGeneracionTurnoDlg, msgMensajes">
+                            <p:confirm header="Confirmación" message="¿Está segur@ que desea agendar su cita para la hora Seleccionada?" icon="fa fa-fw fa-warning" />
+                        </p:commandButton>                                                
+                        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                            <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="fa fa-fw fa-check" />
+                            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="fa fa-fw fa-remove" />
+                        </p:confirmDialog>
+                    </b:panelGrid>
                 </b:panel>                
             </h:form>
 
@@ -286,7 +219,7 @@
                                 </p:commandButton>
                                 <p:commandButton value="Cancelar turno" 
                                                  style="margin-right:20px;" 
-                                                 icon="fa fa-fw fa-close"
+                                                 icon="fa fa-fw fa-th"
                                                  action="#{agendamientoCiudadanoCtrl.cancelarTurno}"
                                                  update="formInformacionTurno"/>
 

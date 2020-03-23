@@ -44,7 +44,7 @@ public class TurnoDaoEjb extends GenericDaoEjb<Turno, Integer> implements TurnoD
 //    }
     @Override
     public List<Turno> getTurnos(Turno turno) {
-        Query query = em.createQuery("SELECT t FROM Turno t WHERE t.cedula=:cedula AND t.dia=:dia AND t.registroMercantil.registroMercantilId=:registroMercantil");
+        Query query = em.createQuery("SELECT t FROM Turno t WHERE t.cedula=:cedula AND t.dia=:dia AND t.registroMercantil.registroMercantilId=:registroMercantil AND t.estado=1");
         query.setParameter("dia", turno.getDia());
         query.setParameter("cedula", turno.getCedula());
         query.setParameter("registroMercantil", turno.getRegistroMercantil().getRegistroMercantilId());

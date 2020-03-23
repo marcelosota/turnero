@@ -15,12 +15,14 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import org.primefaces.PrimeFaces;
 
 @Named(value = "agendamientoCiudadanoCtrl")
 @ViewScoped
@@ -29,7 +31,6 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
     //Declaración de variables
     //Variables de control visual
     private String tituloPagina;
-
     private String fechaMin;
 
     private Boolean renderHorarios;
@@ -54,21 +55,6 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
 
     @EJB
     private TurnoServicio turnoServicio;
-//
-//    @EJB
-//    private TransaccionServicio transaccionServicio;
-//
-//    @EJB
-//    private FacturaPagadaServicio facturaPagadaServicio;
-//
-//    @EJB
-//    private CatalogoTransaccionServicio catalogoTransaccionServicio;
-//
-//    @EJB
-//    private RemanenteMensualServicio remanenteMensualServicio;
-//
-//    @EJB
-//    private DiasNoLaborablesServicio diasNoLaborablesServicio;
 
     @PostConstruct
     protected void init() {
@@ -111,11 +97,17 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
         horarioDTOList = new ArrayList<HorarioDTO>();
         if (planificacionRegistro.getPlanificacionId() != null) {
             if (nombreCiudadano != null) {
-                //Creación del array de Horarios
                 turno.setNombre(nombreCiudadano);
-                horarioDTOList = generacionListadoHorario(planificacionRegistro);
+                Calendar diaTurno = Calendar.getInstance();
+                diaTurno.setTime(turno.getDia());
+                String dayOfWeek = diaTurno.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.US).toUpperCase();
+                if (!dayOfWeek.equals("SUNDAY") && !dayOfWeek.equals("SATURDAY")) {
+                    horarioDTOList = generacionListadoHorario(planificacionRegistro);
+                } else {
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia: Turnos no disponibles para fines de semana.", "Advertencia: Turnos nos disponibles para fines de semana."));
+                }
             } else {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: El Registro Mercantil seleccionado no cuenta con una planificación", "El Registro Mercantil seleccionado no cuenta con planificación"));
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: Cédula inválida.", "Error: Cédula inválida."));
             }
         } else {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: El Registro Mercantil seleccionado no cuenta con una planificación", "El Registro Mercantil seleccionado no cuenta con planificación"));
@@ -134,7 +126,19 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
         turno.setValidador(getGeneracionValidacion());
         PlanificacionRegistro pr = null;
         pr = planificacionRegistroServicio.getPlanificacionRegistro(turno.getRegistroMercantil().getRegistroMercantilId());
-        if (turnoServicio.getTurnosDisponibles(pr.getVentanilla().intValue(), turno.getDia(), turno.getHora()) > 0) {
+        PrimeFaces.current().executeScript("PF('agendarTurnoDlg').hide()");
+
+        Calendar horaActual = Calendar.getInstance();
+
+        Calendar horaTurno = Calendar.getInstance();
+        horaTurno.setTime(turno.getDia());
+
+        horaTurno.set(Calendar.HOUR_OF_DAY, Integer.parseInt(turno.getHora().split(":")[0]));
+        horaTurno.set(Calendar.MINUTE, Integer.parseInt(turno.getHora().split(":")[1]));
+        horaTurno.set(Calendar.SECOND, 0);
+        horaTurno.set(Calendar.MILLISECOND, 0);
+        if ((turnoServicio.getTurnosDisponibles(pr.getVentanilla().intValue(), turno.getDia(), turno.getHora()) > 0)
+                && (horaActual.getTime().before(horaTurno.getTime()))) {
             turnoAgendado = Boolean.TRUE;
             turnoServicio.create(turno);
             turnoGenerado = turno;
@@ -144,18 +148,24 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
         } else {
             turnoAgendado = Boolean.FALSE;
             buscarDisponibilidad();
-//            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Advertencia: Lo sentimos su turno no fue generado, ya no existe disponibilidad para el horario seleccionado, por favor seleccione otro horario", "Advertencia: Lo sentimos su turno no fue generado, ya no existe disponibilidad para el horario seleccionado, por favor seleccione otro horario"));
         }
 
     }
 
     public void cancelarTurno() {
-        System.out.println("CancelarTurno");
         renderCancelacionTurno = Boolean.TRUE;
     }
 
-    public void confirmaCancelacionTurno() {
-        System.out.println("ConfirmadoCancelarTurno");
+    public void confirmarCancelacionTurno() {
+        if (turno.getValidador().equals(codigoIngresado)) {
+            turno.setEstado((short) 2);
+            turnoServicio.update(turno);
+            renderInformacionTurno = Boolean.FALSE;
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información: Su turno ha sido anulado exitosamente.", ""));
+        } else {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia: Código de Validación Incorrecto. Ingrese el código de validación para anular el turno agendado.", ""));
+        }
+        renderCancelacionTurno = Boolean.FALSE;
     }
 
     private String getNombreCiudadano() {
