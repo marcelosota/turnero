@@ -47,14 +47,10 @@ public class TurnoServicioImpl extends GenericServiceImpl<Turno, Integer> implem
 
 			List<Turno> lista = findByCriterias(criteria);
 			Turno turno = new Turno();
-			if (lista.isEmpty()) {
-				System.out.println("vacío");
+			if (lista.isEmpty()) {				
 				return null;
-			} else {
-				System.out.println("lleno");
-				System.out.println("list"+lista.get(0));
-				turno = lista.get(0);
-				System.out.println("list"+turno.getEstado());
+			} else {				
+				turno = lista.get(0);				
 				return turno;
 			}
 		} catch (Exception e) {

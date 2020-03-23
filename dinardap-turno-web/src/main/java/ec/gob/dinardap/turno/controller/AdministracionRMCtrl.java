@@ -9,6 +9,8 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
@@ -189,7 +191,9 @@ public class AdministracionRMCtrl extends BaseCtrl {
 				System.out.println("obj" + turno.getEstado());
 				if (turno.getEstado() == atendido) {
 					String mensaje = getBundleMensaje("error.atendido", null);
-					addErrorMessage(null, mensaje, null);
+					addErrorMessage(null, mensaje, "");
+					
+					//FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Contact admin."));
 				}
 				if (turno.getEstado() == agendado) {
 					turno.setEstado(atendido);
@@ -198,7 +202,7 @@ public class AdministracionRMCtrl extends BaseCtrl {
 						addInfoMessage(mensaje, null);
 					} else {
 						String mensaje = getBundleMensaje("error.actualizar.ciudadano", null);
-						addErrorMessage(null, mensaje, null);
+						this.addErrorMessage(null,mensaje, "");
 					}
 				}
 			}
