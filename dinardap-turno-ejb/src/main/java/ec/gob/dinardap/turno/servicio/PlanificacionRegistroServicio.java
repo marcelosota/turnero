@@ -8,4 +8,6 @@ import ec.gob.dinardap.turno.modelo.PlanificacionRegistro;
 @Local
 public interface PlanificacionRegistroServicio extends GenericService<PlanificacionRegistro, Integer> {
 
+    public PlanificacionRegistro getPlanificacionRegistro(Integer registroMercantilId);
+
 }

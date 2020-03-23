@@ -2,3 +2,6 @@
 target/
 .project
 .settings/
+.nbactions.xml
+nbactions.xml
+pom.xml
