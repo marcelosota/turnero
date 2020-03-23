@@ -40,8 +40,8 @@
                         <p:datePicker id="horaSalida" value="#{administracionCGRSCtrl.planificacionRegistro.horaFin}" timeOnly="true" pattern="HH:mm" mindate="#{administracionCGRSCtrl.horaMinFin}" maxdate="#{administracionCGRSCtrl.horaMaxFin}" />
                     </b:panelGrid>    
                     <b:panelGrid colSpans="6,6" style="width: 100%; margin: 4px 5px; text-align: center;">                        
-                        <p:commandButton value="Guardar" id="guardarBtn" action="#{administracionCGRSCtrl.guardarPlanificacion}" style="margin-right:20px;" icon="fa fa-fw fa-save" update="formAdminCGRS"/>
-                        <p:commandButton value="Cancelar" id="cancelarBtn" style="margin-right:20px;" icon="fa fa-fw fa-ban" update="formAdminCGRS"/>
+                        <p:commandButton value="Guardar" id="guardarBtn" action="#{administracionCGRSCtrl.guardarPlanificacion}" style="margin-right:20px;" icon="fa fa-fw fa-save" update="formAdminCGRS, msgMensajes"/>
+                        <p:commandButton value="Cancelar" id="cancelarBtn" style="margin-right:20px;" icon="fa fa-fw fa-ban" update="formAdminCGRS, msgMensajes"/>
                     </b:panelGrid>
                 </b:panel>
             </h:form>

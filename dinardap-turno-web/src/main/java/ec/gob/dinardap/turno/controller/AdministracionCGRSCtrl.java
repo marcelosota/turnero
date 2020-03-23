@@ -1,9 +1,7 @@
 package ec.gob.dinardap.turno.controller;
 
-import ec.gob.dinardap.turno.dto.HorarioDTO;
 import ec.gob.dinardap.turno.modelo.PlanificacionRegistro;
 import ec.gob.dinardap.turno.modelo.RegistroMercantil;
-import ec.gob.dinardap.turno.modelo.Turno;
 import ec.gob.dinardap.turno.servicio.PlanificacionRegistroServicio;
 import ec.gob.dinardap.turno.servicio.RegistroMercantilServicio;
 import java.io.Serializable;
@@ -102,16 +100,18 @@ public class AdministracionCGRSCtrl extends BaseCtrl implements Serializable {
         } else {
             planificacionRegistro = new PlanificacionRegistro();
             planificacionRegistro.setRegistroMercantil(registroMercantilAux);
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: Planificación no Registrada ", ""));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información: Planificación no Registrada ",""));
         }
     }
 
     public void guardarPlanificacion() {        
         if (planificacionRegistro.getPlanificacionId() != null) {
             planificacionRegistroServicio.update(planificacionRegistro);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información: Se actualizó la planificación exitosamente. ",""));
         } else {
             planificacionRegistro.setPlanificacionId(null);
             planificacionRegistroServicio.create(planificacionRegistro);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información: Se ha registrado la planificación exitosamente.",""));
         }
     }
 
