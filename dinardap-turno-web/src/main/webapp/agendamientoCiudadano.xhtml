@@ -100,50 +100,6 @@
 
 
             <h1 class="h-wai">#{etiquetas['nombre.sistema']} - #{agendamientoCiudadanoCtrl.tituloPagina}</h1>
-
-            <script type="text/javascript">
-                //<![CDATA[
-                /**
-                 * Faces Validator
-                 */
-                PrimeFaces.validator['custom.emailValidator'] = {
-
-                    pattern: /\S+@\S+/,
-
-                    validate: function (element, value) {
-                        //use element.data() to access validation metadata, in this case there is none.
-                        if (!this.pattern.test(value)) {
-                            throw {
-                                summary: 'Validation Error',
-                                detail: value + ' is not a valid email.'
-                            }
-                        }
-                    }
-                };
-
-                /**
-                 * Bean validator
-                 */
-                PrimeFaces.validator['Email'] = {
-
-                    pattern: /\S+@\S+/,
-
-                    MESSAGE_ID: 'org.primefaces.examples.validate.email.message',
-
-                    validate: function (element, value) {
-                        var vc = PrimeFaces.util.ValidationContext;
-
-                        if (!this.pattern.test(value)) {
-                            var msgStr = element.data('p-email-msg'),
-                                    msg = msgStr ? {summary: msgStr, detail: msgStr} : vc.getMessage(this.MESSAGE_ID);
-
-                            throw msg;
-                        }
-                    }
-                };
-                //]]>
-            </script>
-
             <h:form id="formRegistroCiudadano" >
                 <b:panel style="width: 60%" title="Registro de información del Ciudadano">
                     <b:panelGrid colSpans="3,9" style="width: 100%; margin: 4px 5px;">
