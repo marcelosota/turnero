@@ -62,6 +62,7 @@ public class EditarUsuarioCtrl extends BaseCtrl {
 		getUsuarioDto().setNombre(getUsuario().getNombre());
 		getUsuarioDto().setRegistroMercantilId(getUsuario().getRegistroMercantil().getRegistroMercantilId());
 		getUsuarioDto().setPerfilId(getUsuario().getPerfil().getPerfilId());
+		getUsuarioDto().setEstado(getUsuario().getEstado());
 		setPerfil(getUsuario().getPerfil().getNombre());
 	}
 	
@@ -95,7 +96,7 @@ public class EditarUsuarioCtrl extends BaseCtrl {
 	public void limpiarCampos() {
 		usuarioDto = new UsuarioDto();
 		try {
-			FacesContext.getCurrentInstance().getExternalContext().redirect("editarUsuarios.jsf");
+			FacesContext.getCurrentInstance().getExternalContext().redirect("editarUsuario.jsf");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

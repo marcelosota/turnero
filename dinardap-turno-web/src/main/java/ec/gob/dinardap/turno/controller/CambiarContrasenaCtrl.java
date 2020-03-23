@@ -30,7 +30,7 @@ public class CambiarContrasenaCtrl extends BaseCtrl {
 	private String nuevaContrasena;
 	private String repetirContrasena;
 	
-	public void modificarConrasena() {
+	public void modificarContrasena() {
 		Usuario usuario = usuarioServicio.verificarCredenciales(getCedula(), EncriptarCadenas.encriptarCadenaSha1(getContrasena()));
 		if(usuario != null) {
 			UsuarioDto usuarioDto = new UsuarioDto();
@@ -58,8 +58,8 @@ public class CambiarContrasenaCtrl extends BaseCtrl {
 	public void regresar() {
 		ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
 		try {
-			limpiarCampos();
-			context.redirect(context.getRequestContextPath() + "/../index,jsp");
+			//limpiarCampos();
+			context.redirect(context.getRequestContextPath() + "/index.jsp");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
