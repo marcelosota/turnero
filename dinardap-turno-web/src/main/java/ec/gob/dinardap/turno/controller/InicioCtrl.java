@@ -29,7 +29,7 @@ public class InicioCtrl extends BaseCtrl {
 	public void reservarTurno() {
 		ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
 		try {
-			context.redirect(context.getRequestContextPath() + "/publico/reservarTurno.jsf");
+			context.redirect(context.getRequestContextPath() + "/publico/agendamientoCiudadano.jsf");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

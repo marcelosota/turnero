@@ -95,8 +95,12 @@ public class EditarUsuarioCtrl extends BaseCtrl {
 	
 	public void limpiarCampos() {
 		usuarioDto = new UsuarioDto();
+		regresar();
+	}
+	
+	public void regresar() {
 		try {
-			FacesContext.getCurrentInstance().getExternalContext().redirect("editarUsuario.jsf");
+			FacesContext.getCurrentInstance().getExternalContext().redirect("misUsuarios.jsf");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

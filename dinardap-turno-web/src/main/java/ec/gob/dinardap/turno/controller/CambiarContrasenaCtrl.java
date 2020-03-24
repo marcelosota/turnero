@@ -59,7 +59,8 @@ public class CambiarContrasenaCtrl extends BaseCtrl {
 		ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
 		try {
 			//limpiarCampos();
-			context.redirect(context.getRequestContextPath() + "/index.jsp");
+			String valor = context.getRequestContextPath();
+			context.redirect(valor + "/index.jsp");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

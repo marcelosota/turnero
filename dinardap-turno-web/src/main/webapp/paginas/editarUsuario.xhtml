@@ -54,8 +54,9 @@
 				update="txtCedula txtNombre txtContrasena cmbEntidades"/>
 			<p:spacer width="10px" />
 			<p:commandButton value="#{etiquetas['cancelar']}"
-				actionListener="#{editarUsuarioCtrl.limpiarCampos}"
-				update="txtCedula txtNombre txtContrasena cmbEntidades" />
+				actionListener="#{editarUsuarioCtrl.regresar}"
+				update="txtCedula txtNombre txtContrasena cmbEntidades"
+				process="@this" />
 		</h:form>
 	</ui:define>
 </ui:composition>

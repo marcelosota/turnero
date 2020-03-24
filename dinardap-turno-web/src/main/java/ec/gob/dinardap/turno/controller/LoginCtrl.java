@@ -91,10 +91,6 @@ public class LoginCtrl extends BaseCtrl {
 		setCedula("");
 		setEntidad(null);
 	}
-	
-	public void cerrarDialogo() {
-		
-	}
 
 	public String getCedula() {
 		return cedula;

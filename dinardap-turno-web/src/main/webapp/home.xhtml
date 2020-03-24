@@ -16,11 +16,17 @@
 					<h:panelGrid columns="2" id="logueo" style="width:80%;"
 								columnClasses="form-label-derecha ui-grid-col-1, form-input-izquierda, 
 								form-label-derecha ui-grid-col-1, form-input-izquierda">
-						<p:outputLabel value="#{etiquetas['cedula']}:"/>
-						<p:inputText value="#{loginCtrl.cedula}"/>
-						<p:outputLabel value="#{etiquetas['contrasena']}:"/>
-						<p:password value="#{loginCtrl.contrasena}"/>
-						<p:outputLabel value="#{etiquetas['registro.mercantil']}:"/>
+						<p:outputLabel value="#{etiquetas['cedula']}:*"/>
+						<p:inputText id="txtCedula" 
+							value="#{loginCtrl.cedula}" 
+							required="true" 
+							requiredMessage="#{etiquetas['cedula']} #{mensajes['requerido']}"/>
+						<p:outputLabel value="#{etiquetas['contrasena']}:*"/>
+						<p:password id="txtContrasena" 
+							value="#{loginCtrl.contrasena}"
+							required="true"
+							requiredMessage="#{etiquetas['contrasena']} #{mensajes['requerido']}"/>
+						<p:outputLabel value="#{etiquetas['registro.mercantil']}:*"/>
 						<b:selectOneMenu id="cmbEntidades"
 							value="#{loginCtrl.entidad}" 
 							required="true"
@@ -34,10 +40,13 @@
 						</b:selectOneMenu>
 					</h:panelGrid> 
 					<p:commandButton value="#{etiquetas['aceptar']}"
-						actionListener="#{loginCtrl.validarUsuario}"/>
+						actionListener="#{loginCtrl.validarUsuario}"
+						process="@form"
+						update="txtCedula txtContrasena cmbEntidades msgMensajes"/>
 					<p:spacer width="10px" />
 					<p:commandButton value="#{etiquetas['cambiar.contrasena']}"
-						actionListener="#{loginCtrl.cambiarContrasena}"/>
+						actionListener="#{loginCtrl.cambiarContrasena}"
+						process="@this"/>
 				</b:panel>
 				</div>
 				
@@ -45,6 +54,4 @@
 	
 		</ui:define>
 	</ui:composition>
-	 
-	
 </html>

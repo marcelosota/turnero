@@ -40,10 +40,12 @@
 					</h:panelGrid> 
 					<p:commandButton value="#{etiquetas['cambiar.contrasena']}"
 						actionListener="#{cambiarContrasenaCtrl.modificarContrasena}"
-						update="txtCedula txtContrasenaActual txtNuevaContrasena txtRepetirContrasena"/>
+						update="txtCedula txtContrasenaActual txtNuevaContrasena txtRepetirContrasena msgMensajes"
+						process="@form"/>
 					<p:spacer width="20px;" />
 					<p:commandButton value="#{etiquetas['regresar']}"
-						actionListener="#{cambiarContrasenaCtrl.regresar}" />
+						actionListener="#{cambiarContrasenaCtrl.regresar}" 
+						process="@this"/>
 				</b:panel>
 				</div>
 				
