@@ -1,24 +1,25 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:p="http://primefaces.org/ui">
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:p="http://primefaces.org/ui">
 
 	<ui:composition template="/template/generalError.xhtml">
 		<ui:define name="content">
 			<h:form id="frmInicio">
 				<div align="center">
 					<p:panel styleClass="margenError">
-						<p:commandLink id="cmkTurno" actionListener="#{inicioCtrl.reservarTurno}">
+						<p:commandLink id="lnkTurno" actionListener="#{inicioCtrl.reservarTurno}">
 							<h:graphicImage value="/resource/images/reservar.png" width="100px" height="100px" />	
 						</p:commandLink>
-						<p:spacer width="3ssssss0px"/>
-						<p:commandLink id="cmkSesion" actionListener="#{inicioCtrl.iniciarSesion}">
+						<p:spacer width="30px"/>
+						<p:commandLink id="lnkSesion" actionListener="#{inicioCtrl.iniciarSesion}">
 							<h:graphicImage value="/resource/images/iniciarSesion.png" width="100px" height="100px" />				
 						</p:commandLink>
-						<p:tooltip for="cmkTurno" value="#{mensaje['reserva.turno']}"/>
-						<p:tooltip for="cmkSesion" value="#{mensaje['iniciar.sesion']}"/>
+						<p:tooltip for="lnkTurno" value="#{mensajes['reservar.turno']}"/>
+						<p:tooltip for="lnkSesion" value="#{mensajes['iniciar.sesion']}"/>
 					</p:panel>
 				</div>
 			</h:form>

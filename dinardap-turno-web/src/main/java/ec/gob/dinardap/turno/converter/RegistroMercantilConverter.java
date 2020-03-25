@@ -5,8 +5,6 @@
  */
 package ec.gob.dinardap.turno.converter;
 
-import ec.gob.dinardap.turno.modelo.RegistroMercantil;
-import ec.gob.dinardap.turno.servicio.RegistroMercantilServicio;
 import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
@@ -16,10 +14,14 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 import javax.inject.Named;
 
+import ec.gob.dinardap.turno.modelo.RegistroMercantil;
+import ec.gob.dinardap.turno.servicio.RegistroMercantilServicio;
+
 /**
  *
  * @author enery
  */
+@SuppressWarnings("rawtypes")
 @ManagedBean
 @Named(value = "registroMercantilConverter")
 public class RegistroMercantilConverter implements Converter {

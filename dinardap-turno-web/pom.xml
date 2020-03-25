@@ -72,7 +72,7 @@
         </dependency>
         <dependency>
             <groupId>org.primefaces.themes</groupId>
-            <artifactId>hot-sneaks</artifactId>
+            <artifactId>humanity</artifactId>
             <version>1.0.10</version>
         </dependency>
         <dependency>
@@ -97,25 +97,25 @@
 		
         <!-- EJB's -->
 		
-		<!-- Eliminar los comentarios una vez se verifique que la dependencia existe en el repositorio maven -->
-		<dependency>
-			<groupId>ec.gob.dinardap.seguridad</groupId>
-			<artifactId>dinardap-seguridad-ejb</artifactId>
-			<version>1.2</version>
-			<type>ejb</type>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>ec.gob.dinardap.autorizacion</groupId>
-			<artifactId>dinardap-autorizacion</artifactId>
-			<version>1.2</version>
-		</dependency>
-		<dependency>
-			<groupId>ec.gob.dinardap.turno</groupId>
-			<artifactId>dinardap-turno-ejb</artifactId>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
+        <!-- Eliminar los comentarios una vez se verifique que la dependencia existe en el repositorio maven -->
+        <dependency>
+            <groupId>ec.gob.dinardap.seguridad</groupId>
+            <artifactId>dinardap-seguridad-ejb</artifactId>
+            <version>1.2</version>
+            <type>ejb</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>ec.gob.dinardap.autorizacion</groupId>
+            <artifactId>dinardap-autorizacion</artifactId>
+            <version>1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>ec.gob.dinardap.turno</groupId>
+            <artifactId>dinardap-turno-ejb</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
             <groupId>ec.gob.dinardap.clientesw</groupId>
             <artifactId>clienteInteroperador-V2</artifactId>
             <version>1.0</version>

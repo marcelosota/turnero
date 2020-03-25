@@ -1,8 +1,8 @@
 package ec.gob.dinardap.turno.servicio.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import ec.gob.dinardap.persistence.constante.CriteriaTypeEnum;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
@@ -14,8 +14,6 @@ import ec.gob.dinardap.turno.constante.TipoEntidadEnum;
 import ec.gob.dinardap.turno.dao.RegistroMercantilDao;
 import ec.gob.dinardap.turno.modelo.RegistroMercantil;
 import ec.gob.dinardap.turno.servicio.RegistroMercantilServicio;
-import java.util.ArrayList;
-import java.util.List;
 
 @Stateless(name = "RegistroMercantilServicio")
 public class RegistroMercantilServicioImpl extends GenericServiceImpl<RegistroMercantil, Integer>

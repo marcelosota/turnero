@@ -1,6 +1,7 @@
 package ec.gob.dinardap.turno.dao.ejb;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -10,11 +11,6 @@ import ec.gob.dinardap.persistence.dao.ejb.GenericDaoEjb;
 import ec.gob.dinardap.turno.dao.TurnoDao;
 import ec.gob.dinardap.turno.dto.AgendadaAtendidasDto;
 import ec.gob.dinardap.turno.modelo.Turno;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import javax.persistence.Query;
 
 @Stateless(name = "TurnoDao")
 public class TurnoDaoEjb extends GenericDaoEjb<Turno, Integer> implements TurnoDao {
@@ -23,7 +19,8 @@ public class TurnoDaoEjb extends GenericDaoEjb<Turno, Integer> implements TurnoD
         super(Turno.class);
     }
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public Integer getTurnosDisponibles(Integer ventanillas, Date dia, String hora) {
         Integer turnosDisponibles = ventanillas;
         Query query = em.createQuery("SELECT t FROM Turno t WHERE t.dia=:dia AND t.hora=:hora AND t.estado=1");
@@ -47,7 +44,8 @@ public class TurnoDaoEjb extends GenericDaoEjb<Turno, Integer> implements TurnoD
 //        turnoList = query.getResultList();
 //        return turnoList.isEmpty() ? Boolean.TRUE : Boolean.FALSE;
 //    }
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public List<Turno> getTurnos(Turno turno) {
         Query query = em.createQuery("SELECT t FROM Turno t WHERE t.cedula=:cedula AND t.dia=:dia AND t.registroMercantil.registroMercantilId=:registroMercantil AND t.estado=1");
         query.setParameter("dia", turno.getDia());

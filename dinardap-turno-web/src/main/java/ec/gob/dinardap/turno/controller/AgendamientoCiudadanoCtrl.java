@@ -1,5 +1,22 @@
 package ec.gob.dinardap.turno.controller;
 
+import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
+
+import org.primefaces.PrimeFaces;
+
 import ec.gob.dinardap.interoperadorv2.cliente.servicio.ServicioDINARDAP;
 import ec.gob.dinardap.interoperadorv2.ws.ConsultarResponse;
 import ec.gob.dinardap.turno.dto.HorarioDTO;
@@ -9,26 +26,16 @@ import ec.gob.dinardap.turno.modelo.Turno;
 import ec.gob.dinardap.turno.servicio.PlanificacionRegistroServicio;
 import ec.gob.dinardap.turno.servicio.RegistroMercantilServicio;
 import ec.gob.dinardap.turno.servicio.TurnoServicio;
-import java.io.Serializable;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
-import javax.faces.view.ViewScoped;
-import javax.inject.Named;
-import org.primefaces.PrimeFaces;
 
 @Named(value = "agendamientoCiudadanoCtrl")
 @ViewScoped
 public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable {
 
-    //Declaraci贸n de variables
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 4955068063614741302L;
+	//Declaraci髇 de variables
     //Variables de control visual
     private String tituloPagina;
     private String fechaMin;
@@ -88,12 +95,13 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
         return filteredRegistroMercantil;
     }
 
-    public void buscarDisponibilidad() {
+    @SuppressWarnings("unused")
+	public void buscarDisponibilidad() {
         turnoGenerado = new Turno();
         PlanificacionRegistro planificacionRegistro = null;
         planificacionRegistro = planificacionRegistroServicio.getPlanificacionRegistro(turno.getRegistroMercantil().getRegistroMercantilId());
-        String nombreCiudadano = "Chris";//A帽adir el metodo getNombreCiudadano para consumir el ws de Jady
-//        String nombreCiudadano = getNombreCiudadano();
+//        String nombreCiudadano = "Chris";//A馻dir el metodo getNombreCiudadano para consumir el ws de Jady
+        String nombreCiudadano = getNombreCiudadano();
         horarioDTOList = new ArrayList<HorarioDTO>();
         if (planificacionRegistro.getPlanificacionId() != null) {
             if (nombreCiudadano != null) {
@@ -107,16 +115,16 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
                     FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia: Turnos no disponibles para fines de semana.", "Advertencia: Turnos nos disponibles para fines de semana."));
                 }
             } else {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: C茅dula inv谩lida.", "Error: C茅dula inv谩lida."));
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: C閐ula inv醠ida.", "Error: C閐ula inv醠ida."));
             }
         } else {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: El Registro Mercantil seleccionado no cuenta con una planificaci贸n", "El Registro Mercantil seleccionado no cuenta con planificaci贸n"));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: El Registro Mercantil seleccionado no cuenta con una planificaci髇", "El Registro Mercantil seleccionado no cuenta con planificaci髇"));
         }
     }
 
     public void seleccionarHorario() {
         turnoGenerado = new Turno();
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Informaci贸n: Usted a seleccionado el horario de " + horarioDTOSelected.getHora(), ""));
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Informaci髇: Usted a seleccionado el horario de " + horarioDTOSelected.getHora(), ""));
         turno.setHora(horarioDTOSelected.getHora());
     }
 
@@ -161,14 +169,15 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
             turno.setEstado((short) 2);
             turnoServicio.update(turno);
             renderInformacionTurno = Boolean.FALSE;
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Informaci贸n: Su turno ha sido anulado exitosamente.", ""));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Informaci髇: Su turno ha sido anulado exitosamente.", ""));
         } else {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia: C贸digo de Validaci贸n Incorrecto. Ingrese el c贸digo de validaci贸n para anular el turno agendado.", ""));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia: C骴igo de Validaci髇 Incorrecto. Ingrese el c骴igo de validaci髇 para anular el turno agendado.", ""));
         }
         renderCancelacionTurno = Boolean.FALSE;
     }
 
-    private String getNombreCiudadano() {
+    @SuppressWarnings("unused")
+	private String getNombreCiudadano() {
         ServicioDINARDAP ob = new ServicioDINARDAP();
         ConsultarResponse objWs = new ConsultarResponse();
         String nombreCiudadano = null;
