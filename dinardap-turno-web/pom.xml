@@ -100,7 +100,6 @@
 			<version>7.0.2</version>
 		</dependency>
 
-
 		<!-- EJB's -->
 
 		<!-- Eliminar los comentarios una vez se verifique que la dependencia existe 

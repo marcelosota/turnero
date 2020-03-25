@@ -24,10 +24,10 @@ public class PlanificacionRegistro implements Serializable {
 	private Short duracionTramite;
 
 	@Column(name="hora_fin")
-	private Short horaFin;
+	private String horaFin;
 
 	@Column(name="hora_inicio")
-	private Short horaInicio;
+	private String horaInicio;
 
 	private Short ventanilla;
 
@@ -55,19 +55,19 @@ public class PlanificacionRegistro implements Serializable {
 		this.duracionTramite = duracionTramite;
 	}
 
-	public Short getHoraFin() {
+	public String getHoraFin() {
 		return this.horaFin;
 	}
 
-	public void setHoraFin(Short horaFin) {
+	public void setHoraFin(String horaFin) {
 		this.horaFin = horaFin;
 	}
 
-	public Short getHoraInicio() {
+	public String getHoraInicio() {
 		return this.horaInicio;
 	}
 
-	public void setHoraInicio(Short horaInicio) {
+	public void setHoraInicio(String horaInicio) {
 		this.horaInicio = horaInicio;
 	}
 

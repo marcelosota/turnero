@@ -4,12 +4,12 @@
 	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
 	version="4.0">
 	<display-name>turnero</display-name>
-	
+
 	<context-param>
 		<description>Identificador del sistema</description>
 		<param-name>sistema.identificacion</param-name>
 		<!--<param-value>SAU sistemaId-pruebas</param-value> Pruebas -->
-		<param-value>SAU sistemaId-desarrollo</param-value> <!-- Desarrollo --> 
+		<param-value>SAU sistemaId-desarrollo</param-value> <!-- Desarrollo -->
 	</context-param>
 	<context-param>
 		<description>Secret key genereado al momento de aprobar la creación del aplicativo dentro del sistema SAU</description>
@@ -18,17 +18,18 @@
 		<param-value>SAU secret key desarrollo</param-value> <!-- Desarrollo -->
 	</context-param>
 	<context-param>
-		<description>Dirección de call back que a la que se deberá redirigir el sistema SAU</description>	
+		<description>Dirección de call back que a la que se deberá redirigir el sistema SAU</description>
 		<param-name>redirect.uri</param-name>
-		<!--<param-value>http://url.servidor.pruebas/contextRoot.del.sistema/inicio.html</param-value>  Pruebas -->
+		<!--<param-value>http://url.servidor.pruebas/contextRoot.del.sistema/inicio.html</param-value> 
+			Pruebas -->
 		<param-value>http://url.servidor.desarrollo/contextRoot.del.sistema/inicio.html</param-value> <!-- Desarrollo -->
 	</context-param>
-	<context-param>	
+	<context-param>
 		<description>URL que permite conectar con la pantalla de autenticación en SAU</description>
 		<param-name>url.sau</param-name>
 		<param-value>https://sauqa.dinardap.gob.ec/oauth2/authorize?</param-value>
 	</context-param>
-	
+
 	<context-param>
 		<param-name>javax.faces.PROJECT_STAGE</param-name>
 		<!--param-value>Production</param-value -->
@@ -50,7 +51,7 @@
 		<param-name>javax.faces.PARTIAL_STATE_SAVING</param-name>
 		<param-value>false</param-value>
 	</context-param>
-	
+
 	<!-- CDI -->
 	<context-param>
 		<param-name>javax.faces.FACELETS_REFRESH_PERIOD</param-name>
@@ -68,7 +69,7 @@
 		<param-name>javax.faces.ENABLE_WEBSOCKET_ENDPOINT</param-name>
 		<param-value>true</param-value>
 	</context-param>
-	
+
 	<!-- Bootsfaces -->
 	<context-param>
 		<param-name>BootsFaces_USETHEME</param-name>
@@ -109,7 +110,7 @@
 		<param-name>net.bootsfaces.blockUI</param-name>
 		<param-value>true</param-value>
 	</context-param>
-	
+
 	<!-- Primefaces -->
 	<context-param>
 		<param-name>primefaces.THEME</param-name>
@@ -119,7 +120,7 @@
 		<param-name>primefaces.FONT_AWESOME</param-name>
 		<param-value>true</param-value>
 	</context-param>
-	
+
 	<!-- Filters -->
 	<filter>
 		<filter-name>PrimeFaces FileUpload Filter</filter-name>
@@ -129,7 +130,7 @@
 		<filter-name>PrimeFaces FileUpload Filter</filter-name>
 		<servlet-name>Faces Servlet</servlet-name>
 	</filter-mapping>
-	
+
 	<filter>
 		<filter-name>FiltroAutorizacionBasico</filter-name>
 		<filter-class>ec.gob.dinardap.autorizacion.util.FiltroAutorizacionBasico</filter-class>
@@ -149,7 +150,7 @@
 		<servlet-name>Faces Servlet</servlet-name>
 		<url-pattern>*.jsf</url-pattern>
 	</servlet-mapping>
-	
+
 	<!-- Tpos de archivos -->
 	<mime-mapping>
 		<extension>abs</extension>
@@ -733,12 +734,12 @@
 		<extension>xhtml</extension>
 		<mime-type>application/xml</mime-type>
 	</mime-mapping>
-	
+
 	<!-- Tiempo duración sesión -->
 	<session-config>
 		<session-timeout>30</session-timeout>
 	</session-config>
-	
+
 	<!-- Archivos por defecto -->
 	<welcome-file-list>
 		<welcome-file>index.jsf</welcome-file>

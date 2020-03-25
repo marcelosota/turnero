@@ -60,18 +60,23 @@ public class TurnoDaoEjb extends GenericDaoEjb<Turno, Integer> implements TurnoD
 	@Override
 	public List<AgendadaAtendidasDto> reporteAgendamiento(Integer registroMercantilId, String fecha, Short estadoAgendado, Short estadoAtendido) {
 		StringBuilder sql = new StringBuilder(
-				"select t.registro_mercantil_id, t.hora, agendados, atendidos");
-		sql.append(" from ec_dinardap_turno.turno t ");
-		 sql.append("LEFT JOIN (select ta.registro_mercantil_id,count(ta.turno_id) as agendados from ec_dinardap_turno.turno ta ");
-		sql.append(" where ta.estado=").append(estadoAgendado);
-		sql.append(" group by ta.registro_mercantil_id) as turno1 on t.registro_mercantil_id=turno1.registro_mercantil_id "); 
-		sql.append(" LEFT JOIN (SELECT tat.registro_mercantil_id,count(tat.turno_id) as atendidos  from ec_dinardap_turno.turno tat ");
-		sql.append(" where tat.estado = ").append(estadoAtendido);
-		sql.append(" group by tat.registro_mercantil_id) as turno2 on t.registro_mercantil_id=turno2.registro_mercantil_id "); 
-		sql.append(" where t.registro_mercantil_id = ").append(registroMercantilId);
-		sql.append(" and  dia = '").append(fecha).append("'");
-		sql.append(" group by t.registro_mercantil_id, t.hora, agendados, atendidos "); 
-		sql.append(" order by hora asc ");
+				" select registro_mercantil_id, hora, sum(estado1) estado1, sum(estado2) estado2 ");
+		sql.append(" from ( ");
+		sql.append(" select count(turno1.estado) estado1, 0 estado2, turno1.registro_mercantil_id, turno1.hora ");
+		sql.append(" from ec_dinardap_turno.turno as turno1 ");
+		sql.append(" where turno1.estado = ").append(estadoAgendado);
+		sql.append(" and turno1.registro_mercantil_id = ").append(registroMercantilId); 
+		sql.append(" and turno1.dia= '").append(fecha).append("'");
+		sql.append(" group by turno1.registro_mercantil_id, turno1.estado, turno1.hora ");
+		sql.append(" union all ");
+		sql.append(" select 0 estado1, count(turno2.estado) estado2, turno2.registro_mercantil_id, hora ");
+		sql.append(" from ec_dinardap_turno.turno as turno2");
+		sql.append(" where turno2.estado = ").append(estadoAtendido);
+		sql.append(" and turno2.registro_mercantil_id= ").append(registroMercantilId); 
+		sql.append(" and turno2.dia = '").append(fecha).append("'");
+		sql.append(" group by turno2.registro_mercantil_id, turno2.estado, turno2.hora ) a ");
+		sql.append(" group by hora, registro_mercantil_id ");
+		sql.append(" order by hora, registro_mercantil_id ");
 		Query query = em.createNativeQuery(sql.toString());
 		List<Object[]> lista = query.getResultList();
 		//FechaHoraSistema fechaHora = new FechaHoraSistema();

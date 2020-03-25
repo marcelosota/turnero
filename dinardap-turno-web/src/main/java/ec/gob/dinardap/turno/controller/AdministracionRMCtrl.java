@@ -9,6 +9,8 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
@@ -41,12 +43,14 @@ public class AdministracionRMCtrl extends BaseCtrl {
 	private Date fechaFin;
 	private List<AgendadaAtendidasDto> reporteTurnos;
 	private String validador;
+	private Turno turno;
 
 	@PostConstruct
 	protected void init() {
 		registroMercantil = new ArrayList<>();
 		registroMercantil = registroMercantilServicio.obtenerRegistros(TipoEntidadEnum.RM.getTipo());
 		reporteTurnos = new ArrayList<>();
+		Turno turno = new Turno();
 	}
 
 	public List<RegistroMercantil> getRegistroMercantil() {
@@ -135,17 +139,22 @@ public class AdministracionRMCtrl extends BaseCtrl {
 	}
 
 	public void limpiar() {
-		reporteTurnos = new ArrayList<>();
+		reporteTurnos = new ArrayList<AgendadaAtendidasDto>();
+
+	}
+
+	public void mensaje() {
+		addInfoMessage("hola", "dadfd");
 
 	}
 
 	public void consultar() {
 		try {
-			
-			reporteTurnos = turnoDao.reporteAgendamiento(registroMercantilId, new SimpleDateFormat("yyyy-MM-dd").format(fecha),
-					EstadoTurnoEnum.AGENDADO.getEstado(), EstadoTurnoEnum.ATENDIDO.getEstado());
-			System.out.println("tamanio lista"+reporteTurnos.size());
-			
+
+			reporteTurnos = turnoDao.reporteAgendamiento(registroMercantilId,
+					new SimpleDateFormat("yyyy-MM-dd").format(fecha), EstadoTurnoEnum.AGENDADO.getEstado(),
+					EstadoTurnoEnum.ATENDIDO.getEstado());
+			System.out.println("tamanio lista" + reporteTurnos.size());
 
 		} catch (Exception e) {
 			// String mensaje = getBundleMensaje("sin.informacion", null);
@@ -156,38 +165,51 @@ public class AdministracionRMCtrl extends BaseCtrl {
 
 	}
 
+	public boolean buscarCiudadanosAtendidos(String validador) {
+		try {			
+			turno = turnoServicio.buscarTurno(validador);			
+			if (turno == null)
+				return false;
+			else
+				return true;
+		} catch (Exception e) {
+			return false;
+		}
+
+	}
+
 	public void ciudadanoAtendido() {
 		try {
 			Short atendido = EstadoTurnoEnum.ATENDIDO.getEstado();
 			Short agendado = EstadoTurnoEnum.AGENDADO.getEstado();
-			Turno objTurno = new Turno();
-			objTurno = turnoServicio.buscarTurno(validador);
 			
-			if (objTurno != null) {
-				System.out.println("obj"+objTurno.getEstado());
-				if (objTurno.getEstado() == atendido) {
+			if (buscarCiudadanosAtendidos(validador) == false) {
+				String mensaje = getBundleMensaje("sin.informacion", null);
+				addErrorMessage(null, mensaje, null);
+
+			} else if (buscarCiudadanosAtendidos(validador) == true) {
+				System.out.println("obj" + turno.getEstado());
+				if (turno.getEstado() == atendido) {
 					String mensaje = getBundleMensaje("error.atendido", null);
-					addErrorMessage(null, mensaje, null);
+					addErrorMessage(null, mensaje, "");
+					
+					//FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Contact admin."));
 				}
-				if (objTurno.getEstado() == agendado) {
-					objTurno.setEstado(atendido);
-					if (turnoServicio.actualizarAtendido(objTurno) == true) {
+				if (turno.getEstado() == agendado) {
+					turno.setEstado(atendido);
+					if (turnoServicio.actualizarAtendido(turno) == true) {
 						String mensaje = getBundleMensaje("ciudadano.atendido", null);
 						addInfoMessage(mensaje, null);
 					} else {
 						String mensaje = getBundleMensaje("error.actualizar.ciudadano", null);
-						addErrorMessage(null, mensaje, null);
+						this.addErrorMessage(null,mensaje, "");
 					}
 				}
-
-			} else {
-				String mensaje = getBundleMensaje("sin.informacion", null);
-				addErrorMessage(null, mensaje, null);
 			}
 
 		} catch (Exception e) {
-			// String mensaje = getBundleMensaje("sin.informacion", null);
-			// addErrorMessage(null, mensaje, null);
+			String mensaje = getBundleMensaje("sin.informacion", null);
+			addErrorMessage(null, mensaje, null);
 			e.printStackTrace();
 
 		}
