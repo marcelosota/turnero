@@ -33,11 +33,13 @@
 				</b:selectOneMenu>
 				<p:outputLabel for="calendario" value="#{etiquetas['fecha']}" />
 				<p:calendar id="calendario" value="#{administracionRMCtrl.fecha}"
+					required="true"					
+					required-message="Fecha-#{mensajes['requerido']}"
 					pattern="yyyy-MM-dd" mindate="#{administracionRMCtrl.fechaInicio}"
 					maxdate="#{administracionRMCtrl.fechaFin}" />
 			</h:panelGrid>
 			<br />
-			<p:commandButton value="#{etiquetas['buscar']}" update="dtbRegistros"
+			<p:commandButton value="#{etiquetas['buscar']}" update="msgMensajes dtbRegistros"
 				actionListener="#{administracionRMCtrl.consultar()}"
 				icon="ui-icon-search" process="@this, cmbRegistros, calendario" />
 			<br />
@@ -72,10 +74,10 @@
 					<p:inputText id="txtTurno"
 						value="#{administracionRMCtrl.validador}" maxlength="20"
 						required="true"
-						required-message="#{etiquetas['turno']}-#{mensajes['requerido']}" />
+						required-message="Turno-#{mensajes['requerido']}" />
 					<p:commandButton value="#{etiquetas['atendido']}"
 						icon="ui-icon-document" style="FONT-WEIGHT: bold;"
-						update="dtbRegistros" process="@this txtTurno"
+						update="msgMensajes dtbRegistros" process="@this txtTurno"
 						actionListener="#{administracionRMCtrl.ciudadanoAtendido()}">
 						<!--  oncomplete="actualizarTabla();"-->
 						

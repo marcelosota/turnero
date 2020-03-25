@@ -12,4 +12,5 @@ public interface RegistroMercantilServicio extends GenericService<RegistroMercan
 
 	public List<RegistroMercantil> obtenerRegistrosMercantiles();
 	public List<RegistroMercantil> obtenerRegistros(Short tipo);
+	//public List<RegistroMercantil> obtenerEntidadesActivas();
 }

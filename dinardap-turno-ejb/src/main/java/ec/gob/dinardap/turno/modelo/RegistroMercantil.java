@@ -11,7 +11,7 @@ import java.util.List;
  */
 @Entity
 @Table(name="registro_mercantil")
-@NamedQuery(name="RegistroMercantil.findAll", query="SELECT r FROM RegistroMercantil r")
+@NamedQuery(name="RegistroMercantil.findAll", query="SELECT r FROM RegistroMercantil r ORDER BY r.nombre ASC")
 public class RegistroMercantil implements Serializable {
 	private static final long serialVersionUID = 1L;
 

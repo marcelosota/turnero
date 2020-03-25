@@ -21,12 +21,7 @@
 			href="#{facesContext.externalContext.requestContextPath}/resource/css/dinardap.css" />
 	</h:head>
 	<h:body>
-		<p:growl id="msgMensajes" sticky="true" keepAlive="true" >
-		<p:autoUpdate />
-		</p:growl>
-		<!--  <p:messages id="messages" >
-			<p:autoUpdate />
-		</p:messages>-->
+		<p:growl id="msgMensajes" sticky="false" life="5000" />	
 		<div id="contenedor">
 			<div>
 				<ui:insert name="header">

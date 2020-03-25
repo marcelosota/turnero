@@ -46,13 +46,16 @@ public class RegistroUsuarioCtrl extends BaseCtrl {
 	}
 	
 	public void buscarUsuario() {
-		ServicioDINARDAP ob = new ServicioDINARDAP();
-		ConsultarResponse objWs;
-		objWs = ob.obtenerDatosInteroperabilidad(getUsuarioDto().getCedula(), "2639");
-		if (objWs != null) {
-			getUsuarioDto().setNombre( objWs.getPaquete().getEntidades().getEntidad().get(0).getFilas().getFila().get(0)
-					.getColumnas().getColumna().get(3).getValor());
-		}
+		if(usuarioServicio.buscarPorCedula(getUsuarioDto().getCedula()) == null) {
+			ServicioDINARDAP ob = new ServicioDINARDAP();
+			ConsultarResponse objWs;
+			objWs = ob.obtenerDatosInteroperabilidad(getUsuarioDto().getCedula(), "2639");
+			if (objWs != null) {
+				getUsuarioDto().setNombre( objWs.getPaquete().getEntidades().getEntidad().get(0).getFilas().getFila().get(0)
+						.getColumnas().getColumna().get(3).getValor());
+			}
+		}else
+			addErrorMessage(null, getBundleMensaje("usuario.existe", null), null);
 	}
 	
 	public void guardarUsuario() {

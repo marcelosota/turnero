@@ -11,29 +11,41 @@
 			<h1 class="h-wai">#{etiquetas['nombre.sistema']} - Inicio</h1>
 			<h:form id="formInicio">
 				<br/> <br/>
-				<h:panelGrid columns="2" id="logueo" style="width:50%;"
-							columnClasses="form-label-derecha ui-grid-col-1, form-input-izquierda, 
-							form-label-derecha ui-grid-col-1, form-input-izquierda">
-					<p:outputLabel value="#{etiquetas['cedula']}:"/>
-					<p:inputText value="#{loginCtrl.cedula}"/>
-					<p:outputLabel value="#{etiquetas['contrasena']}:"/>
-					<p:password value="#{loginCtrl.contrasena}"/>
-					<p:outputLabel value="#{etiquetas['registro.mercantil']}:"/>
-					<b:selectOneMenu id="cmbEntidades"
-						value="#{loginCtrl.entidad}" 
-						required="true"
-						required-message="#{etiquetas['registro.mercantil']} #{mensajes['requerido']}"
-						styleClass="form-combo-centrado">
-						<f:selectItem itemLabel="#{etiquetas['seleccionar']}" itemValue="-1" noSelectionOption="true" />
-						<f:selectItems value="#{loginCtrl.listaRM}"
-							var="rm" 
-							itemLabel="#{rm.nombre}"
-							itemValue="#{rm.registroMercantilId}" />
-					</b:selectOneMenu>
-				</h:panelGrid> 
-				<p:commandButton value="#{etiquetas['aceptar']}"
-					actionListener="#{loginCtrl.validarUsuario}"/>
+				<div align="center">
+				<p:panel style="max-width:40pc;vertical-align:middle;width:40pc;border-color:#023767;border-style:ridge;">
+					<h:panelGrid columns="2" id="logueo" style="width:50%;"
+								columnClasses="form-label-derecha ui-grid-col-1, form-input-izquierda, 
+								form-label-derecha ui-grid-col-1, form-input-izquierda">
+						<p:outputLabel value="#{etiquetas['cedula']}:"/>
+						<p:inputText value="#{loginCtrl.cedula}"/>
+						<p:outputLabel value="#{etiquetas['contrasena']}:"/>
+						<p:password value="#{loginCtrl.contrasena}"/>
+						<p:outputLabel value="#{etiquetas['registro.mercantil']}:"/>
+						<b:selectOneMenu id="cmbEntidades"
+							value="#{loginCtrl.entidad}" 
+							required="true"
+							required-message="#{etiquetas['registro.mercantil']} #{mensajes['requerido']}"
+							styleClass="form-combo-centrado">
+							<f:selectItem itemLabel="#{etiquetas['seleccionar']}" itemValue="-1" noSelectionOption="true" />
+							<f:selectItems value="#{loginCtrl.listaRM}"
+								var="rm" 
+								itemLabel="#{rm.nombre}"
+								itemValue="#{rm.registroMercantilId}" />
+						</b:selectOneMenu>
+					</h:panelGrid> 
+					<p:commandButton value="#{etiquetas['aceptar']}"
+						actionListener="#{loginCtrl.validarUsuario}"/>
+					<!--<p:spacer width="10px" />
+					<p:commandButton value="#{etiquetas['cambiar.contrasena']}"
+						actionListener="#{loginCtrl.abrirDialogo}"
+						oncomplete="PF('dlgCambiarContrasena').show();"/>-->
+					<p:commandButton value="#{etiquetas['cambiar.contrasena']}"
+						actionListener="#{loginCtrl.cambiarContrasena}"/>
+				</p:panel>
+				</div>
+				
 			</h:form>
+	
 		</ui:define>
 	</ui:composition>
 	 

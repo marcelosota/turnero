@@ -3,6 +3,7 @@ package ec.gob.dinardap.turno.controller;
 import java.io.IOException;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -35,6 +36,13 @@ public class LoginCtrl extends BaseCtrl {
 	private String contrasena;
 	private Integer entidad;
 	private List<RegistroMercantil> listaRM;
+	private String nuevaContrasena;
+	private Boolean dialogo;
+	
+	@PostConstruct
+	public void init() {
+		setDialogo(Boolean.FALSE);
+	}
 	
 	public void  validarUsuario() {
 		Usuario usuario = new Usuario();
@@ -48,6 +56,7 @@ public class LoginCtrl extends BaseCtrl {
 			session.setAttribute("perfil", usuario.getPerfil().getNombre());
 			ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
 			try {
+				limpiarCampos();
 				context.redirect(context.getRequestContextPath() + "/paginas/brand.jsf");
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -55,6 +64,36 @@ public class LoginCtrl extends BaseCtrl {
 			}
 		}else
 			addErrorMessage(null, getBundleMensaje("error.credenciales", null), null);
+	}
+	
+	public void abrirDialogo() {
+		limpiarCampos();
+		setDialogo(Boolean.TRUE);
+	}
+	
+	public void cambiarContrasena() {
+		ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+		try {
+			//limpiarCampos();
+			context.redirect(context.getRequestContextPath() + "/publico/cambiarContrasena.jsf");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		limpiarCampos();
+		setDialogo(Boolean.FALSE);
+	}
+	
+	private void limpiarCampos() {
+		setNuevaContrasena("");
+		setContrasena("");
+		setCedula("");
+		setEntidad(null);
+	}
+	
+	public void cerrarDialogo() {
+		
 	}
 
 	public String getCedula() {
@@ -83,11 +122,27 @@ public class LoginCtrl extends BaseCtrl {
 
 	public List<RegistroMercantil> getListaRM() {
 		if(listaRM == null)
-			listaRM = registroMercantilServicio.obtenerRegistrosMercantiles();
+			listaRM = registroMercantilServicio.findAll();
 		return listaRM;
 	}
 
 	public void setListaRM(List<RegistroMercantil> listaRM) {
 		this.listaRM = listaRM;
+	}
+
+	public String getNuevaContrasena() {
+		return nuevaContrasena;
+	}
+
+	public void setNuevaContrasena(String nuevaContrasena) {
+		this.nuevaContrasena = nuevaContrasena;
+	}
+
+	public Boolean getDialogo() {
+		return dialogo;
+	}
+
+	public void setDialogo(Boolean dialogo) {
+		this.dialogo = dialogo;
 	}
 }
