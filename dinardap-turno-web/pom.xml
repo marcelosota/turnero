@@ -100,15 +100,15 @@
         <!-- Eliminar los comentarios una vez se verifique que la dependencia existe en el repositorio maven -->
         <dependency>
             <groupId>ec.gob.dinardap.seguridad</groupId>
-            <artifactId>dinardap-seguridad</artifactId>
-            <version>1.1-SNAPSHOT</version>
+            <artifactId>dinardap-seguridad-ejb</artifactId>
+            <version>1.2</version>
             <type>ejb</type>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>ec.gob.dinardap.autorizacion</groupId>
             <artifactId>dinardap-autorizacion</artifactId>
-            <version>1.1-SNAPSHOT</version>            
+            <version>1.2</version>            
             <type>jar</type>
         </dependency>
         <dependency>

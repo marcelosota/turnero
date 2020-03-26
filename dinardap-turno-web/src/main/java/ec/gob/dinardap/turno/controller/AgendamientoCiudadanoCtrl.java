@@ -32,10 +32,10 @@ import ec.gob.dinardap.turno.servicio.TurnoServicio;
 public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable {
 
     /**
-	 * 
-	 */
-	private static final long serialVersionUID = 4955068063614741302L;
-	//Declaración de variables
+     *
+     */
+    private static final long serialVersionUID = 4955068063614741302L;
+    //Declaraciï¿½n de variables
     //Variables de control visual
     private String tituloPagina;
     private String fechaMin;
@@ -96,11 +96,11 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
     }
 
     @SuppressWarnings("unused")
-	public void buscarDisponibilidad() {
+    public void buscarDisponibilidad() {
         turnoGenerado = new Turno();
         PlanificacionRegistro planificacionRegistro = null;
         planificacionRegistro = planificacionRegistroServicio.getPlanificacionRegistro(turno.getRegistroMercantil().getRegistroMercantilId());
-//        String nombreCiudadano = "Chris";//Añadir el metodo getNombreCiudadano para consumir el ws de Jady
+//        String nombreCiudadano = "Chris";//Aï¿½adir el metodo getNombreCiudadano para consumir el ws de Jady
         String nombreCiudadano = getNombreCiudadano();
         horarioDTOList = new ArrayList<HorarioDTO>();
         if (planificacionRegistro.getPlanificacionId() != null) {
@@ -115,16 +115,16 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
                     FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia: Turnos no disponibles para fines de semana.", "Advertencia: Turnos nos disponibles para fines de semana."));
                 }
             } else {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: Cédula inválida.", "Error: Cédula inválida."));
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: Cï¿½dula invï¿½lida.", "Error: Cï¿½dula invï¿½lida."));
             }
         } else {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: El Registro Mercantil seleccionado no cuenta con una planificación", "El Registro Mercantil seleccionado no cuenta con planificación"));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: El Registro Mercantil seleccionado no cuenta con una planificaciï¿½n", "El Registro Mercantil seleccionado no cuenta con planificaciï¿½n"));
         }
     }
 
     public void seleccionarHorario() {
         turnoGenerado = new Turno();
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información: Usted a seleccionado el horario de " + horarioDTOSelected.getHora(), ""));
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Informaciï¿½n: Usted a seleccionado el horario de " + horarioDTOSelected.getHora(), ""));
         turno.setHora(horarioDTOSelected.getHora());
     }
 
@@ -169,15 +169,15 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
             turno.setEstado((short) 2);
             turnoServicio.update(turno);
             renderInformacionTurno = Boolean.FALSE;
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información: Su turno ha sido anulado exitosamente.", ""));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Informaciï¿½n: Su turno ha sido anulado exitosamente.", ""));
         } else {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia: Código de Validación Incorrecto. Ingrese el código de validación para anular el turno agendado.", ""));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia: Cï¿½digo de Validaciï¿½n Incorrecto. Ingrese el cï¿½digo de validaciï¿½n para anular el turno agendado.", ""));
         }
         renderCancelacionTurno = Boolean.FALSE;
     }
 
     @SuppressWarnings("unused")
-	private String getNombreCiudadano() {
+    private String getNombreCiudadano() {
         ServicioDINARDAP ob = new ServicioDINARDAP();
         ConsultarResponse objWs = new ConsultarResponse();
         String nombreCiudadano = null;
@@ -198,18 +198,18 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
 
         Calendar horaInicio = Calendar.getInstance();
         horaInicio.setTime(turno.getDia());
-        Short horaInicial = pr.getHoraInicio();
+        String horaInicial = pr.getHoraInicio();
 
-        horaInicio.set(Calendar.HOUR_OF_DAY, horaInicial);
-        horaInicio.set(Calendar.MINUTE, 0);
+        horaInicio.set(Calendar.HOUR_OF_DAY, Integer.parseInt(horaInicial.split(":")[0]));
+        horaInicio.set(Calendar.MINUTE, Integer.parseInt(horaInicial.split(":")[1]));
         horaInicio.set(Calendar.SECOND, 0);
         horaInicio.set(Calendar.MILLISECOND, 0);
 
         Calendar horaFin = Calendar.getInstance();
         horaFin.setTime(turno.getDia());
-        Short horaFinal = pr.getHoraFin();
-        horaFin.set(Calendar.HOUR_OF_DAY, horaFinal);
-        horaFin.set(Calendar.MINUTE, 0);
+        String horaFinal = pr.getHoraFin();
+        horaFin.set(Calendar.HOUR_OF_DAY, Integer.parseInt(horaFinal.split(":")[0]));
+        horaFin.set(Calendar.MINUTE, Integer.parseInt(horaFinal.split(":")[1]));
         horaFin.set(Calendar.SECOND, 0);
         horaFin.set(Calendar.MILLISECOND, 0);
 
