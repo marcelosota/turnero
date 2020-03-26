@@ -20,29 +20,29 @@
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
 
-	<dependencies>
-		<!-- Agrega como dependencia al módulo EJB -->
-		<dependency>
-			<groupId>ec.gob.dinardap.turno</groupId>
-			<artifactId>dinardap-turno-ejb</artifactId>
-			<version>${project.version}</version>
-			<type>ejb</type>
-		</dependency>
-		<!-- Agrega como dependencia al módulo WEB -->
-		<dependency>
-			<groupId>ec.gob.dinardap.turno</groupId>
-			<artifactId>dinardap-turno-web</artifactId>
-			<version>${project.version}</version>
-			<type>war</type>
-		</dependency>
-		<!-- Eliminar los comentarios una vez se verifique que la dependencia existe 
-			en el repositorio maven -->
-		<dependency>
-			<groupId>ec.gob.dinardap.seguridad</groupId>
-			<artifactId>dinardap-seguridad-ejb</artifactId>
-			<version>1.2</version>
-			<type>ejb</type>
-		</dependency>
+    <dependencies>
+        <!-- Agrega como dependencia al módulo EJB -->
+        <dependency>
+            <groupId>ec.gob.dinardap.turno</groupId>
+            <artifactId>dinardap-turno-ejb</artifactId>
+            <version>${project.version}</version>
+            <type>ejb</type>
+        </dependency>
+        <!-- Agrega como dependencia al módulo WEB -->
+        <dependency>
+            <groupId>ec.gob.dinardap.turno</groupId>
+            <artifactId>dinardap-turno-web</artifactId>
+            <version>${project.version}</version>
+            <type>war</type>
+        </dependency>
+        <!-- Eliminar los comentarios una vez se verifique que la dependencia existe 
+        en el repositorio maven -->
+        <dependency>
+            <groupId>ec.gob.dinardap.seguridad</groupId>
+            <artifactId>dinardap-seguridad</artifactId>
+            <version>1.1-SNAPSHOT</version>
+            <type>ejb</type>
+        </dependency>
 		
     </dependencies>
 
