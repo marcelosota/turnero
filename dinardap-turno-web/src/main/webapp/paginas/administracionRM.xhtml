@@ -5,76 +5,86 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui">
 
-    <!-- 
-                    Replace path to template, title, header and body
-                    with actual data.
-    -->
-    <ui:composition template="/template/general.xhtml">
-        <ui:define name="content">
-            <h1 class="h-wai">#{etiquetas['nombre.sistema']} - Administración
-                Registro mercantil</h1>
-            <h:form id="formInicio">
-                <h:panelGrid columns="2"
-                             columnClasses="form-label-derecha ui-grid-col-1, form-input-izquierda">
-                    <h:outputLabel value="#{etiquetas['registro.mercantil']}" />
-                    <b:selectOneMenu id="cmbRegistros" update="@this dtbRegistros"
-                                     process="@this" value="#{administracionRMCtrl.registroMercantilId}"
-                                     required="true"
-                                     required-message="#{etiquetas['registro.mercantil']}#{mensajes['requerido']}"
-                                     styleClass="form-combo-centrado"
-                                     onchange="ajax:#{administracionRMCtrl.limpiar()}">
-                        <f:selectItem itemLabel="-- Seleccione un Registro --"
-                                      itemValue="0" />
-                        <f:selectItems value="#{administracionRMCtrl.registroMercantil}"
-                                       var="registros" itemLabel="#{registros.nombre}"
-                                       itemValue="#{registros.registroMercantilId}" />
-                    </b:selectOneMenu>
-                    <p:outputLabel for="calendario" value="#{etiquetas['fecha']}" />
-                    <p:calendar id="calendario" value="#{administracionRMCtrl.fecha}"
-                                pattern="yyyy-MM-dd" mindate="#{administracionRMCtrl.fechaInicio}"
-                                maxdate="#{administracionRMCtrl.fechaFin}" />
-                </h:panelGrid>
-                <p:separator />
-                <p:commandButton value="#{etiquetas['buscar']}"
-                                 update="dtbRegistros"
-                                 actionListener="#{administracionRMCtrl.consultar()}"
-                                 icon="ui-icon-search" process="@this, cmbRegistros, calendario" />
-                <p:separator />
-
-                <h:panelGrid columns="1">
-                    <p:dataTable id="dtbRegistros"
-                                 value="#{administracionRMCtrl.reporteTurnos}" var="dtb"
-                                 paginator="true" rows="10"
-                                 scrollable="true" scrollWidth="99%"
-                                 emptyMessage="No existen registros">
-                        <p:column headerText="#{etiquetas['hora']}" width="20%">
-                            <h:outputText value="#{dtb.hora}" styleClass="texto-justificado" >						
-                            </h:outputText>
-                        </p:column>
-                        <p:column headerText="#{etiquetas['agendado']}"
-                                  width="20%">
-                            <h:outputText value="#{dtb.agendada}" styleClass="texto-justificado" />
-                        </p:column>
-                        <p:column headerText="#{etiquetas['atendido']}" width="20%">
-                            <h:outputText value="#{dtb.atendido}" styleClass="texto-justificado" />
-                        </p:column>
-                    </p:dataTable>
-                </h:panelGrid>
-                <p:separator />
-                <h:panelGrid columns="3" width="30%" cellpadding="10"
-                             columnClasses="form-label3, form-input-ajustado, form-input-ajustado">
-                    <h:outputLabel value="#{etiquetas['turno']}*" />
-                    <p:inputText id="txtTurno" value="#{administracionRMCtrl.validador}" maxlength="20" required="true"
-                                 requiredMessage="#{etiquetas['turno']} #{mensajes['requerido']}"/>
-                    <p:commandButton value="#{etiquetas['atendido']}"
-                                     icon="ui-icon-document" style="FONT-WEIGHT: bold;" update=""
-                                     process="@this txtTurno"
-                                     action="#{administracionRMCtrl.ciudadanoAtendido()}">
-                    </p:commandButton>
-
-
-                </h:panelGrid>
-            </h:form>
-        </ui:define>
-    </ui:composition>
+<!-- 
+		Replace path to template, title, header and body
+		with actual data.
+	 -->
+<ui:composition template="/template/general.xhtml">
+	<ui:define name="content">
+		<h1 class="h-wai">#{etiquetas['nombre.sistema']} - Administración
+			Registro mercantil</h1>
+		<h:form id="formInicio">
+			<p:remoteCommand name="actualizarTabla"
+				action="#{administracionRMCtrl.consultar()}" />
+			<h:panelGrid columns="2"
+				columnClasses="form-label-derecha ui-grid-col-1, form-input-izquierda">
+				<h:outputLabel value="#{etiquetas['registro.mercantil']}" />
+				<b:selectOneMenu id="cmbRegistros" update="@this dtbRegistros"
+					process="@this" value="#{administracionRMCtrl.registroMercantilId}"
+					required="true"
+					required-message="#{etiquetas['registro.mercantil']}#{mensajes['requerido']}"
+					styleClass="form-combo-centrado"
+					onchange="ajax:administracionRMCtrl.limpiar()">
+					<f:selectItem itemLabel="-- Seleccione un Registro --"
+						itemValue="0" />
+					<f:selectItems value="#{administracionRMCtrl.registroMercantil}"
+						var="registros" itemLabel="#{registros.nombre}"
+						itemValue="#{registros.registroMercantilId}" />
+				</b:selectOneMenu>
+				<p:outputLabel for="calendario" value="#{etiquetas['fecha']}" />
+				<p:calendar id="calendario" value="#{administracionRMCtrl.fecha}"
+					required="true"					
+					required-message="Fecha-#{mensajes['requerido']}"
+					pattern="yyyy-MM-dd" mindate="#{administracionRMCtrl.fechaInicio}"
+					maxdate="#{administracionRMCtrl.fechaFin}" />
+			</h:panelGrid>
+			<br />
+			<p:commandButton value="#{etiquetas['buscar']}" update="msgMensajes dtbRegistros"
+				actionListener="#{administracionRMCtrl.consultar()}"
+				icon="ui-icon-search" process="@this, cmbRegistros, calendario" />
+			<br />
+			<br />
+			<h:panelGrid columns="1">
+				<p:dataTable id="dtbRegistros"
+					value="#{administracionRMCtrl.reporteTurnos}" var="dtb"
+					paginator="true" rows="10" scrollable="true" scrollWidth="99%"
+					emptyMessage="No existen registros">
+					<p:column headerText="#{etiquetas['hora']}" width="20%">
+						<h:outputText value="#{dtb.hora}" styleClass="texto-justificado">
+						</h:outputText>
+					</p:column>
+					<p:column headerText="#{etiquetas['agendado']}" width="20%">
+						<h:outputText value="#{dtb.agendada}"
+							styleClass="texto-justificado" />
+					</p:column>
+					<p:column headerText="#{etiquetas['atendido']}" width="20%">
+						<h:outputText value="#{dtb.atendido}"
+							styleClass="texto-justificado" />
+					</p:column>
+				</p:dataTable>
+			</h:panelGrid>
+			<p:separator />
+			<br />
+			<p:panel id="basic"
+				header="#{etiquetas['registrar.atencion.ciudadano']}"
+				style="margin-bottom:20px">
+				<h:panelGrid columns="3" width="30%" cellpadding="10"
+					columnClasses="form-label3, form-input-ajustado, form-input-ajustado">
+					<h:outputLabel value="#{etiquetas['turno']}*" />
+					<p:inputText id="txtTurno"
+						value="#{administracionRMCtrl.validador}" maxlength="20"
+						required="true"
+						required-message="Turno-#{mensajes['requerido']}" />
+					<p:commandButton value="#{etiquetas['atendido']}"
+						icon="ui-icon-document" style="FONT-WEIGHT: bold;"
+						update="msgMensajes dtbRegistros" process="@this txtTurno"
+						actionListener="#{administracionRMCtrl.ciudadanoAtendido()}">
+						<!--  oncomplete="actualizarTabla();"-->
+						
+					</p:commandButton>
+				</h:panelGrid>
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>
 </html>
