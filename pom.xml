@@ -13,10 +13,10 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <nemonico-sistema>dinardap-turno</nemonico-sistema>
-        <path.sistema>C:/remanente</path.sistema>
-        <path.server.deployments>C:/wildfly-14.0.1.Final</path.server.deployments>
-        <wildfly.user>admin</wildfly.user>
-        <wildfly.password>dINARDAP.2019</wildfly.password>
+        <path.sistema>/home/marcelo/workspaces/workspacePhoton/</path.sistema>
+		<path.server.deployments>/opt/wildfly14/</path.server.deployments>
+		<wildfly.user>Administrador</wildfly.user>
+		<wildfly.password>administrador%</wildfly.password>
         <wildfly.host>localhost</wildfly.host>
         <wildfly.port>9990</wildfly.port>        
     </properties>
