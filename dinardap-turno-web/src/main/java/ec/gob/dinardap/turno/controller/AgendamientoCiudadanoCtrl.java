@@ -95,12 +95,11 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
         return filteredRegistroMercantil;
     }
 
-    @SuppressWarnings("unused")
     public void buscarDisponibilidad() {
         turnoGenerado = new Turno();
         PlanificacionRegistro planificacionRegistro = null;
         planificacionRegistro = planificacionRegistroServicio.getPlanificacionRegistro(turno.getRegistroMercantil().getRegistroMercantilId());
-//        String nombreCiudadano = "Chris";//A�adir el metodo getNombreCiudadano para consumir el ws de Jady
+        //String nombreCiudadano = "Chris";//Añadir el metodo getNombreCiudadano para consumir el ws de Jady
         String nombreCiudadano = getNombreCiudadano();
         horarioDTOList = new ArrayList<HorarioDTO>();
         if (planificacionRegistro.getPlanificacionId() != null) {
@@ -176,17 +175,13 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
         renderCancelacionTurno = Boolean.FALSE;
     }
 
-    @SuppressWarnings("unused")
     private String getNombreCiudadano() {
         ServicioDINARDAP ob = new ServicioDINARDAP();
-        ConsultarResponse objWs = new ConsultarResponse();
+        ConsultarResponse objWs;//= new ConsultarResponse();
         String nombreCiudadano = null;
-        Boolean flag = Boolean.FALSE;//False para no activo True para activo el WS;
-        if (flag) {
-            ob.obtenerDatosInteroperabilidad(turno.getCedula(), "2639");
-            if (objWs != null) {
-                nombreCiudadano = objWs.getPaquete().getEntidades().getEntidad().get(0).getFilas().getFila().get(0).getColumnas().getColumna().get(3).getValor();
-            }
+        objWs = ob.obtenerDatosInteroperabilidad(turno.getCedula(), "2639");
+        if (objWs != null) {
+            nombreCiudadano = objWs.getPaquete().getEntidades().getEntidad().get(0).getFilas().getFila().get(0).getColumnas().getColumna().get(3).getValor();
         }
         return nombreCiudadano;
     }

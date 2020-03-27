@@ -5,6 +5,7 @@ import ec.gob.dinardap.turno.modelo.RegistroMercantil;
 import ec.gob.dinardap.turno.servicio.PlanificacionRegistroServicio;
 import ec.gob.dinardap.turno.servicio.RegistroMercantilServicio;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -24,18 +25,16 @@ public class AdministracionCGRSCtrl extends BaseCtrl implements Serializable {
     //Variables de control visual
     private String tituloPagina;
 
-    private Date horaMinInicio;
-    private Date horaMaxInicio;
-    private Date horaMinFin;
-    private Date horaMaxFin;
-
     //Variables de negocio
     private PlanificacionRegistro planificacionRegistro, planificacionExistente;
     private RegistroMercantil registroMercantil;
     private int ventanillas;
     private int tiempoAtencion;
-    private int horaInicio;
-    private int horaFin;
+    private String horaInicio;
+    private String horaFin;
+
+    private Date fechaHoraInicio;
+    private Date fechaHoraFin;
 
     //Listas    
     private List<RegistroMercantil> registroMercantilList;
@@ -49,30 +48,7 @@ public class AdministracionCGRSCtrl extends BaseCtrl implements Serializable {
     @PostConstruct
     protected void init() {
         tituloPagina = "Administración CGRS";
-
-        Calendar hi = Calendar.getInstance();
-        hi.setTime(new Date());
-        hi.set(Calendar.HOUR_OF_DAY, 7);
-        hi.set(Calendar.MINUTE, 0);
-        hi.set(Calendar.SECOND, 0);
-        hi.set(Calendar.MILLISECOND, 0);
-        horaMinInicio = hi.getTime();
-        horaMinInicio = new Date();
-        hi.set(Calendar.HOUR_OF_DAY, 9);
-        hi.set(Calendar.MINUTE, 30);
-        horaMaxInicio = hi.getTime();
-
-        Calendar hf = Calendar.getInstance();
-        hf.setTime(new Date());
-        hf.set(Calendar.HOUR_OF_DAY, 16);
-        hf.set(Calendar.MINUTE, 0);
-        hf.set(Calendar.SECOND, 0);
-        hf.set(Calendar.MILLISECOND, 0);
-        horaMinFin = hf.getTime();
-        hf.set(Calendar.HOUR_OF_DAY, 18);
-        hf.set(Calendar.MINUTE, 30);
-        horaMaxFin = hf.getTime();
-
+        fechaHoraInicio = null;
         planificacionRegistro = new PlanificacionRegistro();
         registroMercantil = new RegistroMercantil();
         registroMercantilList = new ArrayList<RegistroMercantil>();
@@ -89,8 +65,45 @@ public class AdministracionCGRSCtrl extends BaseCtrl implements Serializable {
         }
         return filteredRegistroMercantil;
     }
+    
+    private Boolean validarVentanillas(){
+        if(planificacionRegistro.getVentanilla().equals((short)0)){        
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: Debe existir al menos 1 Ventanilla disponible ", ""));
+            return false;
+        }        
+        return true;
+    }
+    
+    private Boolean validarTiempoAtencion(){
+        if(planificacionRegistro.getDuracionTramite().equals((short)0)){        
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: El Tiempo de Atención debe ser al menos 1 minuto ", ""));
+            return false;
+        }        
+        return true;
+    }
+
+    private Boolean validarHoras() {        
+        fechaHoraInicio = null;
+        fechaHoraFin = null;
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(planificacionRegistro.getHoraInicio().split(":")[0]));
+        calendar.set(Calendar.MINUTE, Integer.parseInt(planificacionRegistro.getHoraInicio().split(":")[1]));
+        fechaHoraInicio = calendar.getTime();
+        calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(planificacionRegistro.getHoraFin().split(":")[0]));
+        calendar.set(Calendar.MINUTE, Integer.parseInt(planificacionRegistro.getHoraFin().split(":")[1]));
+        fechaHoraFin = calendar.getTime();
+        if (!fechaHoraInicio.before(fechaHoraFin)) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: La Hora de Salida no puede ser menor o igual a la Hora de Entrada ", ""));
+            return false;
+        }
+        return true;
+    }
 
     public void buscarPlanificacion() {
+        //horaInicio = null;
+        //horaFin = null;
+        fechaHoraInicio = null;
+        fechaHoraFin = null;
         RegistroMercantil registroMercantilAux = new RegistroMercantil();
         registroMercantilAux = planificacionRegistro.getRegistroMercantil();
         planificacionExistente = new PlanificacionRegistro();
@@ -100,18 +113,20 @@ public class AdministracionCGRSCtrl extends BaseCtrl implements Serializable {
         } else {
             planificacionRegistro = new PlanificacionRegistro();
             planificacionRegistro.setRegistroMercantil(registroMercantilAux);
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información: Planificación no Registrada ",""));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información: Planificación no Registrada ", ""));
         }
     }
 
     public void guardarPlanificacion() {        
-        if (planificacionRegistro.getPlanificacionId() != null) {
-            planificacionRegistroServicio.update(planificacionRegistro);
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información: Se actualizó la planificación exitosamente. ",""));
-        } else {
-            planificacionRegistro.setPlanificacionId(null);
-            planificacionRegistroServicio.create(planificacionRegistro);
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información: Se ha registrado la planificación exitosamente.",""));
+        if ( validarVentanillas() && validarTiempoAtencion() && validarHoras()) {
+            if (planificacionRegistro.getPlanificacionId() != null) {
+                planificacionRegistroServicio.update(planificacionRegistro);
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información: Se actualizó la planificación exitosamente. ", ""));
+            } else {
+                planificacionRegistro.setPlanificacionId(null);
+                planificacionRegistroServicio.create(planificacionRegistro);
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información: Se ha registrado la planificación exitosamente.", ""));
+            }
         }
     }
 
@@ -138,38 +153,6 @@ public class AdministracionCGRSCtrl extends BaseCtrl implements Serializable {
 
     public void setRegistroMercantilList(List<RegistroMercantil> registroMercantilList) {
         this.registroMercantilList = registroMercantilList;
-    }
-
-    public Date getHoraMinInicio() {
-        return horaMinInicio;
-    }
-
-    public void setHoraMinInicio(Date horaMinInicio) {
-        this.horaMinInicio = horaMinInicio;
-    }
-
-    public Date getHoraMaxInicio() {
-        return horaMaxInicio;
-    }
-
-    public void setHoraMaxInicio(Date horaMaxInicio) {
-        this.horaMaxInicio = horaMaxInicio;
-    }
-
-    public Date getHoraMinFin() {
-        return horaMinFin;
-    }
-
-    public void setHoraMinFin(Date horaMinFin) {
-        this.horaMinFin = horaMinFin;
-    }
-
-    public Date getHoraMaxFin() {
-        return horaMaxFin;
-    }
-
-    public void setHoraMaxFin(Date horaMaxFin) {
-        this.horaMaxFin = horaMaxFin;
     }
 
     public PlanificacionRegistro getPlanificacionExistente() {
@@ -205,19 +188,19 @@ public class AdministracionCGRSCtrl extends BaseCtrl implements Serializable {
         this.tiempoAtencion = tiempoAtencion;
     }
 
-    public int getHoraInicio() {
+    public String getHoraInicio() {
         return horaInicio;
     }
 
-    public void setHoraInicio(int horaInicio) {
+    public void setHoraInicio(String horaInicio) {
         this.horaInicio = horaInicio;
     }
 
-    public int getHoraFin() {
+    public String getHoraFin() {
         return horaFin;
     }
 
-    public void setHoraFin(int horaFin) {
+    public void setHoraFin(String horaFin) {
         this.horaFin = horaFin;
     }
 
@@ -227,6 +210,22 @@ public class AdministracionCGRSCtrl extends BaseCtrl implements Serializable {
 
     public void setRegistroMercantil(RegistroMercantil registroMercantil) {
         this.registroMercantil = registroMercantil;
+    }
+
+    public Date getFechaHoraInicio() {
+        return fechaHoraInicio;
+    }
+
+    public void setFechaHoraInicio(Date fechaHoraInicio) {
+        this.fechaHoraInicio = fechaHoraInicio;
+    }
+
+    public Date getFechaHoraFin() {
+        return fechaHoraFin;
+    }
+
+    public void setFechaHoraFin(Date fechaHoraFin) {
+        this.fechaHoraFin = fechaHoraFin;
     }
 
 }

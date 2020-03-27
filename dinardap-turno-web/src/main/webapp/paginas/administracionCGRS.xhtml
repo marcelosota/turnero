@@ -29,15 +29,19 @@
                             <p:ajax event="itemSelect" listener="#{administracionCGRSCtrl.buscarPlanificacion}" update="formAdminCGRS, msgMensajes"/>
                         </p:autoComplete>
                         <p:outputLabel for="cantidadVentanillas" value="Ventanillas:" />
-                        <p:inputNumber id="cantidadVentanillas" value="#{administracionCGRSCtrl.planificacionRegistro.ventanilla}" minValue="1" maxValue="99" decimalPlaces="0" style="width: 25%" title="Cantidad de Ventanillas Disponibles"/>
+                        <p:inputNumber id="cantidadVentanillas" value="#{administracionCGRSCtrl.planificacionRegistro.ventanilla}" required="true" minValue="0" maxValue="99" decimalPlaces="0" style="width: 25%" title="Cantidad de Ventanillas Disponibles"/>
                         <p:outputLabel for="tiempoAtencion" value="Tiempo Atención:" />
-                        <p:inputNumber id="tiempoAtencion" value="#{administracionCGRSCtrl.planificacionRegistro.duracionTramite}" minValue="1" maxValue="99" decimalPlaces="0" style="width: 25%" title="Promedio del Tiempo de Atención por Trámite en Minutos"/>
+                        <p:inputNumber id="tiempoAtencion" value="#{administracionCGRSCtrl.planificacionRegistro.duracionTramite}" required="true" minValue="0" maxValue="99" decimalPlaces="0" style="width: 25%" title="Promedio del Tiempo de Atención por Trámite en Minutos"/>
                         <!--<p:outputLabel for="mesAgenda" value="Mes:" />
                         <p:datePicker id="mesAgenda" view="month" value="" pattern="MM/yyyy" yearNavigator="false"/>-->
-                        <p:outputLabel for="horaEntrada" value="Hora de Entrada:" />                    
-                        <p:datePicker id="horaEntrada" value="#{administracionCGRSCtrl.planificacionRegistro.horaInicio}" timeOnly="true" pattern="HH:mm"  mindate="#{administracionCGRSCtrl.horaMinInicio}" maxdate="#{administracionCGRSCtrl.horaMaxInicio}" /> <!--mindate="07:00" maxdate="09:00"-->
+                        <p:outputLabel for="horaEntrada" value="Hora de Entrada:" />
+                        <p:inputMask  id="horaEntrada" value="#{administracionCGRSCtrl.planificacionRegistro.horaInicio}" required="true" mask="99:99" >
+                            <f:validator validatorId="timeValidator"></f:validator>
+                        </p:inputMask>
                         <p:outputLabel for="horaSalida" value="Hora de Salida:" />
-                        <p:datePicker id="horaSalida" value="#{administracionCGRSCtrl.planificacionRegistro.horaFin}" timeOnly="true" pattern="HH:mm" mindate="#{administracionCGRSCtrl.horaMinFin}" maxdate="#{administracionCGRSCtrl.horaMaxFin}" />
+                        <p:inputMask  id="horaSalida" value="#{administracionCGRSCtrl.planificacionRegistro.horaFin}" required="true" mask="99:99" >
+                            <f:validator validatorId="timeValidator"></f:validator>
+                        </p:inputMask>
                     </b:panelGrid>    
                     <b:panelGrid colSpans="6,6" style="width: 100%; margin: 4px 5px; text-align: center;">                        
                         <p:commandButton value="Guardar" id="guardarBtn" action="#{administracionCGRSCtrl.guardarPlanificacion}" style="margin-right:20px;" icon="fa fa-fw fa-save" update="formAdminCGRS, msgMensajes"/>

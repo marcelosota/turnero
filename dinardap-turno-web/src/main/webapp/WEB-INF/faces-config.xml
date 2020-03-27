@@ -25,4 +25,8 @@
         <validator-id>cellPhoneValidator</validator-id>
         <validator-class>ec.gob.dinardap.turno.validator.CellPhoneValidator</validator-class>
     </validator>
+    <validator>
+        <validator-id>timeValidator</validator-id>
+        <validator-class>ec.gob.dinardap.turno.validator.TimeValidator</validator-class>
+    </validator>
 </faces-config>

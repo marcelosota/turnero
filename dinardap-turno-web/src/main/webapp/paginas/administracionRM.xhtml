@@ -34,7 +34,7 @@
 				<p:outputLabel for="calendario" value="#{etiquetas['fecha']}" />
 				<p:calendar id="calendario" value="#{administracionRMCtrl.fecha}"
 					required="true"					
-					required-message="Fecha-#{mensajes['requerido']}"
+					requiredMessage="Fecha-#{mensajes['requerido']}"
 					pattern="yyyy-MM-dd" mindate="#{administracionRMCtrl.fechaInicio}"
 					maxdate="#{administracionRMCtrl.fechaFin}" />
 			</h:panelGrid>
@@ -74,7 +74,7 @@
 					<p:inputText id="txtTurno"
 						value="#{administracionRMCtrl.validador}" maxlength="20"
 						required="true"
-						required-message="Turno-#{mensajes['requerido']}" />
+						requiredMessage="Turno-#{mensajes['requerido']}" />
 					<p:commandButton value="#{etiquetas['atendido']}"
 						icon="ui-icon-document" style="FONT-WEIGHT: bold;"
 						update="msgMensajes dtbRegistros" process="@this txtTurno"
