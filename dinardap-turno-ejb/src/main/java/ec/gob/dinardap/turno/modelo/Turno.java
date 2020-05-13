@@ -20,6 +20,9 @@ public class Turno implements Serializable {
 	@Column(name="turno_id")
 	private Integer turnoId;
 
+	@Column(name="atendido_por")
+	private String atendidoPor;
+	
 	private String cedula;
 
 	private String celular;
@@ -52,6 +55,14 @@ public class Turno implements Serializable {
 
 	public void setTurnoId(Integer turnoId) {
 		this.turnoId = turnoId;
+	}
+
+	public String getAtendidoPor() {
+		return atendidoPor;
+	}
+
+	public void setAtendidoPor(String atendidoPor) {
+		this.atendidoPor = atendidoPor;
 	}
 
 	public String getCedula() {
