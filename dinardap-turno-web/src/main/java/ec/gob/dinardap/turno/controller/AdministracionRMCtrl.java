@@ -51,14 +51,11 @@ public class AdministracionRMCtrl extends BaseCtrl {
 
 	@PostConstruct
 	protected void init() {
-		System.out.println("usuario" + getLoggedUser());
 		Usuario usuario = new Usuario();
 		usuario = usuarioServicio.buscarPorCedula(getLoggedUser());
 		registroMercantilId = usuario.getRegistroMercantil().getRegistroMercantilId();
 		registroMercantil = new ArrayList<>();
 		registroMercantil = registroMercantilServicio.obtenerRegistros(TipoEntidadEnum.RM.getTipo());
-		// registroMercantilServicio.findByPk(getEntidad());
-		// registroMercantilServicio.
 		reporteTurnos = new ArrayList<>();
 		Turno turno = new Turno();
 	}
@@ -190,10 +187,17 @@ public class AdministracionRMCtrl extends BaseCtrl {
 
 	// Solo puede marcar como atendido si la fecha es la del día de atención
 	public boolean fechaEstadoAtendido(Date fechaAtencion) {
+		SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
 		Calendar c = Calendar.getInstance();
 		/// calcula la fecha actual fechaInicio = c.getTime();
 		Date fechaActual = c.getTime();
-		if (fechaActual == fechaAtencion)
+		String strFecha = formato.format(fechaActual);
+		try {
+			fechaActual = formato.parse(strFecha);
+		} catch (ParseException ex) {
+			ex.printStackTrace();
+		}
+		if (fechaActual.equals(fechaAtencion))
 			return true;
 		else
 			return false;
@@ -224,6 +228,7 @@ public class AdministracionRMCtrl extends BaseCtrl {
 				if (turno.getEstado() == agendado) {
 					if (fechaEstadoAtendido(turno.getDia()) == true) {
 						turno.setEstado(atendido);
+						turno.setAtendidoPor(getLoggedUser());
 						if (turnoServicio.actualizarAtendido(turno) == true) {
 							String mensaje = getBundleMensaje("ciudadano.atendido", null);
 							addInfoMessage(mensaje, null);
