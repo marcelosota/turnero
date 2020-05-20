@@ -49,7 +49,7 @@ public class RegistroUsuarioCtrl extends BaseCtrl {
 		if(usuarioServicio.buscarPorCedula(getUsuarioDto().getCedula()) == null) {
 			ServicioDINARDAP ob = new ServicioDINARDAP();
 			ConsultarResponse objWs;
-			objWs = ob.obtenerDatosInteroperabilidad(getUsuarioDto().getCedula(), "2639");
+			objWs = ob.obtenerDatosInteroperabilidad(getUsuarioDto().getCedula(), "2901");
 			if (objWs != null) {
 				getUsuarioDto().setNombre( objWs.getPaquete().getEntidades().getEntidad().get(0).getFilas().getFila().get(0)
 						.getColumnas().getColumna().get(3).getValor());
