@@ -51,6 +51,7 @@ public class RegistroUsuarioCtrl extends BaseCtrl {
 			ServicioDINARDAP ob = new ServicioDINARDAP();
 			ConsultarResponse objWs;
 			objWs = ob.obtenerDatosInteroperabilidad(getUsuarioDto().getCedula(), InteroperabilidadEnum.RC.getPaquete());
+
 			if (objWs != null) {
 				getUsuarioDto().setNombre( objWs.getPaquete().getEntidades().getEntidad().get(0).getFilas().getFila().get(0)
 						.getColumnas().getColumna().get(3).getValor());

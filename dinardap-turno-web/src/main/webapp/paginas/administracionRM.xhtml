@@ -20,6 +20,7 @@
 				columnClasses="form-label-derecha ui-grid-col-1, form-input-izquierda">
 				<h:outputLabel value="#{etiquetas['registro.mercantil']}" />
 				<b:selectOneMenu id="cmbRegistros" update="@this dtbRegistros"
+					disabled="true"
 					process="@this" value="#{administracionRMCtrl.registroMercantilId}"
 					required="true"
 					required-message="#{etiquetas['registro.mercantil']}#{mensajes['requerido']}"
@@ -75,13 +76,14 @@
 						value="#{administracionRMCtrl.validador}" maxlength="20"
 						required="true"
 						requiredMessage="Turno-#{mensajes['requerido']}" />
-					<p:commandButton value="#{etiquetas['atendido']}"
+					<p:commandButton id="btnAtendido" value="#{etiquetas['atendido']}"
 						icon="ui-icon-document" style="FONT-WEIGHT: bold;"
 						update="msgMensajes dtbRegistros" process="@this txtTurno"
-						actionListener="#{administracionRMCtrl.ciudadanoAtendido()}">
-						<!--  oncomplete="actualizarTabla();"-->
+						action="#{administracionRMCtrl.ciudadanoAtendido()}"
+						oncomplete="actualizarTabla();">					
 						
 					</p:commandButton>
+					<p:tooltip for="btnAtendido" value="#{mensajes['atendido']}" />
 				</h:panelGrid>
 			</p:panel>
 		</h:form>
