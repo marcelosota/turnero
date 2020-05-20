@@ -19,6 +19,7 @@ import org.primefaces.PrimeFaces;
 
 import ec.gob.dinardap.interoperadorv2.cliente.servicio.ServicioDINARDAP;
 import ec.gob.dinardap.interoperadorv2.ws.ConsultarResponse;
+import ec.gob.dinardap.turno.constante.InteroperabilidadEnum;
 import ec.gob.dinardap.turno.dto.HorarioDTO;
 import ec.gob.dinardap.turno.modelo.PlanificacionRegistro;
 import ec.gob.dinardap.turno.modelo.RegistroMercantil;
@@ -179,7 +180,7 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
         ServicioDINARDAP ob = new ServicioDINARDAP();
         ConsultarResponse objWs;//= new ConsultarResponse();
         String nombreCiudadano = null;
-        objWs = ob.obtenerDatosInteroperabilidad(turno.getCedula(), "2639");
+        objWs = ob.obtenerDatosInteroperabilidad(turno.getCedula(), InteroperabilidadEnum.RC.getPaquete());
         if (objWs != null) {
             nombreCiudadano = objWs.getPaquete().getEntidades().getEntidad().get(0).getFilas().getFila().get(0).getColumnas().getColumna().get(3).getValor();
         }

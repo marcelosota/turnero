@@ -5,6 +5,7 @@ import javax.inject.Named;
 
 import ec.gob.dinardap.interoperadorv2.cliente.servicio.ServicioDINARDAP;
 import ec.gob.dinardap.interoperadorv2.ws.ConsultarResponse;
+import ec.gob.dinardap.turno.constante.InteroperabilidadEnum;
 
 @Named(value = "pruebaCtrl")
 @ViewScoped
@@ -20,7 +21,7 @@ public class PruebaCtrl extends BaseCtrl {
 	public void consultar() {
 		ServicioDINARDAP ob = new ServicioDINARDAP();
 		ConsultarResponse objWs;
-		objWs = ob.obtenerDatosInteroperabilidad(getCedula(), "2639");
+		objWs = ob.obtenerDatosInteroperabilidad(getCedula(), InteroperabilidadEnum.RC.getPaquete());
 		if (objWs != null) {
 			String valor = objWs.getPaquete().getEntidades().getEntidad().get(0).getFilas().getFila().get(0)
 					.getColumnas().getColumna().get(3).getValor();

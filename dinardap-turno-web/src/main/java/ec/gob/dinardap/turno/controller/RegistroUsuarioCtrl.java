@@ -12,6 +12,7 @@ import ec.gob.dinardap.interoperadorv2.cliente.servicio.ServicioDINARDAP;
 import ec.gob.dinardap.interoperadorv2.ws.ConsultarResponse;
 import ec.gob.dinardap.seguridad.modelo.Perfil;
 import ec.gob.dinardap.seguridad.servicio.PerfilServicio;
+import ec.gob.dinardap.turno.constante.InteroperabilidadEnum;
 import ec.gob.dinardap.turno.constante.PerfilTurnoEnum;
 import ec.gob.dinardap.turno.constante.TipoEntidadEnum;
 import ec.gob.dinardap.turno.dto.UsuarioDto;
@@ -49,7 +50,7 @@ public class RegistroUsuarioCtrl extends BaseCtrl {
 		if(usuarioServicio.buscarPorCedula(getUsuarioDto().getCedula()) == null) {
 			ServicioDINARDAP ob = new ServicioDINARDAP();
 			ConsultarResponse objWs;
-			objWs = ob.obtenerDatosInteroperabilidad(getUsuarioDto().getCedula(), "2639");
+			objWs = ob.obtenerDatosInteroperabilidad(getUsuarioDto().getCedula(), InteroperabilidadEnum.RC.getPaquete());
 			if (objWs != null) {
 				getUsuarioDto().setNombre( objWs.getPaquete().getEntidades().getEntidad().get(0).getFilas().getFila().get(0)
 						.getColumnas().getColumna().get(3).getValor());
