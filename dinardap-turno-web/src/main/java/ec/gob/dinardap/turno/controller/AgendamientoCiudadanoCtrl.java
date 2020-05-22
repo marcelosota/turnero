@@ -115,16 +115,16 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
                     FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia: Turnos no disponibles para fines de semana.", "Advertencia: Turnos nos disponibles para fines de semana."));
                 }
             } else {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: C�dula inv�lida.", "Error: C�dula inv�lida."));
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: Cédula inválida.", "Error: Cédula inválida."));
             }
         } else {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: El Registro Mercantil seleccionado no cuenta con una planificaci�n", "El Registro Mercantil seleccionado no cuenta con planificaci�n"));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: El Registro Mercantil seleccionado no cuenta con una planificación", "El Registro Mercantil seleccionado no cuenta con planificación"));
         }
     }
 
     public void seleccionarHorario() {
         turnoGenerado = new Turno();
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Informaci�n: Usted a seleccionado el horario de " + horarioDTOSelected.getHora(), ""));
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información: Usted a seleccionado el horario de " + horarioDTOSelected.getHora(), ""));
         turno.setHora(horarioDTOSelected.getHora());
     }
 
@@ -169,9 +169,9 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
             turno.setEstado((short) 2);
             turnoServicio.update(turno);
             renderInformacionTurno = Boolean.FALSE;
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Informaci�n: Su turno ha sido anulado exitosamente.", ""));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información: Su turno ha sido anulado exitosamente.", ""));
         } else {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia: C�digo de Validaci�n Incorrecto. Ingrese el c�digo de validaci�n para anular el turno agendado.", ""));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia: Código de Validación Incorrecto. Ingrese el código de validación para anular el turno agendado.", ""));
         }
         renderCancelacionTurno = Boolean.FALSE;
     }

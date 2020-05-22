@@ -71,7 +71,7 @@
                         <webModule>
                             <groupId>ec.gob.dinardap.turno</groupId>
                             <artifactId>dinardap-turno-web</artifactId>
-                            <contextRoot>/turnero</contextRoot>
+                            <contextRoot>/</contextRoot>
                         </webModule>
                         <ejbModule>
                             <groupId>ec.gob.dinardap.turno</groupId>

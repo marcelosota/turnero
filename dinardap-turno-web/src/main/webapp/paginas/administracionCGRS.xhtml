@@ -11,7 +11,7 @@
             <h1 class="h-wai">#{etiquetas['nombre.sistema']} - #{administracionCGRSCtrl.tituloPagina}</h1>
             <h:form id="formAdminCGRS">
                 <b:panel style="width: 50%" rendered="true">
-                    <b:panelGrid colSpans="4,8" style="width: 100%; margin: 4px 5px;" styleClass="panel_boost">
+                    <h:panelGrid columns="2" columnClasses="form-label-derecha ui-grid-col-1, form-input-izquierda" >
                         <p:outputLabel for="registroMercantil" value="Registro Mercantil:" />
                         <p:autoComplete id="registroMercantil"
                                         dropdown="true"
@@ -42,7 +42,7 @@
                         <p:inputMask  id="horaSalida" value="#{administracionCGRSCtrl.planificacionRegistro.horaFin}" required="true" mask="99:99" >
                             <f:validator validatorId="timeValidator"></f:validator>
                         </p:inputMask>
-                    </b:panelGrid>    
+                    </h:panelGrid>    
                     <b:panelGrid colSpans="6,6" style="width: 100%; margin: 4px 5px; text-align: center;">                        
                         <p:commandButton value="Guardar" id="guardarBtn" action="#{administracionCGRSCtrl.guardarPlanificacion}" style="margin-right:20px;" icon="fa fa-fw fa-save" update="formAdminCGRS, msgMensajes"/>
                         <p:commandButton value="Cancelar" id="cancelarBtn" style="margin-right:20px;" icon="fa fa-fw fa-ban" update="formAdminCGRS, msgMensajes"/>

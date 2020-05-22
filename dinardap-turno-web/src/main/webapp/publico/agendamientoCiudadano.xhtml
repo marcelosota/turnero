@@ -7,7 +7,7 @@
       xmlns:p="http://primefaces.org/ui">
     <ui:composition template="/template/general.xhtml">
         <ui:define name="content">
-            
+
             <!--Dialog-->
             <p:dialog id="generacionTurnoDlg"
                       header="Generación de turno" 
@@ -54,6 +54,8 @@
 						</p:panelGrid>
 						<b:panelGrid colSpans="12"
 							style="width: 100%; margin: 4px 5px; text-align: center;">
+							<h:outputText value="#{etiquetas['mensaje.informativo']}"
+								style="font-size: 16pt;font-weight:900;" />
 							<p:commandButton value="Imprimir" type="button"
 								icon="pi pi-print" style="display:block;margin-bottom: 20px">
 								<p:printer target="turnoGenerado" />
@@ -115,7 +117,8 @@
 		<h:form id="formRegistroCiudadano">
 			<b:panel style="width: 60%"
 				title="Registro de información del Ciudadano">
-				<b:panelGrid colSpans="3,9" style="width: 100%; margin: 4px 5px;">
+				<!--  b:panelGrid colSpans="3,9" style="width: 100%; margin: 4px 5px;"> -->
+				<h:panelGrid columns="2" columnClasses="form-label-derecha ui-grid-col-1, form-input-izquierda" >
 					<p:outputLabel for="registroMercantil" value="Registro Mercantil:" />
 					<p:autoComplete id="registroMercantil" dropdown="true"
 						value="#{agendamientoCiudadanoCtrl.turno.registroMercantil}"
@@ -134,11 +137,22 @@
 					</p:inputText>
 
 					<p:outputLabel for="fecha" value="Fecha:" />
-					<p:datePicker id="fecha"
+					<!--  p:datePicker id="fecha"
 						value="#{agendamientoCiudadanoCtrl.turno.dia}" locale="es"
 						monthNavigator="true" pattern="yyyy-MM-dd" style="width: 100%"
 						inputStyle="width: 75%" readonlyInput="true" required="true"
-						mindate="#{agendamientoCiudadanoCtrl.fechaMin}" />
+						mindate="#{agendamientoCiudadanoCtrl.fechaMin}" />-->
+						
+					<p:calendar id="fecha"
+						value="#{agendamientoCiudadanoCtrl.turno.dia}"
+						required="true"	
+						requiredMessage="Fecha-#{mensajes['requerido']}"
+						pattern="yyyy-MM-dd"
+						readonlyInput="true" 
+						mindate="#{agendamientoCiudadanoCtrl.fechaMin}"
+						style="width: 100%"
+						inputStyle="width: 75%" 
+						locale="es" />
 
 					<p:outputLabel for="correoElectronico" value="Correo electrónico:" />
 					<p:inputText id="correoElectronico"
@@ -154,7 +168,7 @@
 						<p:keyFilter regEx="/[\d]/" />
 						<f:validator validatorId="cellPhoneValidator"></f:validator>
 					</p:inputText>
-				</b:panelGrid>
+				</h:panelGrid>
 				<b:panelGrid colSpans="12"
 					style="width: 100%; margin: 4px 5px; text-align: center;">
 					<p:commandButton value="Buscar disponibilidad"

@@ -71,6 +71,7 @@ public class RegistroUsuarioCtrl extends BaseCtrl {
 		getUsuarioDto().setPerfilId(perfil.getPerfilId());
 		usuarioServicio.crearUsuario(getUsuarioDto());
 		addInfoMessage(getBundleMensaje("registro.guardado", null), null);
+		limpiarCampos();
 	}
 	
 	public void limpiarCampos() {
