@@ -145,7 +145,7 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
         horaTurno.set(Calendar.MINUTE, Integer.parseInt(turno.getHora().split(":")[1]));
         horaTurno.set(Calendar.SECOND, 0);
         horaTurno.set(Calendar.MILLISECOND, 0);
-        if ((turnoServicio.getTurnosDisponibles(pr.getVentanilla().intValue(), turno.getDia(), turno.getHora()) > 0)
+        if ((turnoServicio.getTurnosDisponibles(pr.getVentanilla().intValue(), turno.getDia(), turno.getHora(), turno.getRegistroMercantil().getRegistroMercantilId()) > 0)
                 && (horaActual.getTime().before(horaTurno.getTime()))) {
             turnoAgendado = Boolean.TRUE;
             turnoServicio.create(turno);
@@ -214,7 +214,7 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
             renderInformacionTurno = Boolean.FALSE;
             while (horaInicio.getTime().before(horaFin.getTime())) {
                 String hora = new SimpleDateFormat("HH:mm").format(horaInicio.getTime());
-                HorarioDTO horario = new HorarioDTO(hora, pr.getVentanilla().intValue(), turnoServicio.getTurnosDisponibles(pr.getVentanilla().intValue(), turno.getDia(), hora));
+                HorarioDTO horario = new HorarioDTO(hora, pr.getVentanilla().intValue(), turnoServicio.getTurnosDisponibles(pr.getVentanilla().intValue(), turno.getDia(), hora, pr.getRegistroMercantil().getRegistroMercantilId()));
                 if (horaActual.getTime().before(horaInicio.getTime())) {
                     horarioList.add(horario);
                 }
