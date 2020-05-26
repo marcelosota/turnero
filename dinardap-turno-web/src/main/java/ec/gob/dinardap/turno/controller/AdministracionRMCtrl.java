@@ -57,7 +57,7 @@ public class AdministracionRMCtrl extends BaseCtrl {
 		registroMercantil = new ArrayList<>();
 		registroMercantil = registroMercantilServicio.obtenerRegistros(TipoEntidadEnum.RM.getTipo());
 		reporteTurnos = new ArrayList<>();
-		Turno turno = new Turno();
+		//Turno turno = new Turno();
 	}
 
 	public List<RegistroMercantil> getRegistroMercantil() {
@@ -232,6 +232,7 @@ public class AdministracionRMCtrl extends BaseCtrl {
 						if (turnoServicio.actualizarAtendido(turno) == true) {
 							String mensaje = getBundleMensaje("ciudadano.atendido", null);
 							addInfoMessage(mensaje, null);
+							consultar();
 						} else {
 							String mensaje = getBundleMensaje("error.actualizar.ciudadano", null);
 							FacesContext.getCurrentInstance().addMessage(null,

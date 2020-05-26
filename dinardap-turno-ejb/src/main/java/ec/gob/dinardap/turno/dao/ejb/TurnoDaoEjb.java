@@ -61,7 +61,7 @@ public class TurnoDaoEjb extends GenericDaoEjb<Turno, Integer> implements TurnoD
 	@Override
 	public List<AgendadaAtendidasDto> reporteAgendamiento(Integer registroMercantilId, String fecha, Short estadoAgendado, Short estadoAtendido) {
 		StringBuilder sql = new StringBuilder(
-				" select registro_mercantil_id, hora, sum(estado1) estado1, sum(estado2) estado2 ");
+				" select registro_mercantil_id, hora, sum(estado1) estado1, sum(estado2) estado2, sum(estado1 + estado2) estado3");
 		sql.append(" from ( ");
 		sql.append(" select count(turno1.estado) estado1, 0 estado2, turno1.registro_mercantil_id, turno1.hora ");
 		sql.append(" from ec_dinardap_turno.turno as turno1 ");
@@ -96,15 +96,20 @@ public class TurnoDaoEjb extends GenericDaoEjb<Turno, Integer> implements TurnoD
 					item.setHora(null);
 				}
 				if (fila[2] != null) {
-					item.setAgendada(fila[2].toString());
+					item.setPendiente(fila[2].toString());
 				} else {
-					item.setAgendada(null);
+					item.setPendiente(null);
 				}
 				if (fila[3] != null) {
 					item.setAtendido(fila[3].toString());
 				} else {
 					item.setAtendido(null);
-				}				
+				}
+				if (fila[4] != null) {
+					item.setAgendada(fila[4].toString());
+				} else {
+					item.setAgendada(null);
+				}
 
 				listaAgendamiento.add(item);
 			}

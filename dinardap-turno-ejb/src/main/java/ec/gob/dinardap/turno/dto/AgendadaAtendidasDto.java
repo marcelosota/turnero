@@ -8,6 +8,7 @@ public class AgendadaAtendidasDto {
 	private String hora;
 	private String agendada;
 	private String atendido;
+	private String pendiente;
 	
 	public Integer getRegistroMercantilId() {
 		return registroMercantilId;
@@ -38,6 +39,12 @@ public class AgendadaAtendidasDto {
 	}
 	public void setAtendido(String atendido) {
 		this.atendido = atendido;
+	}
+	public String getPendiente() {
+		return pendiente;
+	}
+	public void setPendiente(String pendiente) {
+		this.pendiente = pendiente;
 	}
 	
 	
