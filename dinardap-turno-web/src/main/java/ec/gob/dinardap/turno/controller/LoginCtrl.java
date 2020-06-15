@@ -85,6 +85,18 @@ public class LoginCtrl extends BaseCtrl {
 		setDialogo(Boolean.FALSE);
 	}
 	
+	public void enviar() {
+		
+		/*try {
+			Email email = new Email();
+			String mensajeMail = "Prueba";
+			email.sendMail("leonardo.munoz@dinardap.gob.ec", "Consulta", mensajeMail);
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
+	}
+	
 	private void limpiarCampos() {
 		setNuevaContrasena("");
 		setContrasena("");

@@ -1,15 +1,11 @@
 package ec.gob.dinardap.turno.controller;
 
-import ec.gob.dinardap.turno.modelo.PlanificacionRegistro;
-import ec.gob.dinardap.turno.modelo.RegistroMercantil;
-import ec.gob.dinardap.turno.servicio.PlanificacionRegistroServicio;
-import ec.gob.dinardap.turno.servicio.RegistroMercantilServicio;
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
@@ -17,11 +13,21 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
+import ec.gob.dinardap.turno.modelo.PlanificacionRegistro;
+import ec.gob.dinardap.turno.modelo.RegistroMercantil;
+import ec.gob.dinardap.turno.servicio.PlanificacionRegistroServicio;
+import ec.gob.dinardap.turno.servicio.RegistroMercantilServicio;
+
 @Named(value = "administracionCGRSCtrl")
 @ViewScoped
 public class AdministracionCGRSCtrl extends BaseCtrl implements Serializable {
 
-    //Declaración de variables
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -8641855730615163434L;
+
+	//Declaración de variables
     //Variables de control visual
     private String tituloPagina;
 

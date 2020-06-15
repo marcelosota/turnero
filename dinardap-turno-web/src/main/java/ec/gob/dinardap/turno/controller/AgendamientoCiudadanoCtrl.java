@@ -19,6 +19,7 @@ import org.primefaces.PrimeFaces;
 
 import ec.gob.dinardap.interoperadorv2.cliente.servicio.ServicioDINARDAP;
 import ec.gob.dinardap.interoperadorv2.ws.ConsultarResponse;
+import ec.gob.dinardap.turno.constante.EstadoTurnoEnum;
 import ec.gob.dinardap.turno.constante.InteroperabilidadEnum;
 import ec.gob.dinardap.turno.dto.HorarioDTO;
 import ec.gob.dinardap.turno.modelo.PlanificacionRegistro;
@@ -130,7 +131,7 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
 
     public void agendarHorario() {
         turno.setTurnoId(null);
-        turno.setEstado((short) 1);
+        turno.setEstado(EstadoTurnoEnum.AGENDADO.getEstado());
         turno.setValidador(getGeneracionValidacion());
         PlanificacionRegistro pr = null;
         pr = planificacionRegistroServicio.getPlanificacionRegistro(turno.getRegistroMercantil().getRegistroMercantilId());
@@ -166,7 +167,7 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
 
     public void confirmarCancelacionTurno() {
         if (turno.getValidador().equals(codigoIngresado)) {
-            turno.setEstado((short) 2);
+            turno.setEstado(EstadoTurnoEnum.CANCELADO.getEstado());
             turnoServicio.update(turno);
             renderInformacionTurno = Boolean.FALSE;
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información: Su turno ha sido anulado exitosamente.", ""));
