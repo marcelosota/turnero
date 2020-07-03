@@ -52,10 +52,14 @@
 							<h:outputText style="font-size: 18pt;font-weight:900;"
 								value="#{agendamientoCiudadanoCtrl.turnoGenerado.validador}" />
 						</p:panelGrid>
+						<p:panelGrid id="notaTurnoGenerado" columns="1" style="text-align:center; width: 100%">
+                        	<h:outputText style="color: red;font-weight: lighter;font-size: 12pt;"
+                            	value="Nota: turno válido únicamente para un trámite." />
+                        </p:panelGrid>
 						<b:panelGrid colSpans="12"
 							style="width: 100%; margin: 4px 5px; text-align: center;">
 							<h:outputText value="#{etiquetas['mensaje.informativo']}"
-								style="font-size: 16pt;font-weight:900;" />
+								style="font-size: 14pt;font-weight:900;" />
 							<p:commandButton value="Imprimir" type="button"
 								icon="pi pi-print" style="display:block;margin-bottom: 20px">
 								<p:printer target="turnoGenerado" />
