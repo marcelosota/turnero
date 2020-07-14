@@ -1,0 +1,49 @@
+/*Media Querys*/
+
+.panelA{
+    width: 60% !important;
+}
+
+.dialogA{
+    width: 35%!important;
+    height: auto !important;
+}
+
+.scrollA{
+    width:100%;height:auto;
+}
+
+@media only screen and (max-width: 768px) {
+    /* For mobile phones: */
+    .panelA{
+        width: 100% !important;
+    }
+    .dialogA{
+        width: 100%!important;
+        height: auto !important;
+    }
+}
+@media only screen and (min-height: 300px) {
+    /* For mobile phones: */
+    .scrollA{
+        width:100%;
+        height:auto;
+        max-height: 254px;
+    }
+}
+@media only screen and (min-height: 500px) {
+    /* For mobile phones: */
+    .scrollA{
+        width:100%;
+        height:auto;
+        max-height:445px;
+    }
+}
+@media only screen and (min-height: 200px) {
+    /* For mobile phones: */
+    .scrollA{
+        width:100%;
+        height: auto;
+        max-height:200px;
+    }
+}

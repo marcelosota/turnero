@@ -9,6 +9,8 @@ import java.util.Date;
 @Local
 public interface TurnoServicio extends GenericService<Turno, Integer> {
 
+    public void crearTurno(Turno turno);
+
     public Turno buscarTurno(String validador);
 
     public Boolean actualizarAtendido(Turno turno);

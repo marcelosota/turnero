@@ -16,65 +16,75 @@ import java.util.List;
 @Stateless(name = "TurnoServicio")
 public class TurnoServicioImpl extends GenericServiceImpl<Turno, Integer> implements TurnoServicio {
 
-	@EJB
-	private TurnoDao turnoDao;
+    @EJB
+    private TurnoDao turnoDao;
 
-	@Override
-	public GenericDao<Turno, Integer> getDao() {
-		return turnoDao;
-	}
+    @Override
+    public GenericDao<Turno, Integer> getDao() {
+        return turnoDao;
+    }
 
-	@Override
-	public Boolean actualizarAtendido(Turno turno) {
-		try {
-			update(turno);
+    @Override
+    public void crearTurno(Turno turno) {
+        try {
+            turno.setFechaGeneracion(new Date());
+            update(turno);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-			return true;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
+    @Override
+    public Boolean actualizarAtendido(Turno turno) {
+        try {
+            turno.setFechaModificacion(new Date());
+            update(turno);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
-	@Override
-	public Turno buscarTurno(String validador) {
-		try {
-			String[] criteriasPropiedad = { "validador" };
-			CriteriaTypeEnum[] citeriaOperador = { CriteriaTypeEnum.STRING_EQUALS };
-			Object[] criteriaValores = { validador };
+    @Override
+    public Turno buscarTurno(String validador) {
+        try {
+            String[] criteriasPropiedad = {"validador"};
+            CriteriaTypeEnum[] citeriaOperador = {CriteriaTypeEnum.STRING_EQUALS};
+            Object[] criteriaValores = {validador};
 
-			Criteria criteria = new Criteria(criteriasPropiedad, citeriaOperador, criteriaValores);
+            Criteria criteria = new Criteria(criteriasPropiedad, citeriaOperador, criteriaValores);
 
-			List<Turno> lista = findByCriterias(criteria);
-			Turno turno = new Turno();
-			if (lista.isEmpty()) {
-				return null;
-			} else {
-				for (Turno item : lista) {
-					turno = item;
-				}
-				return turno;
-			}
+            List<Turno> lista = findByCriterias(criteria);
+            Turno turno = new Turno();
+            if (lista.isEmpty()) {
+                return null;
+            } else {
+                for (Turno item : lista) {
+                    turno = item;
+                }
+                return turno;
+            }
 
-		} catch (Exception e) {
-			return null;
-		}
+        } catch (Exception e) {
+            return null;
+        }
 
-	}
+    }
 
-	@Override
-	public Integer getTurnosDisponibles(Integer ventanillas, Date dia, String hora, Integer registroMercantilId) {
-		return turnoDao.getTurnosDisponibles(ventanillas, dia, hora, registroMercantilId);
-	}
+    @Override
+    public Integer getTurnosDisponibles(Integer ventanillas, Date dia, String hora, Integer registroMercantilId) {
+        return turnoDao.getTurnosDisponibles(ventanillas, dia, hora, registroMercantilId);
+    }
 
-	@Override
-	public Boolean validacionDiariaPersona(Turno turno) {
-		return turnoDao.getTurnos(turno).isEmpty() ? Boolean.TRUE : Boolean.FALSE;
-	}
+    @Override
+    public Boolean validacionDiariaPersona(Turno turno) {
+        return turnoDao.getTurnos(turno).isEmpty() ? Boolean.TRUE : Boolean.FALSE;
+    }
 
-	@Override
-	public Turno getTurno(Turno turno) {
-		return turnoDao.getTurnos(turno).isEmpty() ? null : turnoDao.getTurnos(turno).get(0);
-	}
+    @Override
+    public Turno getTurno(Turno turno) {
+        return turnoDao.getTurnos(turno).isEmpty() ? null : turnoDao.getTurnos(turno).get(0);
+    }
 
 }
