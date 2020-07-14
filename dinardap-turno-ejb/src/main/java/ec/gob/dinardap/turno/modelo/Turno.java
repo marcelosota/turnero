@@ -4,137 +4,161 @@ import java.io.Serializable;
 import javax.persistence.*;
 import java.util.Date;
 
-
 /**
  * The persistent class for the turno database table.
- * 
+ *
  */
 @Entity
-@NamedQuery(name="Turno.findAll", query="SELECT t FROM Turno t")
+@NamedQuery(name = "Turno.findAll", query = "SELECT t FROM Turno t")
 public class Turno implements Serializable {
-	private static final long serialVersionUID = 1L;
 
-	@Id
-	@SequenceGenerator(name="TURNO_TURNOID_GENERATOR", sequenceName="TURNO_TURNO_ID_SEQ", schema="ec_dinardap_turno", allocationSize = 1)
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="TURNO_TURNOID_GENERATOR")
-	@Column(name="turno_id")
-	private Integer turnoId;
+    private static final long serialVersionUID = 1L;
 
-	@Column(name="atendido_por")
-	private String atendidoPor;
-	
-	private String cedula;
+    @Id
+    @SequenceGenerator(name = "TURNO_TURNOID_GENERATOR", sequenceName = "TURNO_TURNO_ID_SEQ", schema = "ec_dinardap_turno", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "TURNO_TURNOID_GENERATOR")
+    @Column(name = "turno_id")
+    private Integer turnoId;
 
-	private String celular;
+    @Column(name = "atendido_por")
+    private String atendidoPor;
 
-	@Column(name="correo_electronico")
-	private String correoElectronico;
+    private String cedula;
 
-	@Temporal(TemporalType.DATE)
-	private Date dia;
+    private String celular;
 
-	private Short estado;
+    @Column(name = "correo_electronico")
+    private String correoElectronico;
 
-	private String hora;
+    @Temporal(TemporalType.DATE)
+    private Date dia;
 
-	private String nombre;
+    private Short estado;
 
-	private String validador;
+    private String hora;
 
-	//bi-directional many-to-one association to RegistroMercantil
-	@ManyToOne
-	@JoinColumn(name="registro_mercantil_id")
-	private RegistroMercantil registroMercantil;
+    private String nombre;
 
-	public Turno() {
-	}
+    private String validador;
 
-	public Integer getTurnoId() {
-		return this.turnoId;
-	}
+    @Column(name = "fecha_generacion")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date fechaGeneracion;
 
-	public void setTurnoId(Integer turnoId) {
-		this.turnoId = turnoId;
-	}
+    @Column(name = "fecha_modificacion")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date fechaModificacion;
 
-	public String getAtendidoPor() {
-		return atendidoPor;
-	}
+    //bi-directional many-to-one association to RegistroMercantil
+    @ManyToOne
+    @JoinColumn(name = "registro_mercantil_id")
+    private RegistroMercantil registroMercantil;
 
-	public void setAtendidoPor(String atendidoPor) {
-		this.atendidoPor = atendidoPor;
-	}
+    public Turno() {
+    }
 
-	public String getCedula() {
-		return this.cedula;
-	}
+    public Integer getTurnoId() {
+        return this.turnoId;
+    }
 
-	public void setCedula(String cedula) {
-		this.cedula = cedula;
-	}
+    public void setTurnoId(Integer turnoId) {
+        this.turnoId = turnoId;
+    }
 
-	public String getCelular() {
-		return this.celular;
-	}
+    public String getAtendidoPor() {
+        return atendidoPor;
+    }
 
-	public void setCelular(String celular) {
-		this.celular = celular;
-	}
+    public void setAtendidoPor(String atendidoPor) {
+        this.atendidoPor = atendidoPor;
+    }
 
-	public String getCorreoElectronico() {
-		return this.correoElectronico;
-	}
+    public String getCedula() {
+        return this.cedula;
+    }
 
-	public void setCorreoElectronico(String correoElectronico) {
-		this.correoElectronico = correoElectronico;
-	}
+    public void setCedula(String cedula) {
+        this.cedula = cedula;
+    }
 
-	public Date getDia() {
-		return this.dia;
-	}
+    public String getCelular() {
+        return this.celular;
+    }
 
-	public void setDia(Date dia) {
-		this.dia = dia;
-	}
+    public void setCelular(String celular) {
+        this.celular = celular;
+    }
 
-	public Short getEstado() {
-		return this.estado;
-	}
+    public String getCorreoElectronico() {
+        return this.correoElectronico;
+    }
 
-	public void setEstado(Short estado) {
-		this.estado = estado;
-	}
+    public void setCorreoElectronico(String correoElectronico) {
+        this.correoElectronico = correoElectronico;
+    }
 
-	public String getHora() {
-		return this.hora;
-	}
+    public Date getDia() {
+        return this.dia;
+    }
 
-	public void setHora(String hora) {
-		this.hora = hora;
-	}
+    public void setDia(Date dia) {
+        this.dia = dia;
+    }
 
-	public String getNombre() {
-		return this.nombre;
-	}
+    public Short getEstado() {
+        return this.estado;
+    }
 
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
-	}
+    public void setEstado(Short estado) {
+        this.estado = estado;
+    }
 
-	public String getValidador() {
-		return this.validador;
-	}
+    public String getHora() {
+        return this.hora;
+    }
 
-	public void setValidador(String validador) {
-		this.validador = validador;
-	}
+    public void setHora(String hora) {
+        this.hora = hora;
+    }
 
-	public RegistroMercantil getRegistroMercantil() {
-		return this.registroMercantil;
-	}
+    public String getNombre() {
+        return this.nombre;
+    }
 
-	public void setRegistroMercantil(RegistroMercantil registroMercantil) {
-		this.registroMercantil = registroMercantil;
-	}
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getValidador() {
+        return this.validador;
+    }
+
+    public void setValidador(String validador) {
+        this.validador = validador;
+    }
+
+    public RegistroMercantil getRegistroMercantil() {
+        return this.registroMercantil;
+    }
+
+    public void setRegistroMercantil(RegistroMercantil registroMercantil) {
+        this.registroMercantil = registroMercantil;
+    }
+
+    public Date getFechaGeneracion() {
+        return fechaGeneracion;
+    }
+
+    public void setFechaGeneracion(Date fechaGeneracion) {
+        this.fechaGeneracion = fechaGeneracion;
+    }
+
+    public Date getFechaModificacion() {
+        return fechaModificacion;
+    }
+
+    public void setFechaModificacion(Date fechaModificacion) {
+        this.fechaModificacion = fechaModificacion;
+    }
 
 }

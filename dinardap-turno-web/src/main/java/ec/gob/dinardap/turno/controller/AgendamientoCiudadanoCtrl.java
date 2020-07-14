@@ -1,5 +1,7 @@
 package ec.gob.dinardap.turno.controller;
 
+import ec.gob.dinardap.correo.mdb.cliente.ClienteQueueMailServicio;
+import ec.gob.dinardap.correo.util.MailMessage;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -19,8 +21,10 @@ import org.primefaces.PrimeFaces;
 
 import ec.gob.dinardap.interoperadorv2.cliente.servicio.ServicioDINARDAP;
 import ec.gob.dinardap.interoperadorv2.ws.ConsultarResponse;
+import ec.gob.dinardap.seguridad.servicio.ParametroServicio;
 import ec.gob.dinardap.turno.constante.EstadoTurnoEnum;
 import ec.gob.dinardap.turno.constante.InteroperabilidadEnum;
+import ec.gob.dinardap.turno.constante.ParametroEnum;
 import ec.gob.dinardap.turno.dto.HorarioDTO;
 import ec.gob.dinardap.turno.modelo.PlanificacionRegistro;
 import ec.gob.dinardap.turno.modelo.RegistroMercantil;
@@ -46,11 +50,13 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
     private Boolean renderInformacionTurno;
     private Boolean turnoAgendado;
     private Boolean renderCancelacionTurno;
+    private Boolean renderRemitirTurno;
     //Variables de negocio
     private Turno turno;
     private Turno turnoGenerado;
     private HorarioDTO horarioDTOSelected;
     private String codigoIngresado;
+    private String correoIngresado;
 
     //Listas    
     private List<RegistroMercantil> registroMercantilList;
@@ -65,6 +71,12 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
     @EJB
     private TurnoServicio turnoServicio;
 
+    @EJB
+    private ParametroServicio parametroServicio;
+
+    @EJB
+    private ClienteQueueMailServicio clienteQueueMailServicio;
+
     @PostConstruct
     protected void init() {
         tituloPagina = "Agendamiento de Turnos";
@@ -72,6 +84,7 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
         renderInformacionTurno = Boolean.FALSE;
         turnoAgendado = Boolean.FALSE;
         renderCancelacionTurno = Boolean.FALSE;
+        renderRemitirTurno = Boolean.FALSE;
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
@@ -98,34 +111,38 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
     }
 
     public void buscarDisponibilidad() {
+        renderCancelacionTurno = Boolean.FALSE;
+        renderRemitirTurno = Boolean.FALSE;
         turnoGenerado = new Turno();
         PlanificacionRegistro planificacionRegistro = null;
         planificacionRegistro = planificacionRegistroServicio.getPlanificacionRegistro(turno.getRegistroMercantil().getRegistroMercantilId());
-        //String nombreCiudadano = "Chris";//Añadir el metodo getNombreCiudadano para consumir el ws de Jady
+//        String nombreCiudadano = "Chris";//Añadir el metodo getNombreCiudadano para consumir el ws de Jady
         String nombreCiudadano = getNombreCiudadano();
         horarioDTOList = new ArrayList<HorarioDTO>();
         if (planificacionRegistro.getPlanificacionId() != null) {
             if (nombreCiudadano != null) {
-                turno.setNombre(nombreCiudadano);
-                Calendar diaTurno = Calendar.getInstance();
-                diaTurno.setTime(turno.getDia());
-                String dayOfWeek = diaTurno.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.US).toUpperCase();
-                if (!dayOfWeek.equals("SUNDAY") && !dayOfWeek.equals("SATURDAY")) {
-                    horarioDTOList = generacionListadoHorario(planificacionRegistro);
-                } else {
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia: Turnos no disponibles para fines de semana.", "Advertencia: Turnos nos disponibles para fines de semana."));
+                if (!nombreCiudadano.equals("-1")) {
+                    turno.setNombre(nombreCiudadano);
+                    Calendar diaTurno = Calendar.getInstance();
+                    diaTurno.setTime(turno.getDia());
+                    String dayOfWeek = diaTurno.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.US).toUpperCase();
+                    if (!dayOfWeek.equals("SUNDAY") && !dayOfWeek.equals("SATURDAY")) {
+                        horarioDTOList = generacionListadoHorario(planificacionRegistro);
+                    } else {
+                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia", "Turnos no disponibles para fines de semana."));
+                    }
                 }
             } else {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: Cédula inválida.", "Error: Cédula inválida."));
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Cédula inválida."));
             }
         } else {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: El Registro Mercantil seleccionado no cuenta con una planificación", "El Registro Mercantil seleccionado no cuenta con planificación"));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El Registro Mercantil seleccionado no cuenta con una planificación"));
         }
     }
 
     public void seleccionarHorario() {
         turnoGenerado = new Turno();
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información: Usted a seleccionado el horario de " + horarioDTOSelected.getHora(), ""));
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información", "Usted a seleccionado el horario de " + horarioDTOSelected.getHora()));
         turno.setHora(horarioDTOSelected.getHora());
     }
 
@@ -149,7 +166,7 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
         if ((turnoServicio.getTurnosDisponibles(pr.getVentanilla().intValue(), turno.getDia(), turno.getHora(), turno.getRegistroMercantil().getRegistroMercantilId()) > 0)
                 && (horaActual.getTime().before(horaTurno.getTime()))) {
             turnoAgendado = Boolean.TRUE;
-            turnoServicio.create(turno);
+            turnoServicio.crearTurno(turno);
             turnoGenerado = turno;
             turno = new Turno();
             renderHorarios = Boolean.FALSE;
@@ -163,29 +180,87 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
 
     public void cancelarTurno() {
         renderCancelacionTurno = Boolean.TRUE;
+        renderRemitirTurno = Boolean.FALSE;
+
+    }
+
+    public void remitirTurno() {
+        renderRemitirTurno = Boolean.TRUE;
+        renderCancelacionTurno = Boolean.FALSE;
     }
 
     public void confirmarCancelacionTurno() {
         if (turno.getValidador().equals(codigoIngresado)) {
             turno.setEstado(EstadoTurnoEnum.CANCELADO.getEstado());
-            turnoServicio.update(turno);
+            turnoServicio.actualizarAtendido(turno);
             renderInformacionTurno = Boolean.FALSE;
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información: Su turno ha sido anulado exitosamente.", ""));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información", "Su turno ha sido anulado exitosamente."));
         } else {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia: Código de Validación Incorrecto. Ingrese el código de validación para anular el turno agendado.", ""));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia", "Código de Validación Incorrecto. Ingrese el código de validación para anular el turno agendado."));
         }
         renderCancelacionTurno = Boolean.FALSE;
+    }
+
+    public void confirmarRemitirTurno() {
+        if (turno.getCorreoElectronico().equals(correoIngresado)) {
+            MailMessage mailMessage = new MailMessage();
+            StringBuilder html = new StringBuilder("<center><h1><B>Sistema para el Agendamiento de Turnos en Registros Mercantiles</B></h1></center><br/><br/>");
+            html.append("Estimado(a) " + turno.getNombre() + ", <br /><br />");
+            html.append("Le informamos que se ha generado el turno con la siguiente descripcion:<br />");
+            html.append("<B>REGISTRO MERCANTIL: </B>" + turno.getRegistroMercantil().getNombre() + "<br/>");
+            html.append("<B>CÉDULA: </B>" + turno.getCedula() + "<br/>");
+            html.append("<B>NOMBRE: </B>" + turno.getNombre() + "<br/>");
+            html.append("<B>FECHA: </B>" + new SimpleDateFormat("yyyy-MM-dd").format(turno.getDia()) + "<br/>");
+            html.append("<B>HORA APROXIMADA: </B>" + turno.getHora() + "<br/>");
+            html.append("<B>CÓDIGO VALIDACIÓN: </B>" + turno.getValidador() + "<br/><br/>");
+            html.append("<B>NOTA: <B/>Favor guardar el  Código de Validación, ya que este será solicitado en Ventanilla para su atención. "
+                    + "Si desea cancelar el turno se deberá ingresar el Código de Validación en la misma Plataforma.<br/>");
+            html.append("Gracias por usar nuestros servicios.<br /><br />");
+            html.append("<FONT FACE=\"Arial Narrow, sans-serif\"><B> ");
+            html.append("Dirección Nacional de Registros de Datos Públicos");
+            html.append("</B></FONT>");
+            List<String> to = new ArrayList<String>();
+            StringBuilder asunto = new StringBuilder(200);
+            to.add(turno.getCorreoElectronico());
+            asunto.append("Notificación Sistema de Turnos - Información de Turno");
+            mailMessage = credencialesCorreo();
+            mailMessage.setTo(to);
+            mailMessage.setSubject(asunto.toString());
+            mailMessage.setText(html.toString());
+
+            clienteQueueMailServicio.encolarMail(mailMessage);
+
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información", "Su código ha sido enviado a " + turno.getCorreoElectronico()));
+        } else {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia", "El Correo ingresado no coincide con el Correo registrado en su agendamiento"));
+        }
+        renderRemitirTurno = Boolean.FALSE;
+    }
+
+    private MailMessage credencialesCorreo() {
+        MailMessage credenciales = new MailMessage();
+        credenciales.setFrom(parametroServicio.findByPk(ParametroEnum.MAIL_TURNERO.name()).getValor());
+        credenciales.setUsername(parametroServicio.findByPk(ParametroEnum.MAIL_USERNAME_TURNERO.name()).getValor());
+        credenciales.setPassword(parametroServicio.findByPk(ParametroEnum.MAIL_CONTRASENA_TURNERO.name()).getValor());
+        return credenciales;
     }
 
     private String getNombreCiudadano() {
         ServicioDINARDAP ob = new ServicioDINARDAP();
         ConsultarResponse objWs;//= new ConsultarResponse();
         String nombreCiudadano = null;
-        objWs = ob.obtenerDatosInteroperabilidad(turno.getCedula(), InteroperabilidadEnum.RC.getPaquete());
-        if (objWs != null) {
-            nombreCiudadano = objWs.getPaquete().getEntidades().getEntidad().get(0).getFilas().getFila().get(0).getColumnas().getColumna().get(3).getValor();
+        try {
+            objWs = ob.obtenerDatosInteroperabilidad(turno.getCedula(), InteroperabilidadEnum.RC.getPaquete());
+            if (objWs != null) {
+                nombreCiudadano = objWs.getPaquete().getEntidades().getEntidad().get(0).getFilas().getFila().get(0).getColumnas().getColumna().get(3).getValor();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            nombreCiudadano = "-1";
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información", "Se ha detectado un inconveniente, por favor intente más tarde."));
         }
-        return nombreCiudadano;
+//        return nombreCiudadano;
+        return "Chris";
     }
 
     private List<HorarioDTO> generacionListadoHorario(PlanificacionRegistro pr) {
@@ -335,6 +410,22 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
 
     public void setCodigoIngresado(String codigoIngresado) {
         this.codigoIngresado = codigoIngresado;
+    }
+
+    public Boolean getRenderRemitirTurno() {
+        return renderRemitirTurno;
+    }
+
+    public void setRenderRemitirTurno(Boolean renderRemitirTurno) {
+        this.renderRemitirTurno = renderRemitirTurno;
+    }
+
+    public String getCorreoIngresado() {
+        return correoIngresado;
+    }
+
+    public void setCorreoIngresado(String correoIngresado) {
+        this.correoIngresado = correoIngresado;
     }
 
 }
