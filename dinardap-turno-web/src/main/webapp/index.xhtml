@@ -6,23 +6,38 @@
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:p="http://primefaces.org/ui">
 
-	<ui:composition template="/template/generalError.xhtml">
-		<ui:define name="content">
-			<h:form id="frmInicio">
-				<div align="center">
-					<p:panel styleClass="margenError">
-						<p:commandLink id="lnkTurno" actionListener="#{inicioCtrl.reservarTurno}">
-							<h:graphicImage value="/resource/images/reservar.png" width="100px" height="100px" />	
-						</p:commandLink>
-						<p:spacer width="30px"/>
-						<p:commandLink id="lnkSesion" actionListener="#{inicioCtrl.iniciarSesion}">
-							<h:graphicImage value="/resource/images/iniciarSesion.png" width="100px" height="100px" />				
-						</p:commandLink>
-						<p:tooltip for="lnkTurno" value="#{mensajes['reservar.turno']}"/>
-						<p:tooltip for="lnkSesion" value="#{mensajes['iniciar.sesion']}"/>
-					</p:panel>
-				</div>
-			</h:form>
-		</ui:define>
-	</ui:composition>
+    <ui:composition template="/template/generalError.xhtml">
+        <ui:define name="content">
+            <h:form id="frmInicio">
+                <div align="center">
+                    <p:panel styleClass="margenError">
+                        <p:commandLink id="lnkTurno" actionListener="#{inicioCtrl.reservarTurno}">
+                            <h:graphicImage value="/resource/images/reservar.png" width="100px" height="100px" />	
+                        </p:commandLink>
+                        <p:spacer width="30px"/>
+                        <p:commandLink id="lnkSesion" actionListener="#{inicioCtrl.iniciarSesion}">
+                            <h:graphicImage value="/resource/images/iniciarSesion.png" width="100px" height="100px" />				
+                        </p:commandLink>
+                        <p:tooltip for="lnkTurno" value="#{mensajes['reservar.turno']}"/>
+                        <p:tooltip for="lnkSesion" value="#{mensajes['iniciar.sesion']}"/>
+                    </p:panel>
+                </div>
+                <div align="center" >
+                    <p:panel styleClass="enlace" style="background: url('../images/gobec_enlace.png');">
+
+                        <div class="center">
+                            <p:panelGrid columns="2" layout="grid" columnClasses="form-label-izquierda-blanco ui-g-12 ui-md-10 ui-lg-11, form-label-izquierda-azul ui-g-12 ui-md-2 ui-lg-1" >
+                                <p:outputLabel value="¿Sabías que ahora puedes realizar 20 trámites de los Registros Mercantiles en línea, sólo ingresando AQUÍ?"/>                                
+                                <p:commandButton actionListener="#{inicioCtrl.redireccionarGobEc}" style="width: 100%"
+                                                 icon="fa fa-fw fa-hand-o-up"
+                                                 onclick="form.target = '_blank'" ajax="false"/>
+                            </p:panelGrid>
+
+                        </div>
+
+                    </p:panel>
+                </div>
+            </h:form>
+        </ui:define>
+    </ui:composition>
 </html>

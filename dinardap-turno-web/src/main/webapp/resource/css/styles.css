@@ -1,5 +1,33 @@
 /*Media Querys*/
 
+.enlace{
+    padding:0% !important;
+    margin:10% 0 0 0 !important;
+    height: 100px !important;
+    background: url("../images/gobec_enlace.png") !important;
+    background-size: 100% 100% !important;
+    background-position: center center !important;
+    position: relative;
+}
+
+.center {
+    width: 62%;
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+.form-label-izquierda-blanco {
+    text-align: center;
+    color: #000;
+    padding: 3px;
+    vertical-align: middle;
+    background-color: white;
+}
+
 .panelA{
     width: 60% !important;
 }
@@ -23,6 +51,18 @@
         height: auto !important;
     }
 }
+@media only screen and (max-width: 1300px) {
+    /* For mobile phones: */
+    .center {
+        width: 95%;
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        -ms-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+    }
+}
 @media only screen and (min-height: 300px) {
     /* For mobile phones: */
     .scrollA{
@@ -39,6 +79,7 @@
         max-height:445px;
     }
 }
+
 @media only screen and (min-height: 200px) {
     /* For mobile phones: */
     .scrollA{

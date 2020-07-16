@@ -205,14 +205,14 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
         if (turno.getCorreoElectronico().equals(correoIngresado)) {
             MailMessage mailMessage = new MailMessage();
             StringBuilder html = new StringBuilder("<center><h1><B>Sistema para el Agendamiento de Turnos en Registros Mercantiles</B></h1></center><br/><br/>");
-            html.append("Estimado(a) " + turno.getNombre() + ", <br /><br />");
+            html.append("Estimado(a) ").append(turno.getNombre()).append(", <br /><br />");
             html.append("Le informamos que se ha generado el turno con la siguiente descripcion:<br />");
-            html.append("<B>REGISTRO MERCANTIL: </B>" + turno.getRegistroMercantil().getNombre() + "<br/>");
-            html.append("<B>CÉDULA: </B>" + turno.getCedula() + "<br/>");
-            html.append("<B>NOMBRE: </B>" + turno.getNombre() + "<br/>");
-            html.append("<B>FECHA: </B>" + new SimpleDateFormat("yyyy-MM-dd").format(turno.getDia()) + "<br/>");
-            html.append("<B>HORA APROXIMADA: </B>" + turno.getHora() + "<br/>");
-            html.append("<B>CÓDIGO VALIDACIÓN: </B>" + turno.getValidador() + "<br/><br/>");
+            html.append("<B>REGISTRO MERCANTIL: </B>").append(turno.getRegistroMercantil().getNombre()).append("<br/>");
+            html.append("<B>CÉDULA: </B>").append(turno.getCedula()).append("<br/>");
+            html.append("<B>NOMBRE: </B>").append(turno.getNombre()).append("<br/>");
+            html.append("<B>FECHA: </B>").append(new SimpleDateFormat("yyyy-MM-dd").format(turno.getDia())).append("<br/>");
+            html.append("<B>HORA APROXIMADA: </B>").append(turno.getHora()).append("<br/>");
+            html.append("<B>CÓDIGO VALIDACIÓN: </B>").append(turno.getValidador()).append("<br/><br/>");
             html.append("<B>NOTA: <B/>Favor guardar el  Código de Validación, ya que este será solicitado en Ventanilla para su atención. "
                     + "Si desea cancelar el turno se deberá ingresar el Código de Validación en la misma Plataforma.<br/>");
             html.append("Gracias por usar nuestros servicios.<br /><br />");
