@@ -206,12 +206,12 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
             MailMessage mailMessage = new MailMessage();
             StringBuilder html = new StringBuilder("<center><h1><B>Sistema para el Agendamiento de Turnos en Registros Mercantiles</B></h1></center><br/><br/>");
             html.append("Estimado(a) " + turno.getNombre() + ", <br /><br />");
-            html.append("Le informamos que se ha generado el turno con la siguiente descripcion:<br />");
+            html.append("Le informamos que se ha generado un turno con la siguiente descripción:<br />");
             html.append("<B>REGISTRO MERCANTIL: </B>" + turno.getRegistroMercantil().getNombre() + "<br/>");
             html.append("<B>CÉDULA: </B>" + turno.getCedula() + "<br/>");
             html.append("<B>NOMBRE: </B>" + turno.getNombre() + "<br/>");
             html.append("<B>FECHA: </B>" + new SimpleDateFormat("yyyy-MM-dd").format(turno.getDia()) + "<br/>");
-            html.append("<B>HORA APROXIMADA: </B>" + turno.getHora() + "<br/>");
+            html.append("<B>HORA: </B>" + turno.getHora() + "<br/>");
             html.append("<B>CÓDIGO VALIDACIÓN: </B>" + turno.getValidador() + "<br/><br/>");
             html.append("<B>NOTA: <B/>Favor guardar el  Código de Validación, ya que este será solicitado en Ventanilla para su atención. "
                     + "Si desea cancelar el turno se deberá ingresar el Código de Validación en la misma Plataforma.<br/>");
@@ -259,8 +259,7 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
             nombreCiudadano = "-1";
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información", "Se ha detectado un inconveniente, por favor intente más tarde."));
         }
-//        return nombreCiudadano;
-        return "Chris";
+        return nombreCiudadano;
     }
 
     private List<HorarioDTO> generacionListadoHorario(PlanificacionRegistro pr) {

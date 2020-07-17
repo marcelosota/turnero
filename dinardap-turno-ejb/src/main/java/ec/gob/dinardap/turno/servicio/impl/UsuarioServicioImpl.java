@@ -13,29 +13,29 @@ import ec.gob.dinardap.seguridad.modelo.Perfil;
 import ec.gob.dinardap.turno.dao.UsuarioDao;
 import ec.gob.dinardap.turno.dto.UsuarioDto;
 import ec.gob.dinardap.turno.modelo.RegistroMercantil;
-import ec.gob.dinardap.turno.modelo.Usuario;
+import ec.gob.dinardap.turno.modelo.UsuarioT;
 import ec.gob.dinardap.turno.servicio.UsuarioServicio;
 import ec.gob.dinardap.util.constante.EstadoEnum;
 
 @Stateless(name="UsuarioServicio")
-public class UsuarioServicioImpl extends GenericServiceImpl<Usuario, Integer> implements UsuarioServicio {
+public class UsuarioServicioImpl extends GenericServiceImpl<UsuarioT, Integer> implements UsuarioServicio {
 
 	@EJB
 	private UsuarioDao usuarioDao;
 	
 	@Override
-	public GenericDao<Usuario, Integer> getDao() {
+	public GenericDao<UsuarioT, Integer> getDao() {
 		return usuarioDao;
 	}
 
 	@Override
-	public Usuario validarUsuario(String usuario, String contrasena, Integer entidad) {
+	public UsuarioT validarUsuario(String usuario, String contrasena, Integer entidad) {
 		String[] criteriaNombres = {"cedula","contrasena","registroMercantil.registroMercantilId", "estado"};
 		CriteriaTypeEnum[] criteriaTipos = {CriteriaTypeEnum.STRING_EQUALS, CriteriaTypeEnum.STRING_EQUALS, CriteriaTypeEnum.INTEGER_EQUALS, CriteriaTypeEnum.SHORT_EQUALS};
 		Object[] criteriaValores = {usuario, contrasena, entidad, EstadoEnum.ACTIVO.getEstado()};
 		
 		Criteria criteria = new Criteria(criteriaNombres, criteriaTipos, criteriaValores);
-		List<Usuario> listado = findByCriterias(criteria);
+		List<UsuarioT> listado = findByCriterias(criteria);
 		if(listado != null && listado.size() == 1) {
 			return listado.get(0);
 		}else
@@ -44,7 +44,7 @@ public class UsuarioServicioImpl extends GenericServiceImpl<Usuario, Integer> im
 
 	@Override
 	public void crearUsuario(UsuarioDto usuarioDto) {
-		Usuario usuario = new Usuario();
+		UsuarioT usuario = new UsuarioT();
 		usuario.setPerfil(new Perfil());
 		usuario.setRegistroMercantil(new RegistroMercantil());
 		usuario.setCedula(usuarioDto.getCedula());
@@ -59,7 +59,7 @@ public class UsuarioServicioImpl extends GenericServiceImpl<Usuario, Integer> im
 
 	@Override
 	public void modificarUsuario(UsuarioDto usuarioDto) {
-		Usuario usuario = new Usuario();
+		UsuarioT usuario = new UsuarioT();
 		usuario.setPerfil(new Perfil());
 		usuario.setRegistroMercantil(new RegistroMercantil());
 		usuario.setUsuarioId(usuarioDto.getUsuarioId());
@@ -73,13 +73,13 @@ public class UsuarioServicioImpl extends GenericServiceImpl<Usuario, Integer> im
 	}
 
 	@Override
-	public Usuario buscarPorCedula(String cedula) {
+	public UsuarioT buscarPorCedula(String cedula) {
 		String[] criteriaNombres = {"cedula"};
 		CriteriaTypeEnum[] criteriaTipos = {CriteriaTypeEnum.STRING_EQUALS};
 		Object[] criteriaValores = {cedula};
 		
 		Criteria criteria = new Criteria(criteriaNombres, criteriaTipos, criteriaValores);
-		List<Usuario> listado = findByCriterias(criteria);
+		List<UsuarioT> listado = findByCriterias(criteria);
 		if(listado != null && listado.size() == 1) {
 			return listado.get(0);
 		}else
@@ -87,13 +87,13 @@ public class UsuarioServicioImpl extends GenericServiceImpl<Usuario, Integer> im
 	}
 
 	@Override
-	public Usuario verificarCredenciales(String cedula, String contrasena) {
+	public UsuarioT verificarCredenciales(String cedula, String contrasena) {
 		String[] criteriaNombres = {"cedula","contrasena"};
 		CriteriaTypeEnum[] criteriaTipos = {CriteriaTypeEnum.STRING_EQUALS, CriteriaTypeEnum.STRING_EQUALS};
 		Object[] criteriaValores = {cedula, contrasena};
 		
 		Criteria criteria = new Criteria(criteriaNombres, criteriaTipos, criteriaValores);
-		List<Usuario> listado = findByCriterias(criteria);
+		List<UsuarioT> listado = findByCriterias(criteria);
 		if(listado != null && listado.size() == 1) {
 			return listado.get(0);
 		}else

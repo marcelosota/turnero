@@ -13,7 +13,7 @@ import javax.servlet.http.HttpSession;
 
 import ec.gob.dinardap.autorizacion.util.EncriptarCadenas;
 import ec.gob.dinardap.turno.modelo.RegistroMercantil;
-import ec.gob.dinardap.turno.modelo.Usuario;
+import ec.gob.dinardap.turno.modelo.UsuarioT;
 import ec.gob.dinardap.turno.servicio.RegistroMercantilServicio;
 import ec.gob.dinardap.turno.servicio.UsuarioServicio;
 
@@ -45,7 +45,7 @@ public class LoginCtrl extends BaseCtrl {
 	}
 	
 	public void  validarUsuario() {
-		Usuario usuario = new Usuario();
+		UsuarioT usuario = new UsuarioT();
 		RegistroMercantil registroMercantil = new RegistroMercantil();
 		usuario = usuarioServicio.validarUsuario(getCedula(), EncriptarCadenas.encriptarCadenaSha1(getContrasena()), getEntidad());
 		if(usuario != null) {

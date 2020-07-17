@@ -8,7 +8,7 @@ import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 
-import ec.gob.dinardap.turno.modelo.Usuario;
+import ec.gob.dinardap.turno.modelo.UsuarioT;
 import ec.gob.dinardap.turno.servicio.UsuarioServicio;
 
 @Named(value="misUsuariosCtrl")
@@ -23,8 +23,8 @@ public class MisUsuariosCtrl extends BaseCtrl {
 	@EJB
 	private UsuarioServicio usuarioServicio;
 	
-	private List<Usuario> listaUsuario;
-	private List<Usuario> filtro;
+	private List<UsuarioT> listaUsuario;
+	private List<UsuarioT> filtro;
 	private Integer usuarioId;
 	
 	public void verUsuario() {
@@ -36,19 +36,19 @@ public class MisUsuariosCtrl extends BaseCtrl {
 		}
 	}
 	
-	public List<Usuario> getListaUsuario() {
+	public List<UsuarioT> getListaUsuario() {
 		if(listaUsuario == null)
 			listaUsuario = usuarioServicio.findAll();
 		return listaUsuario;
 	}
-	public void setListaUsuario(List<Usuario> listaUsuario) {
+	public void setListaUsuario(List<UsuarioT> listaUsuario) {
 		this.listaUsuario = listaUsuario;
 	}
-	public List<Usuario> getFiltro() {
+	public List<UsuarioT> getFiltro() {
 		return filtro;
 	}
 
-	public void setFiltro(List<Usuario> filtro) {
+	public void setFiltro(List<UsuarioT> filtro) {
 		this.filtro = filtro;
 	}
 

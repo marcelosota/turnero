@@ -10,7 +10,7 @@ import javax.inject.Named;
 
 import ec.gob.dinardap.autorizacion.util.EncriptarCadenas;
 import ec.gob.dinardap.turno.dto.UsuarioDto;
-import ec.gob.dinardap.turno.modelo.Usuario;
+import ec.gob.dinardap.turno.modelo.UsuarioT;
 import ec.gob.dinardap.turno.servicio.UsuarioServicio;
 
 @Named(value="cambiarContrasenaCtrl")
@@ -31,7 +31,7 @@ public class CambiarContrasenaCtrl extends BaseCtrl {
 	private String repetirContrasena;
 	
 	public void modificarContrasena() {
-		Usuario usuario = usuarioServicio.verificarCredenciales(getCedula(), EncriptarCadenas.encriptarCadenaSha1(getContrasena()));
+		UsuarioT usuario = usuarioServicio.verificarCredenciales(getCedula(), EncriptarCadenas.encriptarCadenaSha1(getContrasena()));
 		if(usuario != null) {
 			UsuarioDto usuarioDto = new UsuarioDto();
 			usuarioDto.setUsuarioId(usuario.getUsuarioId());

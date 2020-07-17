@@ -20,7 +20,7 @@ import ec.gob.dinardap.turno.constante.PerfilTurnoEnum;
 import ec.gob.dinardap.turno.constante.TipoEntidadEnum;
 import ec.gob.dinardap.turno.dto.UsuarioDto;
 import ec.gob.dinardap.turno.modelo.RegistroMercantil;
-import ec.gob.dinardap.turno.modelo.Usuario;
+import ec.gob.dinardap.turno.modelo.UsuarioT;
 import ec.gob.dinardap.turno.servicio.RegistroMercantilServicio;
 import ec.gob.dinardap.turno.servicio.UsuarioServicio;
 import ec.gob.dinardap.util.constante.EstadoEnum;
@@ -46,7 +46,7 @@ public class EditarUsuarioCtrl extends BaseCtrl {
 	@Inject
 	private MisUsuariosCtrl misUsuariosCtrl;
 	
-	private Usuario usuario;
+	private UsuarioT usuario;
 	private UsuarioDto usuarioDto;
 	private List<RegistroMercantil> listaRM;
 	private List<SelectItem> estado;
@@ -107,11 +107,11 @@ public class EditarUsuarioCtrl extends BaseCtrl {
 		}
 	}
 
-	public Usuario getUsuario() {
+	public UsuarioT getUsuario() {
 		return usuario;
 	}
 
-	public void setUsuario(Usuario usuario) {
+	public void setUsuario(UsuarioT usuario) {
 		this.usuario = usuario;
 	}
 

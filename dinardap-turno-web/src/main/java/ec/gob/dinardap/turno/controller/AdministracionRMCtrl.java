@@ -20,7 +20,7 @@ import ec.gob.dinardap.turno.dao.TurnoDao;
 import ec.gob.dinardap.turno.dto.AgendadaAtendidasDto;
 import ec.gob.dinardap.turno.modelo.RegistroMercantil;
 import ec.gob.dinardap.turno.modelo.Turno;
-import ec.gob.dinardap.turno.modelo.Usuario;
+import ec.gob.dinardap.turno.modelo.UsuarioT;
 import ec.gob.dinardap.turno.servicio.RegistroMercantilServicio;
 import ec.gob.dinardap.turno.servicio.TurnoServicio;
 import ec.gob.dinardap.turno.servicio.UsuarioServicio;
@@ -51,7 +51,7 @@ public class AdministracionRMCtrl extends BaseCtrl {
 
 	@PostConstruct
 	protected void init() {
-		Usuario usuario = new Usuario();
+		UsuarioT usuario = new UsuarioT();
 		usuario = usuarioServicio.buscarPorCedula(getLoggedUser());
 		registroMercantilId = usuario.getRegistroMercantil().getRegistroMercantilId();
 		registroMercantil = new ArrayList<>();

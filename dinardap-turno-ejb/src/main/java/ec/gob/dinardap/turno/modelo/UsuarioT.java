@@ -11,13 +11,14 @@ import ec.gob.dinardap.seguridad.modelo.Perfil;
  * 
  */
 @Entity
-@NamedQuery(name="Usuario.findAll", query="SELECT u FROM Usuario u")
-public class Usuario implements Serializable {
+@Table(name="usuario", schema="ec_dinardap_turno")
+@NamedQuery(name="UsuarioT.findAll", query="SELECT u FROM UsuarioT u")
+public class UsuarioT implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="USUARIO_USUARIOID_GENERATOR", sequenceName="USUARIO_USUARIO_ID_SEQ", schema="ec_dinardap_turno", allocationSize = 1)
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="USUARIO_USUARIOID_GENERATOR")
+	@SequenceGenerator(name="USUARIOT_USUARIOID_GENERATOR", sequenceName="USUARIO_USUARIO_ID_SEQ", schema="ec_dinardap_turno", allocationSize = 1)
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="USUARIOT_USUARIOID_GENERATOR")
 	@Column(name="usuario_id")
 	private Integer usuarioId;
 
@@ -39,7 +40,7 @@ public class Usuario implements Serializable {
 	@JoinColumn(name="registro_mercantil_id")
 	private RegistroMercantil registroMercantil;
 
-	public Usuario() {
+	public UsuarioT() {
 	}
 
 	public Integer getUsuarioId() {
