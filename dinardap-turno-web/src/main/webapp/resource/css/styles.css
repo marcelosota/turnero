@@ -1,5 +1,51 @@
 /*Media Querys*/
 
+.enlace{
+    padding:0% !important;
+    margin:10% 0 0 0 !important;
+    height: 100px !important;
+    background: url("../images/gobec_enlace.png") !important;
+    background-size: 100% 100% !important;
+    background-position: center center !important;
+    position: relative;
+}
+
+.center {
+    width: 50%;
+    margin: 0;
+    position: absolute;
+    bottom:-14%;
+    left: 26%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+#panelEnlace_content{
+    border-radius: 7px;    
+}
+
+.ui-widget-content{
+    border-radius: 7px !important;    
+
+}
+
+.form-label-izquierda-blanco {
+    text-align: center;
+    color: #000;
+    padding: 3px;
+    vertical-align: middle;
+    background-color: white;
+    border-radius: 10px;
+}
+.form-label-derecha-azul {
+    text-align: center;
+    color: #000;
+    padding: 3px !important;
+    vertical-align: middle;
+    background-color: #004da7;
+    border-radius: 7px;
+}
+
 .panelA{
     width: 60% !important;
 }
@@ -23,6 +69,7 @@
         height: auto !important;
     }
 }
+
 @media only screen and (min-height: 300px) {
     /* For mobile phones: */
     .scrollA{
@@ -39,6 +86,7 @@
         max-height:445px;
     }
 }
+
 @media only screen and (min-height: 200px) {
     /* For mobile phones: */
     .scrollA{
@@ -47,3 +95,65 @@
         max-height:200px;
     }
 }
+
+@media only screen and (max-width: 640px) {
+    /* For mobile phones: */
+    .center {
+        width: 95%;
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        bottom:auto;
+        left: 50%;
+        -ms-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+    }
+}
+@media only screen and (min-width: 641px) and (max-width: 873px) {
+    /*For mobile phones:*/ 
+    .center {
+        width: 52%;
+        margin: 0;
+        position: absolute;        
+        bottom:-26%;
+        left: 27%;
+        -ms-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+    }
+}
+@media only screen and (min-width: 874px) and (max-width: 907px) {
+    /*For mobile phones:*/ 
+    .center {
+        width: 52%;
+        margin: 0;
+        position: absolute;
+        bottom:-14%;
+        left: 27%;
+        -ms-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+    }
+}
+/*@media only screen and (max-width: 1110px) {
+     For mobile phones: 
+    .center {
+        width: 73%;
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        -ms-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+    }
+}
+@media only screen and (max-width: 1300px) {
+     For mobile phones: 
+    .center {
+        width: 63%;
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        -ms-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+    }
+}*/

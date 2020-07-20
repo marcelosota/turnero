@@ -23,7 +23,7 @@ public class TurnoDaoEjb extends GenericDaoEjb<Turno, Integer> implements TurnoD
 	@Override
     public Integer getTurnosDisponibles(Integer ventanillas, Date dia, String hora, Integer registroMercantilId) {
         Integer turnosDisponibles = ventanillas;
-        Query query = em.createQuery("SELECT t FROM Turno t WHERE t.registroMercantil.registroMercantilId =: registroMercantilId AND t.dia=:dia AND t.hora=:hora AND t.estado=1");
+        Query query = em.createQuery("SELECT t FROM Turno t WHERE t.registroMercantil.registroMercantilId =: registroMercantilId AND t.dia=:dia AND t.hora=:hora AND t.estado <> 3");
         query.setParameter("dia", dia);
         query.setParameter("hora", hora);
         query.setParameter("registroMercantilId", registroMercantilId);

@@ -213,6 +213,7 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
             html.append("<B>FECHA: </B>" + new SimpleDateFormat("yyyy-MM-dd").format(turno.getDia()) + "<br/>");
             html.append("<B>HORA: </B>" + turno.getHora() + "<br/>");
             html.append("<B>CÓDIGO VALIDACIÓN: </B>" + turno.getValidador() + "<br/><br/>");
+
             html.append("<B>NOTA: <B/>Favor guardar el  Código de Validación, ya que este será solicitado en Ventanilla para su atención. "
                     + "Si desea cancelar el turno se deberá ingresar el Código de Validación en la misma Plataforma.<br/>");
             html.append("Gracias por usar nuestros servicios.<br /><br />");
