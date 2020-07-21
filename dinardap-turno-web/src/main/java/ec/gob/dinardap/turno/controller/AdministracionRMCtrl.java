@@ -29,229 +29,256 @@ import ec.gob.dinardap.turno.servicio.UsuarioServicio;
 @ViewScoped
 public class AdministracionRMCtrl extends BaseCtrl {
 
-	private static final long serialVersionUID = 2441633867566660777L;
+    private static final long serialVersionUID = 2441633867566660777L;
 
-	@EJB
-	private RegistroMercantilServicio registroMercantilServicio;
-	@EJB
-	private TurnoDao turnoDao;
-	@EJB
-	private TurnoServicio turnoServicio;
-	@EJB
-	private UsuarioServicio usuarioServicio;
+    @EJB
+    private RegistroMercantilServicio registroMercantilServicio;
+    @EJB
+    private TurnoDao turnoDao;
+    @EJB
+    private TurnoServicio turnoServicio;
+    @EJB
+    private UsuarioServicio usuarioServicio;
 
-	private List<RegistroMercantil> registroMercantil;
-	private Integer registroMercantilId;
-	private Date fecha;
-	private Date fechaInicio;
-	private Date fechaFin;
-	private List<AgendadaAtendidasDto> reporteTurnos;
-	private String validador;
-	private Turno turno;
+    private List<RegistroMercantil> registroMercantil;
+    private Integer registroMercantilId;
+    private Date fecha;
+    private Date fechaInicio;
+    private Date fechaFin;
+    private List<AgendadaAtendidasDto> reporteTurnos;
+    private AgendadaAtendidasDto horaSeleccionada;
+    private String validador;
+    private Turno turno;
 
-	@PostConstruct
-	protected void init() {
-		UsuarioT usuario = new UsuarioT();
-		usuario = usuarioServicio.buscarPorCedula(getLoggedUser());
-		registroMercantilId = usuario.getRegistroMercantil().getRegistroMercantilId();
-		registroMercantil = new ArrayList<>();
-		registroMercantil = registroMercantilServicio.obtenerRegistros(TipoEntidadEnum.RM.getTipo());
-		reporteTurnos = new ArrayList<>();
-		//Turno turno = new Turno();
-	}
+    private List<Turno> turnoList;
 
-	public List<RegistroMercantil> getRegistroMercantil() {
-		return registroMercantil;
-	}
+    @PostConstruct
+    protected void init() {
+        UsuarioT usuario = new UsuarioT();
+        usuario = usuarioServicio.buscarPorCedula(getLoggedUser());
+        registroMercantilId = usuario.getRegistroMercantil().getRegistroMercantilId();
+        registroMercantil = new ArrayList<>();
+        registroMercantil = registroMercantilServicio.obtenerRegistros(TipoEntidadEnum.RM.getTipo());
+        reporteTurnos = new ArrayList<>();
+        turnoList = new ArrayList<>();
+        horaSeleccionada = new AgendadaAtendidasDto();
+        //Turno turno = new Turno();
+    }
 
-	public void setRegistroMercantil(List<RegistroMercantil> registroMercantil) {
-		this.registroMercantil = registroMercantil;
-	}
+    public void onRowSelectHora() {
+        turnoList = turnoServicio.getTurnos(registroMercantilId, fecha, horaSeleccionada.getHora());
+    }
 
-	public Integer getRegistroMercantilId() {
-		return registroMercantilId;
-	}
+    public List<RegistroMercantil> getRegistroMercantil() {
+        return registroMercantil;
+    }
 
-	public void setRegistroMercantilId(Integer registroMercantilId) {
-		this.registroMercantilId = registroMercantilId;
-	}
+    public void setRegistroMercantil(List<RegistroMercantil> registroMercantil) {
+        this.registroMercantil = registroMercantil;
+    }
 
-	public Date getFecha() {
-		return fecha;
-	}
+    public Integer getRegistroMercantilId() {
+        return registroMercantilId;
+    }
 
-	public void setFecha(Date fecha) {
-		this.fecha = fecha;
-	}
+    public void setRegistroMercantilId(Integer registroMercantilId) {
+        this.registroMercantilId = registroMercantilId;
+    }
 
-	public List<AgendadaAtendidasDto> getReporteTurnos() {
-		return reporteTurnos;
-	}
+    public Date getFecha() {
+        return fecha;
+    }
 
-	public void setReporteTurnos(List<AgendadaAtendidasDto> reporteTurnos) {
-		this.reporteTurnos = reporteTurnos;
-	}
+    public void setFecha(Date fecha) {
+        this.fecha = fecha;
+    }
 
-	public String getValidador() {
-		return validador;
-	}
+    public List<AgendadaAtendidasDto> getReporteTurnos() {
+        return reporteTurnos;
+    }
 
-	public void setValidador(String validador) {
-		this.validador = validador;
-	}
+    public void setReporteTurnos(List<AgendadaAtendidasDto> reporteTurnos) {
+        this.reporteTurnos = reporteTurnos;
+    }
 
-	//////// funciones
+    public String getValidador() {
+        return validador;
+    }
 
-	public Date getFechaInicio() {
+    public void setValidador(String validador) {
+        this.validador = validador;
+    }
 
-		Calendar c = Calendar.getInstance();
-		/// calcula la fecha actual fechaInicio = c.getTime();
-		int anio = c.get(Calendar.YEAR);
+    //////// funciones
+    public Date getFechaInicio() {
 
-		try {
-			SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
-			String year = String.valueOf(anio);
-			String strFecha = year + "-01-01";
-			fechaInicio = formato.parse(strFecha);
-		} catch (ParseException ex) {
-			ex.printStackTrace();
-		}
+        Calendar c = Calendar.getInstance();
+        /// calcula la fecha actual fechaInicio = c.getTime();
+        int anio = c.get(Calendar.YEAR);
 
-		return fechaInicio;
-	}
+        try {
+            SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
+            String year = String.valueOf(anio);
+            String strFecha = year + "-01-01";
+            fechaInicio = formato.parse(strFecha);
+        } catch (ParseException ex) {
+            ex.printStackTrace();
+        }
 
-	public void setFechaInicio(Date fechaInicio) {
-		this.fechaInicio = fechaInicio;
-	}
+        return fechaInicio;
+    }
 
-	public Date getFechaFin() {
-		Calendar c = Calendar.getInstance();
-		/// calcula la fecha actual fechaInicio = c.getTime();
-		int anio = c.get(Calendar.YEAR);
+    public void setFechaInicio(Date fechaInicio) {
+        this.fechaInicio = fechaInicio;
+    }
 
-		try {
-			SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
-			String periodo = String.valueOf(anio);
-			String strFecha = periodo + "-12-31";
-			fechaFin = formato.parse(strFecha);
-		} catch (ParseException ex) {
-			ex.printStackTrace();
-		}
+    public Date getFechaFin() {
+        Calendar c = Calendar.getInstance();
+        /// calcula la fecha actual fechaInicio = c.getTime();
+        int anio = c.get(Calendar.YEAR);
 
-		return fechaFin;
-	}
+        try {
+            SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
+            String periodo = String.valueOf(anio);
+            String strFecha = periodo + "-12-31";
+            fechaFin = formato.parse(strFecha);
+        } catch (ParseException ex) {
+            ex.printStackTrace();
+        }
 
-	public void setFechaFin(Date fechaFin) {
-		this.fechaFin = fechaFin;
-	}
+        return fechaFin;
+    }
 
-	public void limpiar() {
-		reporteTurnos = new ArrayList<AgendadaAtendidasDto>();
+    public void setFechaFin(Date fechaFin) {
+        this.fechaFin = fechaFin;
+    }
 
-	}
+    public void limpiar() {
+        reporteTurnos = new ArrayList<AgendadaAtendidasDto>();
 
-	public void mensaje() {
-		addInfoMessage("hola", "dadfd");
+    }
 
-	}
+    public void mensaje() {
+        addInfoMessage("hola", "dadfd");
 
-	public void consultar() {
-		try {
+    }
 
-			reporteTurnos = turnoDao.reporteAgendamiento(registroMercantilId,
-					new SimpleDateFormat("yyyy-MM-dd").format(fecha), EstadoTurnoEnum.AGENDADO.getEstado(),
-					EstadoTurnoEnum.ATENDIDO.getEstado());
-			System.out.println("tamanio lista" + reporteTurnos.size());
+    public void consultar() {
+        try {
+            reporteTurnos = turnoDao.reporteAgendamiento(registroMercantilId,
+                    new SimpleDateFormat("yyyy-MM-dd").format(fecha), EstadoTurnoEnum.AGENDADO.getEstado(),
+                    EstadoTurnoEnum.ATENDIDO.getEstado());
+            System.out.println("tamanio lista" + reporteTurnos.size());
 
-		} catch (Exception e) {
-			// String mensaje = getBundleMensaje("sin.informacion", null);
-			// addErrorMessage(null, mensaje, null);
-			e.printStackTrace();
+        } catch (Exception e) {
+            // String mensaje = getBundleMensaje("sin.informacion", null);
+            // addErrorMessage(null, mensaje, null);
+            e.printStackTrace();
 
-		}
+        }
 
-	}
+    }
 
-	public boolean buscarCiudadanosAtendidos(String validador) {
-		try {
-			turno = turnoServicio.buscarTurno(validador);
-			if (turno == null)
-				return false;
-			else
-				return true;
-		} catch (Exception e) {
-			return false;
-		}
+    public boolean buscarCiudadanosAtendidos(String validador) {
+        try {
+            turno = turnoServicio.buscarTurno(validador);
+            if (turno == null) {
+                return false;
+            } else {
+                return true;
+            }
+        } catch (Exception e) {
+            return false;
+        }
 
-	}
+    }
 
-	// Solo puede marcar como atendido si la fecha es la del día de atención
-	public boolean fechaEstadoAtendido(Date fechaAtencion) {
-		SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
-		Calendar c = Calendar.getInstance();
-		/// calcula la fecha actual fechaInicio = c.getTime();
-		Date fechaActual = c.getTime();
-		String strFecha = formato.format(fechaActual);
-		try {
-			fechaActual = formato.parse(strFecha);
-		} catch (ParseException ex) {
-			ex.printStackTrace();
-		}
-		if (fechaActual.equals(fechaAtencion))
-			return true;
-		else
-			return false;
+    // Solo puede marcar como atendido si la fecha es la del día de atención
+    public boolean fechaEstadoAtendido(Date fechaAtencion) {
+        SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar c = Calendar.getInstance();
+        /// calcula la fecha actual fechaInicio = c.getTime();
+        Date fechaActual = c.getTime();
+        String strFecha = formato.format(fechaActual);
+        try {
+            fechaActual = formato.parse(strFecha);
+        } catch (ParseException ex) {
+            ex.printStackTrace();
+        }
+        if (fechaActual.equals(fechaAtencion)) {
+            return true;
+        } else {
+            return false;
+        }
 
-	}
+    }
 
-	public void ciudadanoAtendido() {
-		try {
-			Short atendido = EstadoTurnoEnum.ATENDIDO.getEstado();
-			Short agendado = EstadoTurnoEnum.AGENDADO.getEstado();
+    public void ciudadanoAtendido() {
+        try {
+            Short atendido = EstadoTurnoEnum.ATENDIDO.getEstado();
+            Short agendado = EstadoTurnoEnum.AGENDADO.getEstado();
 
-			if (buscarCiudadanosAtendidos(validador) == false) {
-				String mensaje = getBundleMensaje("sin.informacion", null);
-				// addErrorMessage(null, mensaje, null);
-				FacesContext.getCurrentInstance().addMessage(null,
-						new FacesMessage(FacesMessage.SEVERITY_ERROR, mensaje, ""));
+            if (buscarCiudadanosAtendidos(validador) == false) {
+                String mensaje = getBundleMensaje("sin.informacion", null);
+                // addErrorMessage(null, mensaje, null);
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR, mensaje, ""));
 
-			} else if (buscarCiudadanosAtendidos(validador) == true) {
-				System.out.println("obj" + turno.getEstado());
-				if (turno.getEstado() == atendido) {
-					String mensaje = getBundleMensaje("error.atendido", null);
-					FacesContext.getCurrentInstance().addMessage(null,
-							new FacesMessage(FacesMessage.SEVERITY_ERROR, mensaje, ""));
+            } else if (buscarCiudadanosAtendidos(validador) == true) {
+                System.out.println("obj" + turno.getEstado());
+                if (turno.getEstado() == atendido) {
+                    String mensaje = getBundleMensaje("error.atendido", null);
+                    FacesContext.getCurrentInstance().addMessage(null,
+                            new FacesMessage(FacesMessage.SEVERITY_ERROR, mensaje, ""));
 
-					// FacesContext.getCurrentInstance().addMessage(null, new
-					// FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Contact admin."));
-				}
-				if (turno.getEstado() == agendado) {
-					if (fechaEstadoAtendido(turno.getDia()) == true) {
-						turno.setEstado(atendido);
-						turno.setAtendidoPor(getLoggedUser());
-						if (turnoServicio.actualizarAtendido(turno) == true) {
-							String mensaje = getBundleMensaje("ciudadano.atendido", null);
-							addInfoMessage(mensaje, null);
-							consultar();
-						} else {
-							String mensaje = getBundleMensaje("error.actualizar.ciudadano", null);
-							FacesContext.getCurrentInstance().addMessage(null,
-									new FacesMessage(FacesMessage.SEVERITY_ERROR, mensaje, ""));
-						}
-					} else {
+                    // FacesContext.getCurrentInstance().addMessage(null, new
+                    // FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Contact admin."));
+                }
+                if (turno.getEstado() == agendado) {
+                    if (fechaEstadoAtendido(turno.getDia()) == true) {
+                        turno.setEstado(atendido);
+                        turno.setAtendidoPor(getLoggedUser());
+                        if (turnoServicio.actualizarAtendido(turno) == true) {
+                            String mensaje = getBundleMensaje("ciudadano.atendido", null);
+                            addInfoMessage(mensaje, null);
+                            turnoList = turnoServicio.getTurnos(registroMercantilId, fecha, horaSeleccionada.getHora());
+                            consultar();
+                        } else {
+                            String mensaje = getBundleMensaje("error.actualizar.ciudadano", null);
+                            FacesContext.getCurrentInstance().addMessage(null,
+                                    new FacesMessage(FacesMessage.SEVERITY_ERROR, mensaje, ""));
+                        }
+                    } else {
 
-						FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-								"La fecha de atención es diferente a la fecha del turno agendado", ""));
-					}
-				}
-			}
+                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                                "La fecha de atención es diferente a la fecha del turno agendado", ""));
+                    }
+                }
+            }
 
-		} catch (Exception e) {
-			String mensaje = getBundleMensaje("sin.informacion", null);
-			addErrorMessage(null, mensaje, null);
-			e.printStackTrace();
+        } catch (Exception e) {
+            String mensaje = getBundleMensaje("sin.informacion", null);
+            addErrorMessage(null, mensaje, null);
+            e.printStackTrace();
 
-		}
+        }
 
-	}
+    }
+
+    //Getters & Setters
+    public AgendadaAtendidasDto getHoraSeleccionada() {
+        return horaSeleccionada;
+    }
+
+    public void setHoraSeleccionada(AgendadaAtendidasDto horaSeleccionada) {
+        this.horaSeleccionada = horaSeleccionada;
+    }
+
+    public List<Turno> getTurnoList() {
+        return turnoList;
+    }
+
+    public void setTurnoList(List<Turno> turnoList) {
+        this.turnoList = turnoList;
+    }
 }

@@ -100,6 +100,7 @@
                 <h:form id="formAgendarTurno">
                     <b:panel style="width: 100%">
                         <b:panelGrid colSpans="12">
+                        	<h:outputLabel value="#{etiquetas['recordatorio.turno']}"/>
                             <h:outputLabel
                                 value="Usted seleccionó el horario de: #{agendamientoCiudadanoCtrl.horarioDTOSelected.hora}.¿Desea agendar su Turno para este Horario?" />
                         </b:panelGrid>
@@ -203,7 +204,7 @@
                                      reflow="true" rows="5" paginator="true"
                                      paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                      rowsPerPageTemplate="5,10,25,50" tableStyle="width:100%">
-                            <f:facet name="header">Horarios Disponibles</f:facet>
+                            <f:facet name="header">#{etiquetas['nota.turno.unico']}</f:facet>
                             <p:column headerText="Hora" sortBy="#{horario.hora}" width="30%"
                                       style="text-align: center">
                                 <h:outputText value="#{horario.hora}" />
