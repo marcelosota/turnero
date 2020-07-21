@@ -87,4 +87,9 @@ public class TurnoServicioImpl extends GenericServiceImpl<Turno, Integer> implem
         return turnoDao.getTurnos(turno).isEmpty() ? null : turnoDao.getTurnos(turno).get(0);
     }
 
+    @Override
+    public List<Turno> getTurnos(Integer registroMercantilId, Date dia, String hora) {
+        return turnoDao.getTurnos(registroMercantilId, dia, hora);
+    }
+
 }

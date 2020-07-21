@@ -18,4 +18,6 @@ public interface TurnoDao extends GenericDao<Turno, Integer> {
 
     public List<Turno> getTurnos(Turno turno);
 
+    public List<Turno> getTurnos(Integer registroMercantilId, Date dia, String hora);
+
 }
