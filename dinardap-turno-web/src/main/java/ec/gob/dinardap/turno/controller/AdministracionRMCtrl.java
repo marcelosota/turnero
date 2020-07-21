@@ -66,11 +66,7 @@ public class AdministracionRMCtrl extends BaseCtrl {
     }
 
     public void onRowSelectHora() {
-        System.out.println("HoraSeleccionada: " + horaSeleccionada.getHora());
         turnoList = turnoServicio.getTurnos(registroMercantilId, fecha, horaSeleccionada.getHora());
-        for (Turno t : turnoList) {
-            System.out.println("turno: " + t.getNombre());
-        }
     }
 
     public List<RegistroMercantil> getRegistroMercantil() {
@@ -245,6 +241,7 @@ public class AdministracionRMCtrl extends BaseCtrl {
                         if (turnoServicio.actualizarAtendido(turno) == true) {
                             String mensaje = getBundleMensaje("ciudadano.atendido", null);
                             addInfoMessage(mensaje, null);
+                            turnoList = turnoServicio.getTurnos(registroMercantilId, fecha, horaSeleccionada.getHora());
                             consultar();
                         } else {
                             String mensaje = getBundleMensaje("error.actualizar.ciudadano", null);

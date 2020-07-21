@@ -112,7 +112,7 @@
                                      requiredMessage="Turno-#{mensajes['requerido']}" />
                         <p:commandButton id="btnAtendido" value="#{etiquetas['atendido']}"
                                          icon="ui-icon-document" style="FONT-WEIGHT: bold;"
-                                         update="msgMensajes dtbRegistros" process="@this txtTurno"
+                                         update="msgMensajes dtbRegistros formInicio:dtbCiudadanos" process="@this txtTurno"
                                          action="#{administracionRMCtrl.ciudadanoAtendido()}"> 
                             <!--  oncomplete="actualizarTabla()" -->					
 
