@@ -71,6 +71,32 @@ public class TurnoServicioImpl extends GenericServiceImpl<Turno, Integer> implem
         }
 
     }
+    
+    @Override
+    public Turno buscarTurno(String validador, Integer registroMercantilId) {
+        try {
+            String[] criteriasPropiedad = {"validador", "registroMercantil.registroMercantilId"};
+            CriteriaTypeEnum[] citeriaOperador = {CriteriaTypeEnum.STRING_EQUALS, CriteriaTypeEnum.INTEGER_EQUALS};
+            Object[] criteriaValores = {validador, registroMercantilId};
+
+            Criteria criteria = new Criteria(criteriasPropiedad, citeriaOperador, criteriaValores);
+
+            List<Turno> lista = findByCriterias(criteria);
+            Turno turno = new Turno();
+            if (lista.isEmpty()) {
+                return null;
+            } else {
+                for (Turno item : lista) {
+                    turno = item;
+                }
+                return turno;
+            }
+
+        } catch (Exception e) {
+            return null;
+        }
+
+    }
 
     @Override
     public Integer getTurnosDisponibles(Integer ventanillas, Date dia, String hora, Integer registroMercantilId) {

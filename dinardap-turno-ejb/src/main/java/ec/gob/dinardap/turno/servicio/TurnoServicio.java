@@ -13,6 +13,8 @@ public interface TurnoServicio extends GenericService<Turno, Integer> {
     public void crearTurno(Turno turno);
 
     public Turno buscarTurno(String validador);
+    
+    public Turno buscarTurno(String validador, Integer registroMercantilId);
 
     public Boolean actualizarAtendido(Turno turno);
 
