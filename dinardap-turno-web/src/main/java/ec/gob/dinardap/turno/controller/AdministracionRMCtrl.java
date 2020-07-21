@@ -24,6 +24,7 @@ import ec.gob.dinardap.turno.modelo.Usuario;
 import ec.gob.dinardap.turno.servicio.RegistroMercantilServicio;
 import ec.gob.dinardap.turno.servicio.TurnoServicio;
 import ec.gob.dinardap.turno.servicio.UsuarioServicio;
+import org.primefaces.PrimeFaces;
 
 @Named(value = "administracionRMCtrl")
 @ViewScoped
@@ -65,8 +66,82 @@ public class AdministracionRMCtrl extends BaseCtrl {
         //Turno turno = new Turno();
     }
 
+    public void atenderTurno() {
+        Short atendido = EstadoTurnoEnum.ATENDIDO.getEstado();
+        Short agendado = EstadoTurnoEnum.AGENDADO.getEstado();
+        turno = turnoServicio.buscarTurno(validador);
+
+        if (buscarCiudadanosAtendidos(validador) == false) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, getBundleMensaje("sin.informacion", null), ""));
+        } else if (buscarCiudadanosAtendidos(validador) == true) {
+            if (turno.getEstado().equals(atendido)) {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Turno Atendido", "El Turno de: " + turno.getHora() + ", perteneciente al ciudadano " + turno.getNombre()
+                        + ", con cédula: " + turno.getCedula() + ". Fue atendido."
+                ));
+            } else if (turno.getEstado().equals(agendado)) {
+                if (new SimpleDateFormat("yyyy-MM-dd").format(new Date()).equals(new SimpleDateFormat("yyyy-MM-dd").format(turno.getDia()))) {
+                    PrimeFaces current = PrimeFaces.current();
+                    current.executeScript("PF('informacionTurnoDlg').show();");
+                } else {
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                            "La fecha de atención es diferente a la fecha del turno agendado", ""));
+                }
+            }
+        }
+    }
+
     public void onRowSelectHora() {
         turnoList = turnoServicio.getTurnos(registroMercantilId, fecha, horaSeleccionada.getHora());
+    }
+
+    public void ciudadanoAtendido() {
+        try {
+            Short atendido = EstadoTurnoEnum.ATENDIDO.getEstado();
+            Short agendado = EstadoTurnoEnum.AGENDADO.getEstado();
+
+            if (buscarCiudadanosAtendidos(validador) == false) {
+                String mensaje = getBundleMensaje("sin.informacion", null);
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR, mensaje, ""));
+
+            } else if (buscarCiudadanosAtendidos(validador) == true) {
+                System.out.println("obj" + turno.getEstado());
+                if (turno.getEstado() == atendido) {
+                    String mensaje = getBundleMensaje("error.atendido", null);
+                    FacesContext.getCurrentInstance().addMessage(null,
+                            new FacesMessage(FacesMessage.SEVERITY_ERROR, mensaje, ""));
+                }
+                if (turno.getEstado() == agendado) {
+                    if (fechaEstadoAtendido(turno.getDia()) == true) {
+                        turno.setEstado(atendido);
+                        turno.setAtendidoPor(getLoggedUser());
+                        if (turnoServicio.actualizarAtendido(turno) == true) {
+                            String mensaje = getBundleMensaje("ciudadano.atendido", null);
+                            addInfoMessage(mensaje, null);
+                            turnoList = turnoServicio.getTurnos(registroMercantilId, fecha, horaSeleccionada.getHora());
+                            consultar();
+                            PrimeFaces current = PrimeFaces.current();
+                            current.executeScript("PF('informacionTurnoDlg').hide();");
+                        } else {
+                            String mensaje = getBundleMensaje("error.actualizar.ciudadano", null);
+                            FacesContext.getCurrentInstance().addMessage(null,
+                                    new FacesMessage(FacesMessage.SEVERITY_ERROR, mensaje, ""));
+                        }
+                    } else {
+
+                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                                "La fecha de atención es diferente a la fecha del turno agendado", ""));
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            String mensaje = getBundleMensaje("sin.informacion", null);
+            addErrorMessage(null, mensaje, null);
+            e.printStackTrace();
+
+        }
+
     }
 
     public List<RegistroMercantil> getRegistroMercantil() {
@@ -213,55 +288,7 @@ public class AdministracionRMCtrl extends BaseCtrl {
 
     }
 
-    public void ciudadanoAtendido() {
-        try {
-            Short atendido = EstadoTurnoEnum.ATENDIDO.getEstado();
-            Short agendado = EstadoTurnoEnum.AGENDADO.getEstado();
-
-            if (buscarCiudadanosAtendidos(validador) == false) {
-                String mensaje = getBundleMensaje("sin.informacion", null);
-                // addErrorMessage(null, mensaje, null);
-                FacesContext.getCurrentInstance().addMessage(null,
-                        new FacesMessage(FacesMessage.SEVERITY_ERROR, mensaje, ""));
-
-            } else if (buscarCiudadanosAtendidos(validador) == true) {
-                System.out.println("obj" + turno.getEstado());
-                if (turno.getEstado() == atendido) {
-                    String mensaje = getBundleMensaje("error.atendido", null);
-                    FacesContext.getCurrentInstance().addMessage(null,
-                            new FacesMessage(FacesMessage.SEVERITY_ERROR, mensaje, ""));
-
-                    // FacesContext.getCurrentInstance().addMessage(null, new
-                    // FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Contact admin."));
-                }
-                if (turno.getEstado() == agendado) {
-                    if (fechaEstadoAtendido(turno.getDia()) == true) {
-                        turno.setEstado(atendido);
-                        turno.setAtendidoPor(getLoggedUser());
-                        if (turnoServicio.actualizarAtendido(turno) == true) {
-                            String mensaje = getBundleMensaje("ciudadano.atendido", null);
-                            addInfoMessage(mensaje, null);
-                            turnoList = turnoServicio.getTurnos(registroMercantilId, fecha, horaSeleccionada.getHora());
-                            consultar();
-                        } else {
-                            String mensaje = getBundleMensaje("error.actualizar.ciudadano", null);
-                            FacesContext.getCurrentInstance().addMessage(null,
-                                    new FacesMessage(FacesMessage.SEVERITY_ERROR, mensaje, ""));
-                        }
-                    } else {
-
-                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                                "La fecha de atención es diferente a la fecha del turno agendado", ""));
-                    }
-                }
-            }
-
-        } catch (Exception e) {
-            String mensaje = getBundleMensaje("sin.informacion", null);
-            addErrorMessage(null, mensaje, null);
-            e.printStackTrace();
-
-        }
+    public void getInfoTurno() {
 
     }
 
@@ -280,6 +307,14 @@ public class AdministracionRMCtrl extends BaseCtrl {
 
     public void setTurnoList(List<Turno> turnoList) {
         this.turnoList = turnoList;
+    }
+
+    public Turno getTurno() {
+        return turno;
+    }
+
+    public void setTurno(Turno turno) {
+        this.turno = turno;
     }
 
 }

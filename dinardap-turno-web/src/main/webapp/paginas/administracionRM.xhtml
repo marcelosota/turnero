@@ -13,6 +13,67 @@
         <ui:define name="content">
             <h1 class="h-wai">#{etiquetas['nombre.sistema']} - Administración Turnos Registro Mercantil
                 Registro mercantil</h1>
+
+            <p:dialog id="informacionTurnoDlg"
+                      widgetVar="informacionTurnoDlg"
+                      header="Información de Turnos"
+                      modal="true"  
+                      resizable="false"
+                      style="text-align:center">
+                <h:form id="formInformacionTurnoDlg">
+                    <!--<p:scrollPanel mode="native" styleClass="scrollA">-->
+                    <p:panelGrid style="width: 100%">
+                        <f:facet name="header">
+                            <p:row>
+                                <p:column colspan="2"><h:outputText value="Información de Turnos" /></p:column>
+                            </p:row>
+                        </f:facet>                        
+                        <p:row>
+                            <p:column style="font-weight: bold;">Cédula:</p:column>
+                            <p:column>
+                                <h:outputText
+                                    value="#{administracionRMCtrl.turno.cedula}" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column style="font-weight: bold;">Nombre:</p:column>
+                            <p:column>
+                                <h:outputText
+                                    value="#{administracionRMCtrl.turno.nombre}" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column style="font-weight: bold;">Fecha:</p:column>
+                            <p:column>
+                                <h:outputText
+                                    value="#{administracionRMCtrl.turno.dia}">
+                                    <f:convertDateTime pattern="yyyy-MM-dd" />
+                                </h:outputText>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column style="font-weight: bold;">Hora:</p:column>
+                            <p:column>
+                                <h:outputText
+                                    value="#{administracionRMCtrl.turno.hora}" />
+                            </p:column>
+                        </p:row>
+                    </p:panelGrid>
+                    <p:panelGrid id="turnoNoGenerado" columns="2" style="text-align: center; width: 100%">
+                        <f:facet name="header">
+                            <p:row>
+                                <p:column colspan="2"><h:outputText value="¿Desea atender el Turno Seleccionado?" /></p:column>
+                            </p:row>
+                        </f:facet>                        
+                        <p:commandButton value="Atender" action="#{administracionRMCtrl.ciudadanoAtendido}" update="msgMensajes formInicio:dtbRegistros formInicio:dtbCiudadanos informacionTurnoDlg"/>
+                        <p:commandButton value="Cancelar" oncomplete="PF('informacionTurnoDlg').hide();"/>
+                    </p:panelGrid>
+                    <!--</p:scrollPanel>-->
+                </h:form>
+
+            </p:dialog>
+
+
             <h:form id="formInicio">
                 <p:remoteCommand name="actualizarTabla"
                                  action="#{administracionRMCtrl.consultar}" />
@@ -112,10 +173,8 @@
                                      requiredMessage="Turno-#{mensajes['requerido']}" />
                         <p:commandButton id="btnAtendido" value="#{etiquetas['atendido']}"
                                          icon="ui-icon-document" style="FONT-WEIGHT: bold;"
-                                         update="msgMensajes dtbRegistros formInicio:dtbCiudadanos" process="@this txtTurno"
-                                         action="#{administracionRMCtrl.ciudadanoAtendido()}"> 
-                            <!--  oncomplete="actualizarTabla()" -->					
-
+                                         update="msgMensajes dtbRegistros formInicio:dtbCiudadanos informacionTurnoDlg" process="@this txtTurno"
+                                         action="#{administracionRMCtrl.atenderTurno}"> 
                         </p:commandButton>
                         <p:tooltip for="btnAtendido" value="#{mensajes['atendido']}" />
                     </h:panelGrid>
