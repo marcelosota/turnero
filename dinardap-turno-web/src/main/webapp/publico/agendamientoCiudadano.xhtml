@@ -64,15 +64,21 @@
                             </p:column>
                         </p:row>
                         <p:row>
-                            <p:column colspan="2">
+                            <p:column colspan="2" style="text-align: justify">
                                 <h:outputText value="NOTA: Turno válido únicamente para un trámite."
-                                              style="font-size: 16pt;font-weight:900;" />                                
+                                              style="font-size: 14pt;font-weight:900;" />                                
                             </p:column>
                         </p:row>
                         <p:row>
-                            <p:column colspan="2">
+                            <p:column colspan="2" style="text-align: justify">
                                 <h:outputText value="#{etiquetas['mensaje.informativo']}"
-                                              style="font-size: 16pt;font-weight:900; color: #EC6508" />
+                                              style="font-size: 12pt;font-weight:900; color: #EC6508" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column colspan="2" style="text-align: justify">
+                                <h:outputText value="#{etiquetas['mensaje.informativoPuntualidad']}"
+                                              style="font-size: 12pt;font-weight:900; color: #EC6508" />
                             </p:column>
                         </p:row>
                         <p:row>
@@ -100,7 +106,7 @@
                 <h:form id="formAgendarTurno">
                     <b:panel style="width: 100%">
                         <b:panelGrid colSpans="12">
-                        	<h:outputLabel value="#{etiquetas['recordatorio.turno']}"/>
+                            <h:outputLabel value="#{etiquetas['recordatorio.turno']}"/>
                             <h:outputLabel
                                 value="Usted seleccionó el horario de: #{agendamientoCiudadanoCtrl.horarioDTOSelected.hora}.¿Desea agendar su Turno para este Horario?" />
                         </b:panelGrid>
