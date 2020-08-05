@@ -119,8 +119,8 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
         turnoGenerado = new Turno();
         PlanificacionRegistro planificacionRegistro = null;
         planificacionRegistro = planificacionRegistroServicio.getPlanificacionRegistro(turno.getRegistroMercantil().getRegistroMercantilId());
-        String nombreCiudadano = "Chris";//Añadir el metodo getNombreCiudadano para consumir el ws de Jady
-//        String nombreCiudadano = getNombreCiudadano();
+//        String nombreCiudadano = "Chris";//Añadir el metodo getNombreCiudadano para consumir el ws de Jady
+        String nombreCiudadano = getNombreCiudadano();
         horarioDTOList = new ArrayList<HorarioDTO>();
         if (planificacionRegistro.getPlanificacionId() != null) {
             if (nombreCiudadano != null) {
