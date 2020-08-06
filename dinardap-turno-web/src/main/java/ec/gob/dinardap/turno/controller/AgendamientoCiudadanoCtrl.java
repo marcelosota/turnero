@@ -32,6 +32,9 @@ import ec.gob.dinardap.turno.modelo.Turno;
 import ec.gob.dinardap.turno.servicio.PlanificacionRegistroServicio;
 import ec.gob.dinardap.turno.servicio.RegistroMercantilServicio;
 import ec.gob.dinardap.turno.servicio.TurnoServicio;
+import java.text.ParseException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Named(value = "agendamientoCiudadanoCtrl")
 @ViewScoped
@@ -294,7 +297,19 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
                 if (horaActual.getTime().before(horaInicio.getTime())) {
                     horarioList.add(horario);
                 }
-                horaInicio.add(Calendar.MINUTE, pr.getDuracionTramite());
+                try {
+                    //Validacion eventual para 7 de septiembre
+                    Date fechaCambio = new SimpleDateFormat("yyyy-MM-dd").parse("2020-09-06");
+                    if (turno.getDia().after(fechaCambio)
+                            && turno.getRegistroMercantil().getRegistroMercantilId() == 11) {
+                        horaInicio.add(Calendar.MINUTE, 5);
+                    } else {
+                        horaInicio.add(Calendar.MINUTE, pr.getDuracionTramite());
+                    }
+                } catch (ParseException ex) {
+                    Logger.getLogger(AgendamientoCiudadanoCtrl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
             }
         } else {
             renderHorarios = Boolean.FALSE;
