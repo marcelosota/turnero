@@ -6,6 +6,9 @@
 		<class>ec.gob.dinardap.turno.modelo.PlanificacionRegistro</class>
 		<class>ec.gob.dinardap.turno.modelo.RegistroMercantil</class>
 		<class>ec.gob.dinardap.turno.modelo.Turno</class>
+		<class>ec.gob.dinardap.turno.modelo.TipoRestriccion</class>
+		<class>ec.gob.dinardap.turno.modelo.Baneo</class>
+		<class>ec.gob.dinardap.turno.modelo.Turno</class>
 		<class>ec.gob.dinardap.turno.modelo.UsuarioT</class>
 		<class>ec.gob.dinardap.seguridad.modelo.Asignacion</class>
 		<class>ec.gob.dinardap.seguridad.modelo.AsignacionInstitucion</class>
