@@ -43,47 +43,47 @@ import javax.xml.bind.annotation.XmlTransient;
 public class TipoRestriccion implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "tipo_restriccion_id")
     private Integer tipoRestriccionId;
-    
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 64)
     @Column(name = "parametro")
     private String parametro;
-    
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "cuota_permitida")
-    private int cuotaPermitida;
-    
+    private Integer cuotaPermitida;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "dias_analisis")
-    private int diasAnalisis;
-    
+    private Integer diasAnalisis;
+
     @Column(name = "dias_baneo")
     private Integer diasBaneo;
-    
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "fecha_creacion")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaCreacion;
-    
+
     @Column(name = "fecha_modificacion")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaModificacion;
-    
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "estado")
     private short estado;
-    
+
     @OneToMany(mappedBy = "tipoRestriccion")
     private List<Baneo> baneoList;
 
@@ -119,19 +119,19 @@ public class TipoRestriccion implements Serializable {
         this.parametro = parametro;
     }
 
-    public int getCuotaPermitida() {
+    public Integer getCuotaPermitida() {
         return cuotaPermitida;
     }
 
-    public void setCuotaPermitida(int cuotaPermitida) {
+    public void setCuotaPermitida(Integer cuotaPermitida) {
         this.cuotaPermitida = cuotaPermitida;
     }
 
-    public int getDiasAnalisis() {
+    public Integer getDiasAnalisis() {
         return diasAnalisis;
     }
 
-    public void setDiasAnalisis(int diasAnalisis) {
+    public void setDiasAnalisis(Integer diasAnalisis) {
         this.diasAnalisis = diasAnalisis;
     }
 

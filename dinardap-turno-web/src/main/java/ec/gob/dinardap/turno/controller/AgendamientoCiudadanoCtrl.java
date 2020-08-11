@@ -26,9 +26,11 @@ import ec.gob.dinardap.turno.constante.EstadoTurnoEnum;
 import ec.gob.dinardap.turno.constante.InteroperabilidadEnum;
 import ec.gob.dinardap.turno.constante.ParametroEnum;
 import ec.gob.dinardap.turno.dto.HorarioDTO;
+import ec.gob.dinardap.turno.modelo.Baneo;
 import ec.gob.dinardap.turno.modelo.PlanificacionRegistro;
 import ec.gob.dinardap.turno.modelo.RegistroMercantil;
 import ec.gob.dinardap.turno.modelo.Turno;
+import ec.gob.dinardap.turno.servicio.BaneoServicio;
 import ec.gob.dinardap.turno.servicio.PlanificacionRegistroServicio;
 import ec.gob.dinardap.turno.servicio.RegistroMercantilServicio;
 import ec.gob.dinardap.turno.servicio.TurnoServicio;
@@ -80,6 +82,9 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
     @EJB
     private ClienteQueueMailServicio clienteQueueMailServicio;
 
+    @EJB
+    private BaneoServicio baneoServicio;
+
     @PostConstruct
     protected void init() {
         tituloPagina = "Agendamiento de Turnos";
@@ -119,8 +124,8 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
         turnoGenerado = new Turno();
         PlanificacionRegistro planificacionRegistro = null;
         planificacionRegistro = planificacionRegistroServicio.getPlanificacionRegistro(turno.getRegistroMercantil().getRegistroMercantilId());
-//        String nombreCiudadano = "Chris";//Añadir el metodo getNombreCiudadano para consumir el ws de Jady
-        String nombreCiudadano = getNombreCiudadano();
+        String nombreCiudadano = "Chris";//Añadir el metodo getNombreCiudadano para consumir el ws de Jady
+//        String nombreCiudadano = getNombreCiudadano();
         horarioDTOList = new ArrayList<HorarioDTO>();
         if (planificacionRegistro.getPlanificacionId() != null) {
             if (nombreCiudadano != null) {
@@ -130,7 +135,9 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
                     diaTurno.setTime(turno.getDia());
                     String dayOfWeek = diaTurno.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.US).toUpperCase();
                     if (!dayOfWeek.equals("SUNDAY") && !dayOfWeek.equals("SATURDAY")) {
-                        horarioDTOList = generacionListadoHorario(planificacionRegistro);
+                        if (!ban(turno.getCedula(), turno.getCorreoElectronico(), turno.getCelular())) {
+                            horarioDTOList = generacionListadoHorario(planificacionRegistro);
+                        }
                     } else {
                         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia", "Turnos no disponibles para fines de semana."));
                     }
@@ -140,6 +147,65 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
             }
         } else {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El Registro Mercantil seleccionado no cuenta con una planificación"));
+        }
+    }
+
+    private Boolean ban(String identificación, String correoElectronico, String celular) {
+        //Falso si no esta ban
+        Boolean validacion = Boolean.FALSE;
+
+        List<Baneo> banList = new ArrayList<Baneo>();
+        banList = baneoServicio.getBanList(1);
+        for (Baneo b : banList) {
+            if (b.getValor().equals(identificación)) {
+                if (rangoFechas(b.getFechaInicio(), b.getFechaFin())) {
+                    validacion = Boolean.TRUE;
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Prohibición", getBundleMensaje("prohibicion.cedula", null)));
+                    break;
+                }
+            }
+        }
+
+        banList = new ArrayList<Baneo>();
+        banList = baneoServicio.getBanList(2);
+        for (Baneo b : banList) {
+            if (b.getValor().equals(correoElectronico)) {
+                if (rangoFechas(b.getFechaInicio(), b.getFechaFin())) {
+                    validacion = Boolean.TRUE;
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Prohibición", getBundleMensaje("prohibicion.correoElectronico", null)));
+                    break;
+                }
+            }
+        }
+
+        banList = new ArrayList<Baneo>();
+        banList = baneoServicio.getBanList(3);
+        for (Baneo b : banList) {
+            if (b.getValor().equals(celular)) {
+                if (rangoFechas(b.getFechaInicio(), b.getFechaFin())) {
+                    validacion = Boolean.TRUE;
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Prohibición", getBundleMensaje("prohibicion.celular", null)));
+                    break;
+                }
+            }
+        }
+
+        return validacion;
+    }
+
+    private Boolean rangoFechas(Date fechaInicio, Date fechaFin) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date fechaActual = sdf.parse(sdf.format(new Date()));
+            fechaFin = fechaFin == null ? new SimpleDateFormat("yyyy-MM-dd").parse("3000-01-01") : fechaFin;
+            if ((!fechaInicio.after(fechaActual) && !fechaFin.before(fechaActual))) {
+                return Boolean.TRUE;
+            } else {
+                return Boolean.FALSE;
+            }
+        } catch (ParseException ex) {
+            Logger.getLogger(AgendamientoCiudadanoCtrl.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         }
     }
 
@@ -289,6 +355,7 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
         horaFin.set(Calendar.MILLISECOND, 0);
 
         if (turnoServicio.validacionDiariaPersona(turno)) {
+
             renderHorarios = Boolean.TRUE;
             renderInformacionTurno = Boolean.FALSE;
             while (horaInicio.getTime().before(horaFin.getTime())) {
@@ -311,6 +378,7 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
                 }
 
             }
+
         } else {
             renderHorarios = Boolean.FALSE;
             renderInformacionTurno = Boolean.TRUE;

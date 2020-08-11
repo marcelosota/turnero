@@ -39,24 +39,29 @@ import javax.validation.constraints.Size;
 public class Baneo implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "baneo_id")
     private Integer baneoId;
+    
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 128)
     @Column(name = "valor")
     private String valor;
+    
     @Basic(optional = false)
     @NotNull
     @Column(name = "fecha_inicio")
     @Temporal(TemporalType.DATE)
     private Date fechaInicio;
+    
     @Column(name = "fecha_fin")
     @Temporal(TemporalType.DATE)
     private Date fechaFin;
+    
     @Basic(optional = false)
     @NotNull
     @Column(name = "estado")

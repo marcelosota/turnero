@@ -4,16 +4,14 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:b="http://bootsfaces.net/ui"
-      xmlns:p="http://primefaces.org/ui">    
+      xmlns:p="http://primefaces.org/ui">
     <ui:composition template="/template/general.xhtml">
         <ui:define name="content">        
-            <h1 class="h-wai">#{etiquetas['nombre.sistema']} - #{tipoRestriccionCtrl.tituloPagina}</h1>
+            <h1 class="h-wai">#{etiquetas['nombre.sistema']} - #{etiquetas['nombre.tipoRestriccion']}</h1>
 
-            <h:form id="formTipoRestriccion">                
-                <!--                <p:remoteCommand name="onSelectRowTramite" 
-                                                 update="formTramiteSelected"/>-->
-                <b:panel title="Tipos de Restricción">
-                    <h:panelGrid columns="1" style="width: 60%;">                        
+            <h:form id="formTipoRestriccion">
+                <b:panel title="#{etiquetas['nombre.tipoRestriccion']}">
+                    <h:panelGrid columns="1" style="width: 60%;">
                         <p:dataTable id="tipoRestriccionTbl"
                                      value="#{tipoRestriccionCtrl.tipoRestriccionList}" 
                                      var="tipoRestriccion"
@@ -24,27 +22,27 @@
                                      paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                      rowsPerPageTemplate="5,10,25,50"
                                      tableStyle="width:auto">
-                            <p:ajax event="rowSelect" listener="#{tipoRestriccionCtrl.onRowSelectTipoRestriccion}" update="formTipoRestriccion:btnBorrarTipoRestriccion, formTipoRestriccionSelected"/>
-                            <p:column headerText="Parametro" 
+                            <p:ajax event="rowSelect" listener="#{tipoRestriccionCtrl.onRowSelectTipoRestriccion}" update="formTipoRestriccion, formTipoRestriccionSelected"/>
+                            <p:column headerText="#{etiquetas['nombre.parametro']}" 
                                       sortBy="#{tipoRestriccion.parametro}"
                                       filterBy="#{tipoRestriccion.parametro}" 
                                       filterMatchMode="contains" width="25%" 
                                       style="text-align: center">
                                 <h:outputText value="#{tipoRestriccion.parametro}" />
                             </p:column>
-                            <p:column headerText="Cuota Permitida" 
+                            <p:column headerText="#{etiquetas['nombre.cuotaPermitida']}" 
                                       sortBy="#{tipoRestriccion.cuotaPermitida}"
                                       width="25%"
                                       style="text-align: right">
                                 <h:outputText value="#{tipoRestriccion.cuotaPermitida}" />
                             </p:column>
-                            <p:column headerText="Días Análisis" 
+                            <p:column headerText="#{etiquetas['nombre.diasAnalisis']}" 
                                       sortBy="#{tipoRestriccion.diasAnalisis}"
                                       width="25%"
                                       style="text-align: right">
                                 <h:outputText value="#{tipoRestriccion.diasAnalisis}" />
                             </p:column>
-                            <p:column headerText="Días Baneo" 
+                            <p:column headerText="#{etiquetas['nombre.diasBaneo']}" 
                                       sortBy="#{tipoRestriccion.diasBaneo}"
                                       width="25%"
                                       style="text-align: right">
@@ -53,61 +51,59 @@
                         </p:dataTable>                          
                     </h:panelGrid>
                     <b:panelGrid id="btnPnl" colSpans="4,4,4" style="width: 75%; margin: 4px 5px;">
-                        <p:commandButton value="Nuevo Tipo de Restricción"
+                        <p:commandButton value="#{etiquetas['nombre.nuevoTipoRestriccion']}"
                                          action="#{tipoRestriccionCtrl.nuevoTipoRestriccion}"
                                          style="margin-right:20px; width: 100%"                                          
                                          icon="fa fa-fw fa-plus-square"
                                          update="formTipoRestriccion:btnBorrarTipoRestriccion, formTipoRestriccionSelected"
                                          disabled="false"/>
                         <p:commandButton id="btnBorrarTipoRestriccion"
-                                         value="Borrar Tipo de Restricción"
+                                         value="#{etiquetas['nombre.eliminarTipoRestriccion']}"
                                          action="#{tipoRestriccionCtrl.eliminarTipoRestriccion}"
                                          style="margin-right:20px; width: 100%"                                          
                                          icon="fa fa-fw fa-trash"
-                                         update="formTipoRestriccion"
+                                         update="formTipoRestriccion, formTipoRestriccionSelected"
                                          disabled="#{tipoRestriccionCtrl.disableDeleteTipoRestriccion}">
-                            <p:confirm header="Confirmación" message="¿Está seguro que desea eliminar el Tipo de Restricción Seleccionado?" icon="fa fa-fw fa-warning" />
-                        </p:commandButton>
-                        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-                            <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="fa fa-fw fa-check" />
-                            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="fa fa-fw fa-remove" />
-                        </p:confirmDialog>
+                            <p:confirm header="Confirmación" message="#{mensajes['confirmacion.eliminarTipoRestriccion']}" icon="fa fa-fw fa-warning" />
+                            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                                <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="fa fa-fw fa-check" />
+                                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="fa fa-fw fa-remove" />
+                            </p:confirmDialog>
+                        </p:commandButton>                        
                     </b:panelGrid>
                 </b:panel>
-
             </h:form>
-
             <h:form id="formTipoRestriccionSelected" >
                 <b:panel style="width: 60%" rendered="#{tipoRestriccionCtrl.renderEdition}">
                     <b:panelGrid colSpans="3,9" style="width: 100%; margin: 4px 5px;">
 
-                        <p:outputLabel for="parametro" value="Parámetro:" />
+                        <p:outputLabel for="parametro" value="#{etiquetas['nombre.parametro']}:" />
                         <p:inputText id="parametro" value="#{tipoRestriccionCtrl.tipoRestriccionSelected.parametro}" 
                                      style="width: 90%" required="true"/>
 
-                        <p:outputLabel for="cuota" value="Cuota:" />
+                        <p:outputLabel for="cuota" value="#{etiquetas['nombre.cuotaPermitida']}:" />
                         <p:inputNumber id="cuota" value="#{tipoRestriccionCtrl.tipoRestriccionSelected.cuotaPermitida}" 
                                        decimalPlaces="0"
                                        inputStyle="width: 90%"
                                        required="true"/>  
 
-                        <p:outputLabel for="diasAnalisis" value="Días para el Análisis:" />
+                        <p:outputLabel for="diasAnalisis" value="#{etiquetas['nombre.diasAnalisis']}" />
                         <p:inputNumber id="diasAnalisis" value="#{tipoRestriccionCtrl.tipoRestriccionSelected.diasAnalisis}" 
                                        decimalPlaces="0"
                                        inputStyle="width: 90%" required="true"/>  
 
-                        <p:outputLabel for="diasBan" value="Días para Baneo:" />
+                        <p:outputLabel for="diasBan" value="#{etiquetas['nombre.diasBaneo']}" />
                         <p:inputNumber id="diasBan" value="#{tipoRestriccionCtrl.tipoRestriccionSelected.diasBaneo}" 
                                        decimalPlaces="0"
                                        inputStyle="width: 90%" required="true"/>  
 
-                    </b:panelGrid>    
+                    </b:panelGrid>      
                     <b:panelGrid colSpans="6,6" style="width: 100%; margin: 4px 5px; text-align: center;">
                         <p:commandButton value="#{tipoRestriccionCtrl.strBtnGuardar}" 
                                          action="#{tipoRestriccionCtrl.guardarTipoRestriccion}"
                                          style="margin-right:20px;" icon="fa fa-fw fa-save"
                                          update="formTipoRestriccion, formTipoRestriccionSelected, msgMensajes"/>  
-                        <p:commandButton value="Cancelar" id="cancelarBtn"
+                        <p:commandButton value="#{etiquetas['cancelar']}" id="cancelarBtn"
                                          action="#{tipoRestriccionCtrl.cancelar}"
                                          process="@this"
                                          update="formTipoRestriccion, formTipoRestriccionSelected"
@@ -115,7 +111,6 @@
                     </b:panelGrid>
                 </b:panel>
             </h:form>
-
         </ui:define>
     </ui:composition>
 </html>

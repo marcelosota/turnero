@@ -38,8 +38,6 @@ public class TipoRestriccionCtrl extends BaseCtrl implements Serializable {
     private Boolean onCreate;
     private Boolean onEdit;
 
-    private Boolean renderedNumeroRepertorio;
-
     //Variables de negocio
     private TipoRestriccion tipoRestriccionSelected;
 
@@ -77,7 +75,6 @@ public class TipoRestriccionCtrl extends BaseCtrl implements Serializable {
 
     public void nuevoTipoRestriccion() {
         tipoRestriccionSelected = new TipoRestriccion();
-        tipoRestriccionSelected.setDiasBaneo(0);
 
         strBtnGuardar = "Guardar";
 
@@ -87,16 +84,9 @@ public class TipoRestriccionCtrl extends BaseCtrl implements Serializable {
         disableDeleteTipoRestriccion = tipoRestriccionSelected.getTipoRestriccionId() == null;
         renderEdition = Boolean.TRUE;
 
-    }
+    }    
 
-    public void guardar() {
-        System.out.println("Hola");
-    }
-
-    public void guardarTipoRestriccion() {
-        System.out.println("Restriccion: " + tipoRestriccionSelected.getCuotaPermitida());
-        System.out.println("Restriccion: " + tipoRestriccionSelected.getDiasBaneo());
-        System.out.println("Restriccion: " + tipoRestriccionSelected.getDiasAnalisis());
+    public void guardarTipoRestriccion() {        
         if (onCreate) {
             tipoRestriccionSelected.setFechaCreacion(new Date());
             tipoRestriccionSelected.setEstado(EstadoEnum.ACTIVO.getEstado());
@@ -133,6 +123,7 @@ public class TipoRestriccionCtrl extends BaseCtrl implements Serializable {
         tipoRestriccionSelected = new TipoRestriccion();
         tipoRestriccionList = tipoRestriccionServicio.getTipoRestriccionList();
         disableDeleteTipoRestriccion = tipoRestriccionSelected.getTipoRestriccionId() == null;
+        renderEdition = Boolean.FALSE;
     }
 
     private void disableDeleteTipoRestriccion() {
