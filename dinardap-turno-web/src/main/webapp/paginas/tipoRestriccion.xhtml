@@ -9,9 +9,8 @@
         <ui:define name="content">        
             <h1 class="h-wai">#{etiquetas['nombre.sistema']} - #{tipoRestriccionCtrl.tituloPagina}</h1>
 
-            <h:form id="formTipoRestriccion">                
-                <!--                <p:remoteCommand name="onSelectRowTramite" 
-                                                 update="formTramiteSelected"/>-->
+            <!-- h:form id="formTipoRestriccion">                
+                
                 <b:panel title="Tipos de Restricción">
                     <h:panelGrid columns="1" style="width: 60%;">                        
                         <p:dataTable id="tipoRestriccionTbl"
@@ -75,10 +74,10 @@
                     </b:panelGrid>
                 </b:panel>
 
-            </h:form>
+            </h:form>-->
 
             <h:form id="formTipoRestriccionSelected" >
-                <b:panel style="width: 60%" rendered="#{tipoRestriccionCtrl.renderEdition}">
+                <b:panel style="width: 60%">
                     <b:panelGrid colSpans="3,9" style="width: 100%; margin: 4px 5px;">
 
                         <p:outputLabel for="parametro" value="Parámetro:" />
@@ -86,31 +85,26 @@
                                      style="width: 90%" required="true"/>
 
                         <p:outputLabel for="cuota" value="Cuota:" />
-                        <p:inputNumber id="cuota" value="#{tipoRestriccionCtrl.tipoRestriccionSelected.cuotaPermitida}" 
-                                       decimalPlaces="0"
-                                       inputStyle="width: 90%"
-                                       required="true"/>  
+                        <p:inputText id="cuota" value="#{tipoRestriccionCtrl.tipoRestriccionSelected.cuotaPermitida}" 									
+                                    required="true"/>  
 
                         <p:outputLabel for="diasAnalisis" value="Días para el Análisis:" />
-                        <p:inputNumber id="diasAnalisis" value="#{tipoRestriccionCtrl.tipoRestriccionSelected.diasAnalisis}" 
-                                       decimalPlaces="0"
-                                       inputStyle="width: 90%" required="true"/>  
+                        <p:inputText id="diasAnalisis" value="#{tipoRestriccionCtrl.tipoRestriccionSelected.diasAnalisis}" 
+                                     required="true"/>  
 
                         <p:outputLabel for="diasBan" value="Días para Baneo:" />
-                        <p:inputNumber id="diasBan" value="#{tipoRestriccionCtrl.tipoRestriccionSelected.diasBaneo}" 
-                                       decimalPlaces="0"
-                                       inputStyle="width: 90%" required="true"/>  
+                        <p:inputText id="diasBan" value="#{tipoRestriccionCtrl.tipoRestriccionSelected.diasBaneo}" 
+                                     required="true"/>  
 
                     </b:panelGrid>    
                     <b:panelGrid colSpans="6,6" style="width: 100%; margin: 4px 5px; text-align: center;">
-                        <p:commandButton value="#{tipoRestriccionCtrl.strBtnGuardar}" 
+                        <p:commandButton value="#{etiquetas['guardar']}" 
                                          action="#{tipoRestriccionCtrl.guardarTipoRestriccion}"
-                                         style="margin-right:20px;" icon="fa fa-fw fa-save"
-                                         update="formTipoRestriccion, formTipoRestriccionSelected, msgMensajes"/>  
+                                         style="margin-right:20px;" icon="fa fa-fw fa-save" />  
                         <p:commandButton value="Cancelar" id="cancelarBtn"
                                          action="#{tipoRestriccionCtrl.cancelar}"
                                          process="@this"
-                                         update="formTipoRestriccion, formTipoRestriccionSelected"
+                                         update="formTipoRestriccionSelected"
                                          style="margin-right:20px;" icon="fa fa-fw fa-ban"/>
                     </b:panelGrid>
                 </b:panel>

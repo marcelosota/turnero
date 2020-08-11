@@ -26,7 +26,11 @@ import javax.inject.Named;
 @ViewScoped
 public class TipoRestriccionCtrl extends BaseCtrl implements Serializable {
 
-    //Declaración de variables
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	//Declaración de variables
     //Variables de control visual
     private String tituloPagina;
     private String strBtnGuardar;
@@ -38,7 +42,7 @@ public class TipoRestriccionCtrl extends BaseCtrl implements Serializable {
     private Boolean onCreate;
     private Boolean onEdit;
 
-    private Boolean renderedNumeroRepertorio;
+    //private Boolean renderedNumeroRepertorio;
 
     //Variables de negocio
     private TipoRestriccion tipoRestriccionSelected;
@@ -135,9 +139,9 @@ public class TipoRestriccionCtrl extends BaseCtrl implements Serializable {
         disableDeleteTipoRestriccion = tipoRestriccionSelected.getTipoRestriccionId() == null;
     }
 
-    private void disableDeleteTipoRestriccion() {
+    /*private void disableDeleteTipoRestriccion() {
         disableDeleteTipoRestriccion = tipoRestriccionSelected.getTipoRestriccionId() != null;
-    }
+    }*/
 
     //Getters & Setters
     public String getTituloPagina() {
