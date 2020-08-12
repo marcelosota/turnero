@@ -54,6 +54,7 @@ public class LoginCtrl extends BaseCtrl {
 			session.setAttribute("tipoEntidad", registroMercantil.getTipo());
 			session.setAttribute("usuario", usuario.getCedula());
 			session.setAttribute("perfil", usuario.getPerfil().getNombre());
+			session.setAttribute("institucion", getEntidad());
 			ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
 			try {
 				limpiarCampos();

@@ -1,14 +1,6 @@
 package ec.gob.dinardap.turno.controller;
 
-//import ec.gob.dinardap.remanente.modelo.CatalogoTransaccion;
-//import ec.gob.dinardap.remanente.modelo.RemanenteMensual;
-//import ec.gob.dinardap.remanente.modelo.Tramite;
-//import ec.gob.dinardap.remanente.modelo.Transaccion;
-//import ec.gob.dinardap.remanente.servicio.CatalogoTransaccionServicio;
-//import ec.gob.dinardap.remanente.servicio.DiasNoLaborablesServicio;
-//import ec.gob.dinardap.remanente.servicio.RemanenteMensualServicio;
-//import ec.gob.dinardap.remanente.servicio.TramiteServicio;
-//import ec.gob.dinardap.remanente.servicio.TransaccionServicio;
+
 import ec.gob.dinardap.turno.modelo.TipoRestriccion;
 import ec.gob.dinardap.turno.servicio.TipoRestriccionServicio;
 import ec.gob.dinardap.util.constante.EstadoEnum;
@@ -42,7 +34,6 @@ public class TipoRestriccionCtrl extends BaseCtrl implements Serializable {
     private Boolean onCreate;
     private Boolean onEdit;
 
-    //private Boolean renderedNumeroRepertorio;
 
     //Variables de negocio
     private TipoRestriccion tipoRestriccionSelected;
@@ -81,7 +72,6 @@ public class TipoRestriccionCtrl extends BaseCtrl implements Serializable {
 
     public void nuevoTipoRestriccion() {
         tipoRestriccionSelected = new TipoRestriccion();
-        tipoRestriccionSelected.setDiasBaneo(0);
 
         strBtnGuardar = "Guardar";
 
@@ -91,16 +81,9 @@ public class TipoRestriccionCtrl extends BaseCtrl implements Serializable {
         disableDeleteTipoRestriccion = tipoRestriccionSelected.getTipoRestriccionId() == null;
         renderEdition = Boolean.TRUE;
 
-    }
+    }    
 
-    public void guardar() {
-        System.out.println("Hola");
-    }
-
-    public void guardarTipoRestriccion() {
-        System.out.println("Restriccion: " + tipoRestriccionSelected.getCuotaPermitida());
-        System.out.println("Restriccion: " + tipoRestriccionSelected.getDiasBaneo());
-        System.out.println("Restriccion: " + tipoRestriccionSelected.getDiasAnalisis());
+    public void guardarTipoRestriccion() {        
         if (onCreate) {
             tipoRestriccionSelected.setFechaCreacion(new Date());
             tipoRestriccionSelected.setEstado(EstadoEnum.ACTIVO.getEstado());
@@ -137,6 +120,7 @@ public class TipoRestriccionCtrl extends BaseCtrl implements Serializable {
         tipoRestriccionSelected = new TipoRestriccion();
         tipoRestriccionList = tipoRestriccionServicio.getTipoRestriccionList();
         disableDeleteTipoRestriccion = tipoRestriccionSelected.getTipoRestriccionId() == null;
+        renderEdition = Boolean.FALSE;
     }
 
     /*private void disableDeleteTipoRestriccion() {
