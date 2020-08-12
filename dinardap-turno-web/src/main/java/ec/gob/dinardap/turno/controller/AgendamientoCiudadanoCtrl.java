@@ -119,6 +119,7 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
         return filteredRegistroMercantil;
     }
 
+    @SuppressWarnings("unused")
     public void buscarDisponibilidad() {
         renderCancelacionTurno = Boolean.FALSE;
         renderRemitirTurno = Boolean.FALSE;
@@ -139,7 +140,9 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
                         if (!ban(turno.getCedula(), turno.getCorreoElectronico(), turno.getCelular())) {
                             horarioDTOList = generacionListadoHorario(planificacionRegistro);
                         } else {
-                            //Validacion de Ban Registrados
+                            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Prohibición", getBundleMensaje("prohibicion.general", null)));
+                            PrimeFaces current = PrimeFaces.current();
+                            current.executeScript("PF('prohibicionDlg').show();");
                         }
                     } else {
                         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia", "Turnos no disponibles para fines de semana."));
@@ -172,7 +175,7 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
             if (b.getValor().equals(identificación)) {
                 if (rangoFechas(b.getFechaInicio(), b.getFechaFin())) {
                     validacion = Boolean.TRUE;
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Prohibición", getBundleMensaje("prohibicion.cedula", null)));
+                    //FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Prohibición", getBundleMensaje("prohibicion.cedula", null)));
                     break;
                 }
             }
@@ -184,7 +187,7 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
             if (b.getValor().equals(correoElectronico)) {
                 if (rangoFechas(b.getFechaInicio(), b.getFechaFin())) {
                     validacion = Boolean.TRUE;
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Prohibición", getBundleMensaje("prohibicion.correoElectronico", null)));
+                    //FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Prohibición", getBundleMensaje("prohibicion.correoElectronico", null)));
                     break;
                 }
             }
@@ -196,7 +199,7 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
             if (b.getValor().equals(celular)) {
                 if (rangoFechas(b.getFechaInicio(), b.getFechaFin())) {
                     validacion = Boolean.TRUE;
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Prohibición", getBundleMensaje("prohibicion.celular", null)));
+                    //FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Prohibición", getBundleMensaje("prohibicion.celular", null)));
                     break;
                 }
             }
@@ -394,6 +397,8 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
                 renderHorarios = Boolean.TRUE;
                 renderInformacionTurno = Boolean.FALSE;
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Prohibición", getBundleMensaje("prohibicion.cedula", null)));
+                PrimeFaces current = PrimeFaces.current();
+//                current.executeScript("PF('prohibicionDlg').show();");
             }
 
         } else {

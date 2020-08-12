@@ -1,14 +1,6 @@
 package ec.gob.dinardap.turno.controller;
 
-//import ec.gob.dinardap.remanente.modelo.CatalogoTransaccion;
-//import ec.gob.dinardap.remanente.modelo.RemanenteMensual;
-//import ec.gob.dinardap.remanente.modelo.Tramite;
-//import ec.gob.dinardap.remanente.modelo.Transaccion;
-//import ec.gob.dinardap.remanente.servicio.CatalogoTransaccionServicio;
-//import ec.gob.dinardap.remanente.servicio.DiasNoLaborablesServicio;
-//import ec.gob.dinardap.remanente.servicio.RemanenteMensualServicio;
-//import ec.gob.dinardap.remanente.servicio.TramiteServicio;
-//import ec.gob.dinardap.remanente.servicio.TransaccionServicio;
+
 import ec.gob.dinardap.turno.modelo.TipoRestriccion;
 import ec.gob.dinardap.turno.servicio.TipoRestriccionServicio;
 import ec.gob.dinardap.util.constante.EstadoEnum;
@@ -26,7 +18,11 @@ import javax.inject.Named;
 @ViewScoped
 public class TipoRestriccionCtrl extends BaseCtrl implements Serializable {
 
-    //Declaración de variables
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	//Declaración de variables
     //Variables de control visual
     private String tituloPagina;
     private String strBtnGuardar;
@@ -37,6 +33,7 @@ public class TipoRestriccionCtrl extends BaseCtrl implements Serializable {
 
     private Boolean onCreate;
     private Boolean onEdit;
+
 
     //Variables de negocio
     private TipoRestriccion tipoRestriccionSelected;
@@ -126,9 +123,9 @@ public class TipoRestriccionCtrl extends BaseCtrl implements Serializable {
         renderEdition = Boolean.FALSE;
     }
 
-    private void disableDeleteTipoRestriccion() {
+    /*private void disableDeleteTipoRestriccion() {
         disableDeleteTipoRestriccion = tipoRestriccionSelected.getTipoRestriccionId() != null;
-    }
+    }*/
 
     //Getters & Setters
     public String getTituloPagina() {

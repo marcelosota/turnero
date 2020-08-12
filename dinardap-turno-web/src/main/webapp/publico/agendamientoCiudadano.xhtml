@@ -101,6 +101,23 @@
 
             </b:modal>
 
+            <p:dialog id="prohibicionDlg" header="Prohibición"
+                      modal="true" widgetVar="prohibicionDlg" resizable="false"
+                      styleClass="prohibicionDlg">
+                <!--<b:modal id="prohibicionDlg" title="Prohibición" styleClass="modalPseudoClass">-->
+                <h:form id="formProhibicionDlg">
+                    <b:panel style="width: 100%; margin-bottom: 0px !important" >
+                        <h:outputText
+                            value="#{mensajes['prohibicion.general']}" />
+                        <br/>
+                        <h:outputText
+                            value="#{mensajes['parametros.prohibicion']}" />
+                    </b:panel>               
+                </h:form>
+                <!--</b:modal>-->
+            </p:dialog>
+
+
             <p:dialog id="agendarTurnoDlg" header="Agendamiento de Turno"
                       modal="true" widgetVar="agendarTurnoDlg" resizable="false">
                 <h:form id="formAgendarTurno">

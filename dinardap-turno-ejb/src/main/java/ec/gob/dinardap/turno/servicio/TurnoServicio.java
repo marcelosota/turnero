@@ -25,5 +25,7 @@ public interface TurnoServicio extends GenericService<Turno, Integer> {
     public Turno getTurno(Turno turno);
 
     public List<Turno> getTurnos(Integer registroMercantilId, Date dia, String hora);
+    
+    public List<Turno> turnosAgendados(Integer registoMercantilId, Date desde, Date hasta);
 
 }

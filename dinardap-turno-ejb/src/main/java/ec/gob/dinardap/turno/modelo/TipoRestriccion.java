@@ -17,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -45,8 +46,8 @@ public class TipoRestriccion implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
+    @SequenceGenerator(name = "TIPO_RESTRICCION_TIPO_RESTRICCION_ID_GENERATOR", sequenceName = "TIPO_RESTRICCION_TIPO_RESTRICCION_ID_SEQ", schema = "ec_dinardap_turno", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "TIPO_RESTRICCION_TIPO_RESTRICCION_ID_GENERATOR")
     @Column(name = "tipo_restriccion_id")
     private Integer tipoRestriccionId;
 
@@ -82,7 +83,8 @@ public class TipoRestriccion implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "estado")
-    private short estado;
+    private Short estado;
+    
 
     @OneToMany(mappedBy = "tipoRestriccion")
     private List<Baneo> baneoList;
@@ -159,11 +161,11 @@ public class TipoRestriccion implements Serializable {
         this.fechaModificacion = fechaModificacion;
     }
 
-    public short getEstado() {
+    public Short getEstado() {
         return estado;
     }
 
-    public void setEstado(short estado) {
+    public void setEstado(Short estado) {
         this.estado = estado;
     }
 
