@@ -7,6 +7,7 @@ import javax.ejb.Local;
 
 import ec.gob.dinardap.persistence.dao.GenericDao;
 import ec.gob.dinardap.turno.dto.AgendadaAtendidasDto;
+import ec.gob.dinardap.turno.dto.TurnosAgendadosDto;
 import ec.gob.dinardap.turno.modelo.Turno;
 
 @Local
@@ -19,5 +20,7 @@ public interface TurnoDao extends GenericDao<Turno, Integer> {
     public List<Turno> getTurnos(Turno turno);
 
     public List<Turno> getTurnos(Integer registroMercantilId, Date dia, String hora);
+    
+    public List<TurnosAgendadosDto> totalTurnos(Date fechaDesde, Date fechasHasta);
 
 }

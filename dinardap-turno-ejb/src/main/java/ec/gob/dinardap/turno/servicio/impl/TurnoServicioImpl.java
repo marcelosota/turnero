@@ -124,11 +124,11 @@ public class TurnoServicioImpl extends GenericServiceImpl<Turno, Integer> implem
 	@Override
 	public List<Turno> turnosAgendados(Integer registoMercantilId, Date desde, Date hasta) {
 		DateBetween rangoFecha = new DateBetween(desde, hasta);
-		String[] criteriaNombres = {"registroMercantil.registroMercantilId", "dia", "estado"};
-		CriteriaTypeEnum[] criteriaTipos = {CriteriaTypeEnum.STRING_EQUALS, CriteriaTypeEnum.DATE_BETWEEN, CriteriaTypeEnum.SHORT_NOT_EQUALS};
-		Object[] criteriaValores = {registoMercantilId, rangoFecha ,EstadoTurnoEnum.CANCELADO.getEstado()};
-		String[] orderBy = {"dia"};
-		boolean[] asc = {true};
+		String[] criteriaNombres = {"registroMercantil.registroMercantilId", "dia", "estado", "cedula"};
+		CriteriaTypeEnum[] criteriaTipos = {CriteriaTypeEnum.INTEGER_EQUALS, CriteriaTypeEnum.DATE_BETWEEN, CriteriaTypeEnum.SHORT_NOT_EQUALS, CriteriaTypeEnum.STRING_NOT_EQUALS};
+		Object[] criteriaValores = {registoMercantilId, rangoFecha ,EstadoTurnoEnum.CANCELADO.getEstado(), "9999999999"};
+		String[] orderBy = {"dia","hora"};
+		boolean[] asc = {true, true};
 		
 		Criteria criteria = new Criteria(criteriaNombres, criteriaTipos, criteriaValores, orderBy, asc);
 		

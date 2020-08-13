@@ -10,6 +10,7 @@ import javax.persistence.Query;
 import ec.gob.dinardap.persistence.dao.ejb.GenericDaoEjb;
 import ec.gob.dinardap.turno.dao.TurnoDao;
 import ec.gob.dinardap.turno.dto.AgendadaAtendidasDto;
+import ec.gob.dinardap.turno.dto.TurnosAgendadosDto;
 import ec.gob.dinardap.turno.modelo.Turno;
 
 @Stateless(name = "TurnoDao")
@@ -137,5 +138,22 @@ public class TurnoDaoEjb extends GenericDaoEjb<Turno, Integer> implements TurnoD
         return listaAgendamiento;
 
     }
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<TurnosAgendadosDto> totalTurnos(Date fechaDesde, Date fechasHasta) {
+		StringBuilder sql = new StringBuilder("SELECT count(t.registroMercantil.registroMercantilId), r.nombre ");
+		sql.append("FROM Turno t, RegistroMercantil r WHERE ");
+		sql.append("r = t.registroMercantil AND t.dia BETWEEN =:desde AND =:hasta ");
+		sql.append("AND t.estado < 3 AND t.cedula != '9999999999' ");
+		sql.append("GROUP BY r.registroMercantilId ");
+		sql.append("ORDERB BY r.nombre");
+		Query query = em.createQuery(sql.toString());
+		query.setParameter("desde", fechaDesde);
+        query.setParameter("hasta", fechasHasta);
+        List<TurnosAgendadosDto> total = new ArrayList<TurnosAgendadosDto>();
+        total = query.getResultList();
+		return total;
+	}
 
 }
