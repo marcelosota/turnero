@@ -1,6 +1,7 @@
 package ec.gob.dinardap.turno.dao.ejb;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -8,6 +9,7 @@ import javax.ejb.Stateless;
 import javax.persistence.Query;
 
 import ec.gob.dinardap.persistence.dao.ejb.GenericDaoEjb;
+import ec.gob.dinardap.turno.constante.EstadoTurnoEnum;
 import ec.gob.dinardap.turno.dao.TurnoDao;
 import ec.gob.dinardap.turno.dto.AgendadaAtendidasDto;
 import ec.gob.dinardap.turno.dto.TurnosAgendadosDto;
@@ -61,9 +63,6 @@ public class TurnoDaoEjb extends GenericDaoEjb<Turno, Integer> implements TurnoD
     @SuppressWarnings("unchecked")
     @Override
     public List<Turno> getTurnos(Integer registroMercantilId, Date dia, String hora) {
-        System.out.println("registroMercantilId: " + registroMercantilId);
-        System.out.println("dia: " + dia);
-        System.out.println("hora: " + hora);
         Query query = em.createQuery("SELECT t FROM Turno t WHERE "
                 + "t.registroMercantil.registroMercantilId =:registroMercantilId "
                 + "AND t.dia=:dia "
@@ -144,16 +143,74 @@ public class TurnoDaoEjb extends GenericDaoEjb<Turno, Integer> implements TurnoD
 	public List<TurnosAgendadosDto> totalTurnos(Date fechaDesde, Date fechasHasta) {
 		StringBuilder sql = new StringBuilder("SELECT count(t.registroMercantil.registroMercantilId), r.nombre ");
 		sql.append("FROM Turno t, RegistroMercantil r WHERE ");
-		sql.append("r = t.registroMercantil AND t.dia BETWEEN =:desde AND =:hasta ");
-		sql.append("AND t.estado < 3 AND t.cedula != '9999999999' ");
+		sql.append("r = t.registroMercantil AND ");
+		if(fechaDesde != null)
+			sql.append("t.dia BETWEEN :desde AND :hasta AND ");
+		sql.append(" t.estado < :estado AND t.cedula != :cedula ");
 		sql.append("GROUP BY r.registroMercantilId ");
-		sql.append("ORDERB BY r.nombre");
+		sql.append("ORDER BY r.nombre");
 		Query query = em.createQuery(sql.toString());
-		query.setParameter("desde", fechaDesde);
-        query.setParameter("hasta", fechasHasta);
+		if(fechaDesde != null) {
+			query.setParameter("desde", fechaDesde);
+	        query.setParameter("hasta", fechasHasta);
+		}
+        query.setParameter("estado", EstadoTurnoEnum.CANCELADO.getEstado());
+        query.setParameter("cedula", "9999999999");
+        
+        System.out.println(query.toString());
         List<TurnosAgendadosDto> total = new ArrayList<TurnosAgendadosDto>();
-        total = query.getResultList();
+        List<Object[]> obj = query.getResultList();
+        Long suma = 0L;
+        for(Object[] item : obj) {
+        	TurnosAgendadosDto valor = new TurnosAgendadosDto();
+        	valor.setCantidad(Long.parseLong(item[0].toString()));
+        	valor.setInstitucion(item[1].toString());
+        	suma+=valor.getCantidad();
+        	total.add(valor);
+        }
+        total.add(new TurnosAgendadosDto(suma,"TOTAL"));
 		return total;
 	}
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Integer getContador(Date fechaTurno,
+            Integer registroMercantilId,
+            String valor,
+            Integer parametro,
+            Integer cuota) {
+        String queryStr = "SELECT t FROM Turno t "
+                + "WHERE t.registroMercantil.registroMercantilId =:registroMercantilId "
+                + "AND t.dia BETWEEN :fechaInicial AND :fechaFinal "
+                + "AND t.estado <>:estado ";
+        switch (parametro) {
+            case 1:
+                queryStr += "AND t.cedula=:valor";
+                break;
+            case 2:
+                queryStr += "AND t.correoElectronico=:valor";
+                break;
+            case 3:
+                queryStr += "AND t.celular=:valor";
+                break;
+        }
+        Query query = em.createQuery(queryStr);
+        query.setParameter("registroMercantilId", registroMercantilId);
+        query.setParameter("fechaInicial", addDays(fechaTurno, -cuota));
+        query.setParameter("fechaFinal", addDays(fechaTurno, cuota));
+        query.setParameter("estado", EstadoTurnoEnum.CANCELADO.getEstado());
+        query.setParameter("valor", valor);
+
+        List<Turno> turnoList = new ArrayList<Turno>();
+        turnoList = query.getResultList();
+        return turnoList.size();
+    }
+
+    private Date addDays(Date initialDate, Integer days) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(initialDate);
+        calendar.add(Calendar.DAY_OF_YEAR, days);
+        return calendar.getTime();
+    }
 
 }

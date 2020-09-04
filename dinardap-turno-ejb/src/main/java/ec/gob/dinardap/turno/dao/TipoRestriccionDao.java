@@ -8,4 +8,6 @@ import ec.gob.dinardap.turno.modelo.TipoRestriccion;
 @Local
 public interface TipoRestriccionDao extends GenericDao<TipoRestriccion, Integer> {
 
+    public TipoRestriccion getTipoRestriccion(Integer tipoRestriccionId);
+
 }

@@ -20,7 +20,11 @@ import javax.inject.Named;
 @ViewScoped
 public class BanCtrl extends BaseCtrl implements Serializable {
 
-    //Declaración de variables
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 2843864813111914703L;
+	//Declaración de variables
     //Variables de control visual
     private String tituloPagina;
     private String strBtnGuardar;
@@ -71,11 +75,11 @@ public class BanCtrl extends BaseCtrl implements Serializable {
     public void onRowSelectBaneo() {
         strBtnGuardar = "Actualizar";
 
-        onEdit = Boolean.TRUE;
+        onEdit = Boolean.FALSE;
         onCreate = Boolean.FALSE;
 
         disableDeleteBan = baneoSelected.getBaneoId() == null;
-        renderEdition = Boolean.TRUE;
+        renderEdition = Boolean.FALSE;
     }
 
     public void nuevoBaneo() {
@@ -91,13 +95,10 @@ public class BanCtrl extends BaseCtrl implements Serializable {
 
     }
 
-    public void guardar() {
-        System.out.println("Hola");
-    }
-
     public void guardarBaneo() {
         if (onCreate) {
             baneoSelected.setEstado(EstadoEnum.ACTIVO.getEstado());
+            baneoSelected.setFechaCreacion(new Date());
             baneoServicio.create(baneoSelected);
         } else if (onEdit) {
             baneoServicio.update(baneoSelected);
@@ -124,6 +125,7 @@ public class BanCtrl extends BaseCtrl implements Serializable {
     }
 
     public void eliminarBaneo() {
+    	baneoSelected.setFechaModificacion(new Date());
         baneoSelected.setEstado(EstadoEnum.INACTIVO.getEstado());
         baneoServicio.update(baneoSelected);
         baneoSelected = new Baneo();

@@ -13,8 +13,6 @@ import ec.gob.dinardap.interoperadorv2.ws.ConsultarResponse;
 import ec.gob.dinardap.seguridad.modelo.Perfil;
 import ec.gob.dinardap.seguridad.servicio.PerfilServicio;
 import ec.gob.dinardap.turno.constante.InteroperabilidadEnum;
-import ec.gob.dinardap.turno.constante.PerfilTurnoEnum;
-import ec.gob.dinardap.turno.constante.TipoEntidadEnum;
 import ec.gob.dinardap.turno.dto.UsuarioDto;
 import ec.gob.dinardap.turno.modelo.RegistroMercantil;
 import ec.gob.dinardap.turno.servicio.RegistroMercantilServicio;
@@ -40,6 +38,7 @@ public class RegistroUsuarioCtrl extends BaseCtrl {
 	
 	private UsuarioDto usuarioDto;
 	private List<RegistroMercantil> listaRM;
+	private List<Perfil> listaPerfil;
 	
 	@PostConstruct
 	protected void init() {
@@ -61,14 +60,15 @@ public class RegistroUsuarioCtrl extends BaseCtrl {
 	}
 	
 	public void guardarUsuario() {
-		RegistroMercantil rm = registroMercantilServicio.findByPk(getUsuarioDto().getRegistroMercantilId());
-		Perfil perfil = new Perfil();
-		if(rm.getTipo() == TipoEntidadEnum.DINARDAP.getTipo())
+		/*RegistroMercantil rm = registroMercantilServicio.findByPk(getUsuarioDto().getRegistroMercantilId());
+		 Perfil perfil = new Perfil();
+		 if(rm.getTipo() == TipoEntidadEnum.DINARDAP.getTipo())
 			perfil = perfilServicio.obtenerPorNombre(PerfilTurnoEnum.DINARDAP.getPerfil());
 		else
 			perfil = perfilServicio.obtenerPorNombre(PerfilTurnoEnum.RM.getPerfil());
-		getUsuarioDto().setContrasena(EncriptarCadenas.encriptarCadenaSha1(getUsuarioDto().getContrasena()));
 		getUsuarioDto().setPerfilId(perfil.getPerfilId());
+		*/
+		getUsuarioDto().setContrasena(EncriptarCadenas.encriptarCadenaSha1(getUsuarioDto().getContrasena()));
 		usuarioServicio.crearUsuario(getUsuarioDto());
 		addInfoMessage(getBundleMensaje("registro.guardado", null), null);
 		limpiarCampos();
@@ -94,6 +94,16 @@ public class RegistroUsuarioCtrl extends BaseCtrl {
 	}
 	public void setListaRM(List<RegistroMercantil> listaRM) {
 		this.listaRM = listaRM;
+	}
+
+	public List<Perfil> getListaPerfil() {
+		if(listaPerfil == null)
+			listaPerfil = perfilServicio.obtenerPerfilesPorSistema(Integer.parseInt(getIdentificacionSistema()));
+		return listaPerfil;
+	}
+
+	public void setListaPerfil(List<Perfil> listaPerfil) {
+		this.listaPerfil = listaPerfil;
 	}
 	
 

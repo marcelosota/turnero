@@ -26,25 +26,26 @@
                             <p:column headerText="#{etiquetas['nombre.parametro']}" 
                                       sortBy="#{tipoRestriccion.parametro}"
                                       filterBy="#{tipoRestriccion.parametro}" 
-                                      filterMatchMode="contains" width="25%" 
+                                      filterMatchMode="contains" width="34%" 
                                       style="text-align: center">
                                 <h:outputText value="#{tipoRestriccion.parametro}" />
                             </p:column>
                             <p:column headerText="#{etiquetas['nombre.cuotaPermitida']}" 
                                       sortBy="#{tipoRestriccion.cuotaPermitida}"
-                                      width="25%"
+                                      width="33%"
                                       style="text-align: right">
                                 <h:outputText value="#{tipoRestriccion.cuotaPermitida}" />
                             </p:column>
                             <p:column headerText="#{etiquetas['nombre.diasAnalisis']}" 
                                       sortBy="#{tipoRestriccion.diasAnalisis}"
-                                      width="25%"
+                                      width="33%"
                                       style="text-align: right">
                                 <h:outputText value="#{tipoRestriccion.diasAnalisis}" />
                             </p:column>
                             <p:column headerText="#{etiquetas['nombre.diasBaneo']}" 
                                       sortBy="#{tipoRestriccion.diasBaneo}"
                                       width="25%"
+                                      visible="false"
                                       style="text-align: right">
                                 <h:outputText value="#{tipoRestriccion.diasBaneo}" />
                             </p:column>
@@ -56,7 +57,8 @@
                                          style="margin-right:20px; width: 100%"                                          
                                          icon="fa fa-fw fa-plus-square"
                                          update="formTipoRestriccion:btnBorrarTipoRestriccion, formTipoRestriccionSelected"
-                                         disabled="false"/>
+                                         disabled="false"
+                                         rendered="false"/>
                         <p:commandButton id="btnBorrarTipoRestriccion"
                                          value="#{etiquetas['nombre.eliminarTipoRestriccion']}"
                                          action="#{tipoRestriccionCtrl.eliminarTipoRestriccion}"

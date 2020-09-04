@@ -53,7 +53,7 @@ public class LoginCtrl extends BaseCtrl {
 			HttpSession session = getHttpServletRequest().getSession(true);
 			session.setAttribute("tipoEntidad", registroMercantil.getTipo());
 			session.setAttribute("usuario", usuario.getCedula());
-			session.setAttribute("perfil", usuario.getPerfil().getNombre());
+			session.setAttribute("perfil", usuario.getPerfil().getPerfilId());
 			session.setAttribute("institucion", getEntidad());
 			ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
 			try {

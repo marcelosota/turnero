@@ -10,6 +10,20 @@
 	<ui:define name="content">
 		<h1 class="h-wai">#{etiquetas['nombre.sistema']} - Reporte - Turnos Agendados</h1>
 		<h:form id="formInicio">
+			<h:panelGrid columns="2" id="pnlInstitucion" style="width:80%;"
+				columnClasses="form-label-derecha ui-grid-col-1, form-input-izquierda">
+                    <p:outputLabel value="#{etiquetas['registro.mercantil']}*:" />
+				<b:selectOneMenu id="cmbEntidades"
+					value="#{turnosAgendadosCtrl.registroMercantilId}" 
+					required="true"
+					required-message="#{etiquetas['registro.mercantil']} #{mensajes['requerido']}"
+					styleClass="form-combo-centrado">
+					<f:selectItems value="#{turnosAgendadosCtrl.registroMercantil}"
+						var="rm" 
+						itemLabel="#{rm.nombre}"
+						itemValue="#{rm.registroMercantilId}" />
+				</b:selectOneMenu>
+			</h:panelGrid>
 			<h:panelGrid columns="5" id="pnlFechas" style="width:80%;"
 				columnClasses="form-label-derecha ui-grid-col-1, form-input-izquierda, 
 					form-label-derecha ui-grid-col-1, form-input-izquierda, form-input-izquierda">
@@ -17,7 +31,6 @@
                     <p:datePicker id="dateFechaInicio"
                     	value="#{turnosAgendadosCtrl.fechaDesde}"
                         mindate="#{turnosAgendadosCtrl.minima}"
-                        maxdate="#{turnosAgendadosCtrl.maxima}" 
                         pattern="yyyy-MM-dd"  
                         required="true"
                         requiredMessage="#{etiquetas['nombre.fechaInicio']} #{mensajes['requerido']}">
@@ -27,7 +40,6 @@
                     <p:datePicker id="dateFechaFin"
                     	value="#{turnosAgendadosCtrl.fechaHasta}"
                         mindate="#{turnosAgendadosCtrl.fechaDesde}"
-                        maxdate="#{turnosAgendadosCtrl.maxima}"
                         pattern="yyyy-MM-dd"  
                         required="true"
                         requiredMessage="#{etiquetas['nombre.fechoFin']} #{mensajes['requerido']}">

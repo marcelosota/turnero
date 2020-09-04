@@ -1,14 +1,15 @@
 package ec.gob.dinardap.turno.controller;
 
-import ec.gob.dinardap.correo.mdb.cliente.ClienteQueueMailServicio;
-import ec.gob.dinardap.correo.util.MailMessage;
 import java.io.Serializable;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -19,12 +20,15 @@ import javax.inject.Named;
 
 import org.primefaces.PrimeFaces;
 
+import ec.gob.dinardap.correo.mdb.cliente.ClienteQueueMailServicio;
+import ec.gob.dinardap.correo.util.MailMessage;
 import ec.gob.dinardap.interoperadorv2.cliente.servicio.ServicioDINARDAP;
 import ec.gob.dinardap.interoperadorv2.ws.ConsultarResponse;
 import ec.gob.dinardap.seguridad.servicio.ParametroServicio;
 import ec.gob.dinardap.turno.constante.EstadoTurnoEnum;
 import ec.gob.dinardap.turno.constante.InteroperabilidadEnum;
 import ec.gob.dinardap.turno.constante.ParametroEnum;
+import ec.gob.dinardap.turno.constante.TipoRestriccionEnum;
 import ec.gob.dinardap.turno.dto.HorarioDTO;
 import ec.gob.dinardap.turno.modelo.Baneo;
 import ec.gob.dinardap.turno.modelo.PlanificacionRegistro;
@@ -34,9 +38,6 @@ import ec.gob.dinardap.turno.servicio.BaneoServicio;
 import ec.gob.dinardap.turno.servicio.PlanificacionRegistroServicio;
 import ec.gob.dinardap.turno.servicio.RegistroMercantilServicio;
 import ec.gob.dinardap.turno.servicio.TurnoServicio;
-import java.text.ParseException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @Named(value = "agendamientoCiudadanoCtrl")
 @ViewScoped
@@ -119,13 +120,13 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
     }
 
     @SuppressWarnings("unused")
-	public void buscarDisponibilidad() {
+    public void buscarDisponibilidad() {
         renderCancelacionTurno = Boolean.FALSE;
         renderRemitirTurno = Boolean.FALSE;
         turnoGenerado = new Turno();
         PlanificacionRegistro planificacionRegistro = null;
         planificacionRegistro = planificacionRegistroServicio.getPlanificacionRegistro(turno.getRegistroMercantil().getRegistroMercantilId());
-        //String nombreCiudadano = "Chris";//Añadir el metodo getNombreCiudadano para consumir el ws de Jady
+//        String nombreCiudadano = "Chris";//Añadir el metodo getNombreCiudadano para consumir el ws de Jady
         String nombreCiudadano = getNombreCiudadano();
         horarioDTOList = new ArrayList<HorarioDTO>();
         if (planificacionRegistro.getPlanificacionId() != null) {
@@ -138,8 +139,11 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
                     if (!dayOfWeek.equals("SUNDAY") && !dayOfWeek.equals("SATURDAY")) {
                         if (!ban(turno.getCedula(), turno.getCorreoElectronico(), turno.getCelular())) {
                             horarioDTOList = generacionListadoHorario(planificacionRegistro);
-                        }else
-                        	FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Prohibición", getBundleMensaje("prohibicion.general", null)));
+                        } else {
+                            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Información", getBundleMensaje("prohibicion.general", null)));
+                            PrimeFaces current = PrimeFaces.current();
+                            current.executeScript("PF('prohibicionDlg').show();");
+                        }
                     } else {
                         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia", "Turnos no disponibles para fines de semana."));
                     }
@@ -152,8 +156,17 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
         }
     }
 
+    private Boolean validacionTurnosFuturos() {
+        Boolean validacionIdentificacion = Boolean.FALSE;
+        Boolean validacionCorreo = Boolean.FALSE;
+        Boolean validacionCelular = Boolean.FALSE;
+        validacionIdentificacion = baneoServicio.getValidacionCuota(turno.getDia(), turno.getRegistroMercantil().getRegistroMercantilId(), TipoRestriccionEnum.IDENTIFICACION.getParametro(), turno.getCedula());
+        validacionCorreo = baneoServicio.getValidacionCuota(turno.getDia(), turno.getRegistroMercantil().getRegistroMercantilId(), TipoRestriccionEnum.CORREO.getParametro(), turno.getCorreoElectronico());
+        validacionCelular = baneoServicio.getValidacionCuota(turno.getDia(), turno.getRegistroMercantil().getRegistroMercantilId(), TipoRestriccionEnum.CELULAR.getParametro(), turno.getCelular());
+        return validacionIdentificacion || validacionCorreo || validacionCelular;
+    }
+
     private Boolean ban(String identificación, String correoElectronico, String celular) {
-        //Falso si no esta ban
         Boolean validacion = Boolean.FALSE;
 
         List<Baneo> banList = new ArrayList<Baneo>();
@@ -358,27 +371,34 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
 
         if (turnoServicio.validacionDiariaPersona(turno)) {
 
-            renderHorarios = Boolean.TRUE;
-            renderInformacionTurno = Boolean.FALSE;
-            while (horaInicio.getTime().before(horaFin.getTime())) {
-                String hora = new SimpleDateFormat("HH:mm").format(horaInicio.getTime());
-                HorarioDTO horario = new HorarioDTO(hora, pr.getVentanilla().intValue(), turnoServicio.getTurnosDisponibles(pr.getVentanilla().intValue(), turno.getDia(), hora, pr.getRegistroMercantil().getRegistroMercantilId()));
-                if (horaActual.getTime().before(horaInicio.getTime())) {
-                    horarioList.add(horario);
-                }
-                try {
-                    //Validacion eventual para 7 de septiembre
-                    Date fechaCambio = new SimpleDateFormat("yyyy-MM-dd").parse("2020-09-06");
-                    if (turno.getDia().after(fechaCambio)
-                            && turno.getRegistroMercantil().getRegistroMercantilId() == 11) {
-                        horaInicio.add(Calendar.MINUTE, 5);
-                    } else {
-                        horaInicio.add(Calendar.MINUTE, pr.getDuracionTramite());
+            if (!validacionTurnosFuturos()) {
+                renderHorarios = Boolean.TRUE;
+                renderInformacionTurno = Boolean.FALSE;
+                while (horaInicio.getTime().before(horaFin.getTime())) {
+                    String hora = new SimpleDateFormat("HH:mm").format(horaInicio.getTime());
+                    HorarioDTO horario = new HorarioDTO(hora, pr.getVentanilla().intValue(), turnoServicio.getTurnosDisponibles(pr.getVentanilla().intValue(), turno.getDia(), hora, pr.getRegistroMercantil().getRegistroMercantilId()));
+                    if (horaActual.getTime().before(horaInicio.getTime())) {
+                        horarioList.add(horario);
                     }
-                } catch (ParseException ex) {
-                    Logger.getLogger(AgendamientoCiudadanoCtrl.class.getName()).log(Level.SEVERE, null, ex);
+                    try {
+                        //Validacion eventual para 7 de septiembre
+                        Date fechaCambio = new SimpleDateFormat("yyyy-MM-dd").parse("2020-09-06");
+                        if (turno.getDia().after(fechaCambio)
+                                && turno.getRegistroMercantil().getRegistroMercantilId() == 11) {
+                            horaInicio.add(Calendar.MINUTE, 5);
+                        } else {
+                            horaInicio.add(Calendar.MINUTE, pr.getDuracionTramite());
+                        }
+                    } catch (ParseException ex) {
+                        Logger.getLogger(AgendamientoCiudadanoCtrl.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
-
+            } else {
+                renderHorarios = Boolean.TRUE;
+                renderInformacionTurno = Boolean.FALSE;
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Prohibición", getBundleMensaje("prohibicion.cedula", null)));
+                PrimeFaces current = PrimeFaces.current();
+                current.executeScript("PF('prohibicionDlg').show();");
             }
 
         } else {

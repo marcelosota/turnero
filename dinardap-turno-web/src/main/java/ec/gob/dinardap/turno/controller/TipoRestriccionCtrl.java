@@ -62,11 +62,11 @@ public class TipoRestriccionCtrl extends BaseCtrl implements Serializable {
     public void onRowSelectTipoRestriccion() {
         strBtnGuardar = "Actualizar";
 
-        onEdit = Boolean.TRUE;
+        //onEdit = Boolean.TRUE;
         onCreate = Boolean.FALSE;
 
         disableDeleteTipoRestriccion = tipoRestriccionSelected.getTipoRestriccionId() == null;
-        renderEdition = Boolean.TRUE;
+        //renderEdition = Boolean.TRUE;
 
     }
 

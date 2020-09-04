@@ -211,5 +211,7 @@ public class BaseCtrl implements Serializable {
 		return (HttpServletRequest) getExternalContext().getRequest();
 	}
 
-
+	public String getIdentificacionSistema() {
+        return FacesContext.getCurrentInstance().getExternalContext().getInitParameter("sistema.identificacion");
+    }
 }

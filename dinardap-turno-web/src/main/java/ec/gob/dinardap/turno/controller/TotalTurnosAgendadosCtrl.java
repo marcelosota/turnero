@@ -32,22 +32,38 @@ public class TotalTurnosAgendadosCtrl extends BaseCtrl implements Serializable{
 	private List<TurnosAgendadosDto> turno;
 	private Date fechaDesde;
 	private Date fechaHasta;
-	private Date maxima;
+	private Date minimaF;
 	private Date minima;
+	private boolean flag;
 	
 	@PostConstruct
 	protected void init() {
-		maxima = new Date();
 		Calendar cal = Calendar.getInstance();
 		cal.set(2020, 4, 25);
 		minima = cal.getTime();
+		minimaF = cal.getTime();
+		//fechaDesde = cal.getTime();
+		//fechaHasta = new Date();
+		setFlag(false);
 	}
 	
 	public void buscar() {
 		turno = new ArrayList<TurnosAgendadosDto>();
-		if(getFechaDesde() != null && getFechaHasta() != null && getFechaDesde().compareTo(getFechaHasta()) <= 0)
-			turno = turnoDao.totalTurnos(getFechaDesde(), getFechaHasta());
-		
+		if(!isFlag())
+			turno = turnoDao.totalTurnos(null, null);
+		else {
+			if(getFechaDesde() != null && getFechaHasta() != null && getFechaDesde().compareTo(getFechaHasta()) <= 0)
+				turno = turnoDao.totalTurnos(getFechaDesde(), getFechaHasta());
+		}
+	}
+	
+	public void validarFecha() {
+		if(getFechaHasta() != null && getFechaDesde().compareTo(getFechaHasta()) > 0)
+			fechaHasta = null;
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(fechaDesde);
+		minimaF = null;
+		minimaF = cal.getTime();
 	}
 
 	public void preProcessPDF(Object document) {
@@ -79,12 +95,12 @@ public class TotalTurnosAgendadosCtrl extends BaseCtrl implements Serializable{
 		this.fechaHasta = fechaHasta;
 	}
 
-	public Date getMaxima() {
-		return maxima;
+	public Date getMinimaF() {
+		return minimaF;
 	}
 
-	public void setMaxima(Date maxima) {
-		this.maxima = maxima;
+	public void setMinimaF(Date minimaF) {
+		this.minimaF = minimaF;
 	}
 
 	public Date getMinima() {
@@ -93,6 +109,14 @@ public class TotalTurnosAgendadosCtrl extends BaseCtrl implements Serializable{
 
 	public void setMinima(Date minima) {
 		this.minima = minima;
+	}
+
+	public boolean isFlag() {
+		return flag;
+	}
+
+	public void setFlag(boolean flag) {
+		this.flag = flag;
 	}
 
 }

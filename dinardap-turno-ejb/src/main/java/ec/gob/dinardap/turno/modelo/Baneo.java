@@ -62,6 +62,14 @@ public class Baneo implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date fechaFin;
     
+    @Column(name = "fecha_creacion")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date fechaCreacion;
+    
+    @Column(name = "fecha_modificacion")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date fechaModificacion;
+    
     @Basic(optional = false)
     @NotNull
     @Column(name = "estado")
@@ -117,7 +125,23 @@ public class Baneo implements Serializable {
         this.fechaFin = fechaFin;
     }
 
-    public short getEstado() {
+    public Date getFechaCreacion() {
+		return fechaCreacion;
+	}
+
+	public void setFechaCreacion(Date fechaCreacion) {
+		this.fechaCreacion = fechaCreacion;
+	}
+
+	public Date getFechaModificacion() {
+		return fechaModificacion;
+	}
+
+	public void setFechaModificacion(Date fechaModificacion) {
+		this.fechaModificacion = fechaModificacion;
+	}
+
+	public short getEstado() {
         return estado;
     }
 

@@ -10,49 +10,43 @@
 	<ui:define name="content">
 		<h1 class="h-wai">#{etiquetas['nombre.sistema']} - Reporte - Turnos Agendados</h1>
 		<h:form id="formInicio">
-			<h:panelGrid columns="2" id="pnlInstitucion" style="width:80%;"
-				columnClasses="form-label-derecha ui-grid-col-1, form-input-izquierda">
-                    <p:outputLabel value="#{etiquetas['registro.mercantil']}*:" />
-				<b:selectOneMenu id="cmbEntidades"
-					value="#{turnosAgendadosCtrl.registroMercantilId}" 
-					required="true"
-					required-message="#{etiquetas['registro.mercantil']} #{mensajes['requerido']}"
-					styleClass="form-combo-centrado">
-					<f:selectItems value="#{turnosAgendadosCtrl.registroMercantil}"
-						var="rm" 
-						itemLabel="#{rm.nombre}"
-						itemValue="#{rm.registroMercantilId}" />
-				</b:selectOneMenu>
+			<h:panelGrid columns="2" id="pnlRango" style="width:35%;"
+				columnClasses="form-label-derecha, form-input-izquierda">
+				<p:outputLabel value="#{etiquetas['rango.fechas']}*:" />
+				<b:switch id="swtRango" value="#{totalTurnosAgendadosCtrl.flag}" 
+						onText="Si" offText="No" onColor="success" offColor="info" 
+						process="@this" update="dateFechaInicio, dateFechaFin" ajax="true" /> 
 			</h:panelGrid>
 			<h:panelGrid columns="5" id="pnlFechas" style="width:80%;"
 				columnClasses="form-label-derecha ui-grid-col-1, form-input-izquierda, 
 					form-label-derecha ui-grid-col-1, form-input-izquierda, form-input-izquierda">
                     <p:outputLabel value="#{etiquetas['nombre.fechaInicio']}*:" />
                     <p:datePicker id="dateFechaInicio"
-                    	value="#{turnosAgendadosCtrl.fechaDesde}"
-                        mindate="#{turnosAgendadosCtrl.minima}"
-                        maxdate="#{turnosAgendadosCtrl.maxima}" 
-                        pattern="yyyy-MM-dd"  
+                    	value="#{totalTurnosAgendadosCtrl.fechaDesde}"
+                        mindate="#{totalTurnosAgendadosCtrl.minima}"
+                        pattern="yyyy-MM-dd"
+                        disabled="#{!totalTurnosAgendadosCtrl.flag}"  
                         required="true"
                         requiredMessage="#{etiquetas['nombre.fechaInicio']} #{mensajes['requerido']}">
-                        <p:ajax event="dateSelect" update="dateFechaFin"/>
+                        <f:ajax event="dateSelect" listener="#{totalTurnosAgendadosCtrl.validarFecha}" 
+                        	update="dateFechaFin dateFechaInicio" execute="dateFechaInicio"/>
                     </p:datePicker>
                     <p:outputLabel value="#{etiquetas['nombre.fechoFin']}*:" />
                     <p:datePicker id="dateFechaFin"
-                    	value="#{turnosAgendadosCtrl.fechaHasta}"
-                        mindate="#{turnosAgendadosCtrl.fechaDesde}"
-                        maxdate="#{turnosAgendadosCtrl.maxima}"
-                        pattern="yyyy-MM-dd"  
+                    	value="#{totalTurnosAgendadosCtrl.fechaHasta}"
+                        mindate="#{totalTurnosAgendadosCtrl.minimaF}"
+                        pattern="yyyy-MM-dd"
+                        disabled="#{!totalTurnosAgendadosCtrl.flag}"  
                         required="true"
                         requiredMessage="#{etiquetas['nombre.fechoFin']} #{mensajes['requerido']}">
                     </p:datePicker>
                     <p:commandButton id="btnBuscar" value="#{etiquetas['buscar']}" 
-                    	actionListener="#{turnosAgendadosCtrl.buscar}"
+                    	actionListener="#{totalTurnosAgendadosCtrl.buscar}"
                     	update="dtbTurnosAgendados"/>
 			</h:panelGrid>
 			<p:dataTable id="dtbTurnosAgendados"
-				value="#{turnosAgendadosCtrl.turno}"
-				filteredValue="#{turnosAgendadosCtrl.filtro}" var="t" paginator="true"
+				value="#{totalTurnosAgendadosCtrl.turno}"
+				var="t" paginator="true"
 				rows="25" style="margin-bottom:20px"
 				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}">
 				<f:facet name="{Exporters}">
@@ -63,7 +57,7 @@
 		                </h:commandLink>
 		                <h:commandLink>
 		                    <p:graphicImage value="/resource/images/pdf.png" width="24"/>
-		                    <p:dataExporter type="pdf" target="dtbTurnosAgendados" fileName="turnosAgendados" preProcessor="#{turnosAgendadosCtrl.preProcessPDF}"/>
+		                    <p:dataExporter type="pdf" target="dtbTurnosAgendados" fileName="turnosAgendados" preProcessor="#{totalTurnosAgendadosCtrl.preProcessPDF}"/>
 		                </h:commandLink>
 		                <h:commandLink>
 		                    <p:graphicImage value="/resource/images/csv.png" width="24"/>
@@ -71,53 +65,11 @@
 		                </h:commandLink>
 					</div>
 				</f:facet>
-				<p:column headerText="#{etiquetas['registro.mercantil']}" 
-					width="25%">
-					<h:outputText value="#{turnosAgendadosCtrl.registroSeleccionado.nombre}" style="font-size:x-small;" />
+				<p:column headerText="#{etiquetas['registro.mercantil']}">
+					<h:outputText value="#{t.institucion}"/>
 				</p:column>
-				<p:column headerText="#{etiquetas['fecha']}" 
-					sortBy="#{t.dia}"
-					filterBy="#{t.dia}" 
-					filterMatchMode="contains" 
-					width="10%">
-					<h:outputText value="#{t.dia}" />
-				</p:column>
-				<p:column headerText="#{etiquetas['hora']}" 
-					sortBy="#{t.hora}"
-					filterBy="#{t.hora}" 
-					filterMatchMode="contains" 
-					width="10%"
-					style="font-size: 10pt;">
-					<h:outputText value="#{t.hora}" />
-				</p:column>
-				<p:column headerText="#{etiquetas['cedula']}" 
-					sortBy="#{t.cedula}"
-					filterBy="#{t.cedula}" 
-					filterMatchMode="contains" 
-					width="10%">
-					<h:outputText value="#{t.cedula}" />
-				</p:column>
-				<p:column headerText="#{etiquetas['nombre']}" 
-					sortBy="#{t.nombre}"
-					filterBy="#{t.nombre}" 
-					filterMatchMode="contains" 
-					width="20%">
-					<h:outputText value="#{t.nombre}" style="font-size:x-small;"/>
-				</p:column>
-				<p:column headerText="#{etiquetas['correo.electronico']}" 
-					sortBy="#{t.correoElectronico}"
-					filterBy="#{t.correoElectronico}" 
-					filterMatchMode="contains" 
-					width="20%">
-					<h:outputText value="#{t.correoElectronico}" style="font-size:x-small;"/>
-				</p:column>
-				<p:column headerText="#{etiquetas['celular']}" 
-					sortBy="#{t.celular}"
-					filterBy="#{t.celular}" 
-					filterMatchMode="contains" 
-					width="10%"
-					style="font-size: 10pt;">
-					<h:outputText value="#{t.celular}" />
+				<p:column headerText="#{etiquetas['cantidad']}">
+					<h:outputText value="#{t.cantidad}"/>
 				</p:column>
 			</p:dataTable>
 		</h:form>

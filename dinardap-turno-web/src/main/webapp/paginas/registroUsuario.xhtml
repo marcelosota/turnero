@@ -46,6 +46,16 @@
                         <f:selectItems value="#{registroUsuarioCtrl.listaRM}" var="rm" 
                                        itemLabel="#{rm.nombre}" itemValue="#{rm.registroMercantilId}" />
                     </b:selectOneMenu>
+                    <p:outputLabel value="#{etiquetas['perfil']}:" />
+                    <b:selectOneMenu id="cmbPerfil" 
+                                     value="#{registroUsuarioCtrl.usuarioDto.perfilId}"
+                                     required="true"
+                                     required-message="#{etiquetas['perfil']} #{mensajes['requerido']}"
+                                     styleClass="form-combo-centrado">
+                        <f:selectItem itemLabel="#{etiquetas['seleccionar']}" itemValue="-1" noSelectionOption="true" />
+                        <f:selectItems value="#{registroUsuarioCtrl.listaPerfil}" var="pr" 
+                                       itemLabel="#{pr.nombre}" itemValue="#{pr.perfilId}" />
+                    </b:selectOneMenu>
                 </h:panelGrid>
                 <p:commandButton value="#{etiquetas['guardar']}"
                                  actionListener="#{registroUsuarioCtrl.guardarUsuario}"
