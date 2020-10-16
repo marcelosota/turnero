@@ -10,9 +10,11 @@ import javax.inject.Named;
 import ec.gob.dinardap.autorizacion.util.EncriptarCadenas;
 import ec.gob.dinardap.interoperadorv2.cliente.servicio.ServicioDINARDAP;
 import ec.gob.dinardap.interoperadorv2.ws.ConsultarResponse;
+import ec.gob.dinardap.seguridad.constante.TipoPerfilEnum;
 import ec.gob.dinardap.seguridad.modelo.Perfil;
 import ec.gob.dinardap.seguridad.servicio.PerfilServicio;
 import ec.gob.dinardap.turno.constante.InteroperabilidadEnum;
+import ec.gob.dinardap.turno.constante.TipoEntidadEnum;
 import ec.gob.dinardap.turno.dto.UsuarioDto;
 import ec.gob.dinardap.turno.modelo.RegistroMercantil;
 import ec.gob.dinardap.turno.servicio.RegistroMercantilServicio;
@@ -59,6 +61,16 @@ public class RegistroUsuarioCtrl extends BaseCtrl {
 			addErrorMessage(null, getBundleMensaje("usuario.existe", null), null);
 	}
 	
+	public void buscarPerfil() {
+		if(listaPerfil != null)
+			listaPerfil.clear();
+		RegistroMercantil rm = registroMercantilServicio.findByPk(getUsuarioDto().getRegistroMercantilId());
+		if(rm.getTipo() == TipoEntidadEnum.DINARDAP.getTipo())
+			listaPerfil = perfilServicio.obtenerPerfilesPorSistemaTipoPerfil(Integer.parseInt(getIdentificacionSistema()), TipoPerfilEnum.INTERNO.getTipoPerfil());
+		else
+			listaPerfil = perfilServicio.obtenerPerfilesPorSistemaTipoPerfil(Integer.parseInt(getIdentificacionSistema()), TipoPerfilEnum.EXTERNO.getTipoPerfil());
+	}
+	
 	public void guardarUsuario() {
 		/*RegistroMercantil rm = registroMercantilServicio.findByPk(getUsuarioDto().getRegistroMercantilId());
 		 Perfil perfil = new Perfil();
@@ -97,8 +109,8 @@ public class RegistroUsuarioCtrl extends BaseCtrl {
 	}
 
 	public List<Perfil> getListaPerfil() {
-		if(listaPerfil == null)
-			listaPerfil = perfilServicio.obtenerPerfilesPorSistema(Integer.parseInt(getIdentificacionSistema()));
+		//if(listaPerfil == null)
+		//	listaPerfil = perfilServicio.obtenerPerfilesPorSistema(Integer.parseInt(getIdentificacionSistema()));
 		return listaPerfil;
 	}
 

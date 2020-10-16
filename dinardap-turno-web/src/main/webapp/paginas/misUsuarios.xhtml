@@ -9,6 +9,7 @@
 <ui:composition template="/template/general.xhtml">
 	<ui:define name="content">
 		<h1 class="h-wai">#{etiquetas['nombre.sistema']} - Mis Usuarios</h1>
+		<f:event listener="#{misUsuariosCtrl.initConversation}" type="preRenderView" />
 		<h:form id="formInicio">
 			<p:dataTable id="dtbMisUsuarios"
 				value="#{misUsuariosCtrl.listaUsuario}"

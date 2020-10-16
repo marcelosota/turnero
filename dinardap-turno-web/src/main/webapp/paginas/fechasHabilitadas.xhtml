@@ -1,0 +1,219 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/template/general.xhtml">
+	<ui:define name="content">
+		<h1 class="h-wai">#{etiquetas['nombre.sistema']} - #{etiquetas['atencion']}</h1>
+		<h:form id="formVacaciones">
+			<b:panel id="pnlTabla" style="width: 100%" rendered="true">
+				<h:panelGrid columns="2"
+					columnClasses="form-label-derecha ui-grid-col-1, form-input-izquierda">
+					<p:outputLabel value="#{etiquetas['registro.mercantil']}:*" />
+					<!--p:autoComplete id="registroMercantil" dropdown="true"
+						value="#{fechasHabilitadasCtrl.registroMercantil}"
+						completeMethod="#{fechasHabilitadasCtrl.completeNombreRegistroMercantil}"
+						converter="#{registroMercantilConverter}" var="registroMercantil"
+						itemLabel="#{registroMercantil.nombre}"
+						itemValue="#{registroMercantil}" style="width: 60%"
+						inputStyle="width: 100%" maxResults="20" required="true"
+						title="#{fechasHabilitadasCtrl.atencion.registroMercantil.nombre}">
+						<p:ajax event="itemSelect"
+							listener="#{fechasHabilitadasCtrl.buscarVacaciones()}"
+							update="dtbVacaciones, btnNuevo, formFormulario, formFormulario:pnlFormulario" />
+					</p:autoComplete-->
+					<b:selectOneMenu id="registroMercantil" 
+						value="#{fechasHabilitadasCtrl.registroMercantil}"
+						style="width: 60%"
+						required="true"
+						ajax="true"
+						onchange="ajax:fechasHabilitadasCtrl.buscarVacaciones"
+						process="@this"
+						update="dtbVacaciones, btnNuevo, formFormulario, formFormulario:pnlFormulario">
+						<f:selectItem itemLabel="#{etiquetas['seleccionar']}" noSelectionOption="true" itemDisabled="true"/>
+						<f:selectItems value="#{fechasHabilitadasCtrl.registroMercantilList}" var="rm"
+							itemValue="#{rm}" itemLabel="#{rm.nombre}"/>
+						<!--f:ajax event="select"
+							listener="#{fechasHabilitadasCtrl.buscarVacaciones()}"
+							render="dtbVacaciones, btnNuevo, formFormulario, formFormulario:pnlFormulario" /-->
+					</b:selectOneMenu>
+				</h:panelGrid>
+			
+				<p:dataTable id="dtbVacaciones"
+					value="#{fechasHabilitadasCtrl.atencionList}" var="al"
+					filteredValue="#{fechasHabilitadasCtrl.filtro}" rows="8"
+					paginator="true" paginatorPosition="bottom" 
+					selectionMode="single"
+					selection="#{fechasHabilitadasCtrl.atencion}"
+					rowKey="#{al.atencionId}">
+					<p:ajax event="rowSelect"
+						listener="#{fechasHabilitadasCtrl.onSelectAtencion()}"
+						update="formFormulario" />
+					<p:column headerText=""
+						sortBy="#{al.atencionId}"
+						filterBy="#{al.atencionId}"
+						filterMatchMode="contains" 
+						visible="false">
+						<h:outputText value="#{al.atencionId}" />
+					</p:column>
+					<p:column headerText="#{etiquetas['tipo.atencion']}"
+						sortBy="#{al.tipoAtencion.descripcion}"
+						filterBy="#{al.tipoAtencion.descripcion}" filterMatchMode="contains"
+						width="20%">
+						<h:outputText value="#{al.tipoAtencion.descripcion}" style="text-align:center;"/>
+					</p:column>
+					<p:column headerText="#{etiquetas['fecha.desde']}"
+						sortBy="#{al.fechaDesde}" filterBy="#{al.fechaDesde}"
+						filterMatchMode="contains" width="18%">
+						<h:outputText value="#{al.fechaDesde}" style="text-align:center;">
+							<f:convertDateTime pattern="yyyy-MM-dd" />
+						</h:outputText>
+					</p:column>
+					<p:column headerText="#{etiquetas['fecha.hasta']}"
+						sortBy="#{al.fechaHasta}" filterBy="#{al.fechaHasta}"
+						filterMatchMode="contains" width="15%">
+						<h:outputText value="#{al.fechaHasta}" style="text-align:center;">
+							<f:convertDateTime pattern="yyyy-MM-dd" />
+						</h:outputText>
+					</p:column>
+					<p:column headerText="#{etiquetas['hora.desde']}"
+						sortBy="#{al.horaDesde}" filterBy="#{al.horaDesde}"
+						filterMatchMode="contains" width="15%">
+						<h:outputText value="#{al.horaDesde}" style="text-align:center;">
+							<f:convertDateTime pattern="HH:mm" />
+						</h:outputText>
+					</p:column>
+					<p:column headerText="#{etiquetas['hora.hasta']}"
+						sortBy="#{al.horaHasta}" filterBy="#{al.horaHasta}"
+						filterMatchMode="contains" width="15%">
+						<h:outputText value="#{al.horaHasta}" style="text-align:center;">
+							<f:convertDateTime pattern="HH:mm" />
+						</h:outputText>
+					</p:column>
+					<p:column headerText="#{etiquetas['atencion.suspension']}"
+						sortBy="#{al.atencionSuspension}" filterBy="#{al.atencionSuspension}"
+						filterMatchMode="contains" width="13%">
+						<h:outputText value="#{fechasHabilitadasCtrl.obtenerAtencionSuspension(al.atencionSuspension)}" 
+						style="text-align:center;" />
+					</p:column>
+					<p:column headerText="#{etiquetas['estado']}" sortBy="#{al.estado}"
+						filterBy="#{al.estado}" filterMatchMode="contains" width="10%">
+						<h:outputText value="#{fechasHabilitadasCtrl.obtenerEstado(al.estado)}" style="text-align:center;" />
+					</p:column>
+				</p:dataTable>
+				<b:panelGrid id="pnlBtnNuevo" colSpans="4,4,4" style="margin: 4px 5px;">
+					<p:commandButton id="btnNuevo" value="#{etiquetas['nuevo.agendamiento.suspension']}"
+						action="#{fechasHabilitadasCtrl.nuevaAtencion}"
+						style="margin-right:20px;"                                          
+						icon="fa fa-fw fa-plus-square"
+						update="formFormulario, formFormulario:pnlFormulario"
+						disabled="#{fechasHabilitadasCtrl.renderNuevo}"/>
+				</b:panelGrid>
+			</b:panel>
+		</h:form>
+
+		<h:form id="formFormulario">
+			<b:panel id="pnlFormulario" rendered="#{fechasHabilitadasCtrl.renderFormulario}">
+				<h:panelGrid columns="2"
+					columnClasses="form-label-derecha ui-grid-col-2, form-input-izquierda">
+					<p:outputLabel value="#{etiquetas['tipo.atencion']}:*" />
+					<b:selectOneMenu id="cmbTipoAtencion"
+						value="#{fechasHabilitadasCtrl.atencion.tipoAtencion.tipoAtencionId}" required="true"
+						required-message="#{etiquetas['tipo.ventanilla']} #{mensajes['requerido']}"
+						styleClass="form-combo-centrado"
+						style="width: 35%;">
+						<f:selectItem itemLabel="#{etiquetas['seleccionar']}"
+							itemValue="" noSelectionOption="true" itemDisabled="true" />
+						<f:selectItems
+							value="#{fechasHabilitadasCtrl.tipoAtencionList}" var="ta"
+							itemLabel="#{ta.descripcion}" itemValue="#{ta.tipoAtencionId}" />
+					</b:selectOneMenu>
+					<p:outputLabel value="#{etiquetas['desde']}:*" />
+					<p:datePicker id="calFechaDesde"
+						value="#{fechasHabilitadasCtrl.atencion.fechaDesde}"
+						pattern="yyyy/MM/dd"
+						showIcon="true"
+						process="@this"
+						required="true"
+						requiredMessage="#{etiquetas['fecha.desde']} #{mensajes['requerido']}"
+						style="width: 35%">
+						<p:ajax event="dateSelect" listener="#{fechasHabilitadasCtrl.validarFechas()}" update="calFechaHasta"/>
+					</p:datePicker>
+					<p:outputLabel value="#{etiquetas['hasta']}" />
+					<p:datePicker id="calFechaHasta"
+						value="#{fechasHabilitadasCtrl.atencion.fechaHasta}"
+						pattern="yyyy/MM/dd"
+						mindate="#{fechasHabilitadasCtrl.atencion.fechaDesde}"
+						style="width: 35%"
+						showIcon="true"
+						process="@this">
+						<p:ajax event="dateSelect" listener="#{fechasHabilitadasCtrl.validarFechas()}" update="@this" />
+					</p:datePicker>
+
+					<p:outputLabel value="#{etiquetas['hora.desde']}:*" />
+					<p:datePicker id="calHoraDesde"
+						timeOnly="true"
+						showIcon="true"
+						value="#{fechasHabilitadasCtrl.atencion.horaDesde}"
+						pattern="HH:mm"
+						process="@this"
+						required="true"
+						requiredMessage="#{etiquetas['hora.desde']} #{mensajes['requerido']}"
+						style="width: 35%">
+						<f:ajax event="change" listener="#{fechasHabilitadasCtrl.validarHora()}" render="calHoraHasta"/>						
+					</p:datePicker>
+
+					<p:outputLabel value="#{etiquetas['hora.hasta']}:" />
+					<p:datePicker id="calHoraHasta"
+						timeOnly="true"
+						showIcon="true"
+						value="#{fechasHabilitadasCtrl.atencion.horaHasta}"
+						pattern="HH:mm"
+						style="width: 35%"
+						process="@this">
+						<f:ajax event="change" listener="#{fechasHabilitadasCtrl.validarHora()}" render="@this"/>
+					</p:datePicker>
+												
+					<p:outputLabel value="#{etiquetas['atencion.suspension']}:*" />
+					<b:selectOneMenu id="cmbAtencionSuspension" 
+						value="#{fechasHabilitadasCtrl.atencion.atencionSuspension}"
+						required="true"
+						required-message="#{etiquetas['atencion.suspension']} #{mensajes['requerido']}"
+						styleClass="form-combo-centrado"
+						style="width: 20%">
+						<f:selectItem itemLabel="#{etiquetas['seleccionar']}" itemValue="" itemDisabled="true" noSelectionOption="true" />
+						<f:selectItems value="#{fechasHabilitadasCtrl.atencionSuspension}" />
+					</b:selectOneMenu>
+					
+					<p:outputLabel value="#{etiquetas['estado']}:*" />
+					<b:selectOneMenu id="cmbEstado" 
+						value="#{fechasHabilitadasCtrl.atencion.estado}"
+						required="true"
+						required-message="#{etiquetas['estado']} #{mensajes['requerido']}"
+						styleClass="form-combo-centrado"
+						style="width: 20%">
+						<f:selectItem itemLabel="#{etiquetas['seleccionar']}" itemValue="" itemDisabled="true" noSelectionOption="true" />
+						<f:selectItems value="#{fechasHabilitadasCtrl.estado}" />
+					</b:selectOneMenu>
+				</h:panelGrid>
+				<b:panelGrid colSpans="6,6"
+					style="width: 50%; margin: 4px 5px; text-align: center;">
+					<p:commandButton value="Guardar" id="guardarBtn"
+						action="#{fechasHabilitadasCtrl.guardarAtencion}"
+						style="margin-right:20px;" icon="fa fa-fw fa-save"
+						update="formVacaciones, msgMensajes, formFormulario, pnlFormulario" />
+					<p:commandButton value="Cancelar" id="cancelarBtn"
+						action="#{fechasHabilitadasCtrl.limpiarCampos}"
+						style="margin-right:20px;" icon="fa fa-fw fa-ban"
+						process="@this"
+						update="formVacaciones, msgMensajes, formFormulario, pnlFormulario" />
+				</b:panelGrid>
+			</b:panel>
+		</h:form>
+
+	</ui:define>
+</ui:composition>
+</html>

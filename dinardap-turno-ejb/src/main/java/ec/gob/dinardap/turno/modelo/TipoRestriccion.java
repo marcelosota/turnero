@@ -88,6 +88,10 @@ public class TipoRestriccion implements Serializable {
 
     @OneToMany(mappedBy = "tipoRestriccion")
     private List<Baneo> baneoList;
+    
+    //bi-directional many-to-one association to ListaBlanca
+  	@OneToMany(mappedBy="tipoRestriccion")
+  	private List<ListaBlanca> listaBlancas;
 
     public TipoRestriccion() {
     }
@@ -177,5 +181,27 @@ public class TipoRestriccion implements Serializable {
     public void setBaneoList(List<Baneo> baneoList) {
         this.baneoList = baneoList;
     }
+    
+    public List<ListaBlanca> getListaBlancas() {
+		return this.listaBlancas;
+	}
+
+	public void setListaBlancas(List<ListaBlanca> listaBlancas) {
+		this.listaBlancas = listaBlancas;
+	}
+
+	public ListaBlanca addListaBlanca(ListaBlanca listaBlanca) {
+		getListaBlancas().add(listaBlanca);
+		listaBlanca.setTipoRestriccion(this);
+
+		return listaBlanca;
+	}
+
+	public ListaBlanca removeListaBlanca(ListaBlanca listaBlanca) {
+		getListaBlancas().remove(listaBlanca);
+		listaBlanca.setTipoRestriccion(null);
+
+		return listaBlanca;
+	}
 
 }

@@ -1,54 +1,201 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:b="http://bootsfaces.net/ui"
-      xmlns:p="http://primefaces.org/ui">
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui">
 
-    <ui:composition template="/template/general.xhtml">
-        <ui:define name="content">
-            <h1 class="h-wai">#{etiquetas['nombre.sistema']} - #{administracionCGRSCtrl.tituloPagina}</h1>
-            <h:form id="formAdminCGRS">
-                <b:panel style="width: 50%" rendered="true">
-                    <h:panelGrid columns="2" columnClasses="form-label-derecha ui-grid-col-1, form-input-izquierda" >
-                        <p:outputLabel for="registroMercantil" value="Registro Mercantil:" />
-                        <p:autoComplete id="registroMercantil"
-                                        dropdown="true"
-                                        value="#{administracionCGRSCtrl.planificacionRegistro.registroMercantil}" 
-                                        completeMethod="#{administracionCGRSCtrl.completeNombreRegistroMercantil}"                                        
-                                        converter="#{registroMercantilConverter}"
-                                        var="registroMercantil"
-                                        itemLabel="#{registroMercantil.nombre}"
-                                        itemValue="#{registroMercantil}"
-                                        style="width: 90%" 
-                                        inputStyle="width: 100%"
-                                        maxResults="20"
-                                        required="true"                                        
-                                        title="#{administracionCGRSCtrl.planificacionRegistro.registroMercantil.nombre}">
-                            <p:ajax event="itemSelect" listener="#{administracionCGRSCtrl.buscarPlanificacion}" update="formAdminCGRS, msgMensajes"/>
-                        </p:autoComplete>
-                        <p:outputLabel for="cantidadVentanillas" value="Ventanillas:" />
-                        <p:inputNumber id="cantidadVentanillas" value="#{administracionCGRSCtrl.planificacionRegistro.ventanilla}" required="true" minValue="0" maxValue="99" decimalPlaces="0" style="width: 25%" title="Cantidad de Ventanillas Disponibles"/>
-                        <p:outputLabel for="tiempoAtencion" value="Tiempo Atención:" />
-                        <p:inputNumber id="tiempoAtencion" value="#{administracionCGRSCtrl.planificacionRegistro.duracionTramite}" required="true" minValue="0" maxValue="99" decimalPlaces="0" style="width: 25%" title="Promedio del Tiempo de Atención por Trámite en Minutos"/>
-                        <!--<p:outputLabel for="mesAgenda" value="Mes:" />
-                        <p:datePicker id="mesAgenda" view="month" value="" pattern="MM/yyyy" yearNavigator="false"/>-->
-                        <p:outputLabel for="horaEntrada" value="Hora de Entrada:" />
-                        <p:inputMask  id="horaEntrada" value="#{administracionCGRSCtrl.planificacionRegistro.horaInicio}" required="true" mask="99:99" >
-                            <f:validator validatorId="timeValidator"></f:validator>
-                        </p:inputMask>
-                        <p:outputLabel for="horaSalida" value="Hora de Salida:" />
-                        <p:inputMask  id="horaSalida" value="#{administracionCGRSCtrl.planificacionRegistro.horaFin}" required="true" mask="99:99" >
-                            <f:validator validatorId="timeValidator"></f:validator>
-                        </p:inputMask>
-                    </h:panelGrid>    
-                    <b:panelGrid colSpans="6,6" style="width: 100%; margin: 4px 5px; text-align: center;">                        
-                        <p:commandButton value="Guardar" id="guardarBtn" action="#{administracionCGRSCtrl.guardarPlanificacion}" style="margin-right:20px;" icon="fa fa-fw fa-save" update="formAdminCGRS, msgMensajes"/>
-                        <p:commandButton value="Cancelar" id="cancelarBtn" style="margin-right:20px;" icon="fa fa-fw fa-ban" update="formAdminCGRS, msgMensajes"/>
-                    </b:panelGrid>
-                </b:panel>
-            </h:form>
-        </ui:define>
-    </ui:composition>
+<ui:composition template="/template/general.xhtml">
+	<ui:define name="content">
+		<h1 class="h-wai">#{etiquetas['nombre.sistema']} - #{etiquetas['planificacion.cgrs']}</h1>
+		<h:form id="formAdminCGRS">
+			<b:panel id="pnlTabla" style="width: 100%" rendered="true">
+				<h:panelGrid columns="2"
+					columnClasses="form-label-derecha ui-grid-col-1, form-input-izquierda">
+					<p:outputLabel value="#{etiquetas['registro.mercantil']}:*" />
+					<p:autoComplete id="registroMercantil" dropdown="true"
+						value="#{administracionCGRSCtrl.registroMercantil}"
+						completeMethod="#{administracionCGRSCtrl.completeNombreRegistroMercantil}"
+						converter="#{registroMercantilConverter}" var="registroMercantil"
+						itemLabel="#{registroMercantil.nombre}"
+						itemValue="#{registroMercantil}" style="width: 60%"
+						inputStyle="width: 100%" maxResults="20" required="true"
+						title="#{administracionCGRSCtrl.planificacionRegistro.registroMercantil.nombre}">
+						<p:ajax event="itemSelect"
+							listener="#{administracionCGRSCtrl.buscarPlanificacion}"
+							update="dtbPlanificacion, btnNuevo, formFormulario:pnlFormulario" />
+					</p:autoComplete>
+				</h:panelGrid>
+			
+				<p:dataTable id="dtbPlanificacion"
+					value="#{administracionCGRSCtrl.planificacionList}" var="pl"
+					filteredValue="#{administracionCGRSCtrl.filtro}" rows="8"
+					paginator="true" paginatorPosition="bottom" 
+					selectionMode="single"
+					selection="#{administracionCGRSCtrl.planificacionRegistro}"
+					rowKey="#{pl.planificacionId}">
+					<p:ajax event="rowSelect"
+						listener="#{administracionCGRSCtrl.onSelectPlanificacion()}"
+						update="formFormulario" />
+					<p:column headerText=""
+						sortBy="#{pl.planificacionId}"
+						filterBy="#{pl.planificacionId}"
+						filterMatchMode="contains" 
+						visible="false">
+						<h:outputText value="#{pl.planificacionId}" />
+					</p:column>
+					<p:column headerText="#{etiquetas['tipo.ventanilla']}"
+						sortBy="#{pl.tipoVentanilla.nombre}"
+						filterBy="#{pl.tipoVentanilla.nombre}" filterMatchMode="contains"
+						width="20%">
+						<h:outputText value="#{pl.tipoVentanilla.nombre}" style="text-align:center;"/>
+					</p:column>
+					<p:column headerText="#{etiquetas['numero.ventanilla']}"
+						sortBy="#{pl.ventanilla}" filterBy="#{pl.ventanilla}"
+						filterMatchMode="contains" width="18%">
+						<h:outputText value="#{pl.ventanilla}" style="text-align:center;" />
+					</p:column>
+					<p:column headerText="#{etiquetas['tiempo.atencion']}"
+						sortBy="#{pl.duracionTramite}" filterBy="#{pl.duracionTramite}"
+						filterMatchMode="contains" width="15%">
+						<h:outputText value="#{pl.duracionTramite}" style="text-align:center;" />
+					</p:column>
+					<p:column headerText="#{etiquetas['fecha.vigencia']}"
+						sortBy="#{pl.fechaVigencia}" filterBy="#{pl.fechaVigencia}"
+						filterMatchMode="contains" width="15%">
+						<h:outputText value="#{pl.fechaVigencia}" style="text-align:center;">
+							<f:convertDateTime pattern="yyyy-MM-dd" />
+						</h:outputText>
+					</p:column>
+					<p:column headerText="#{etiquetas['fecha.caducidad']}"
+						sortBy="#{pl.fechaCaducidad}" filterBy="#{pl.fechaCaducidad}"
+						filterMatchMode="contains" width="15%">
+						<h:outputText value="#{pl.fechaCaducidad}" style="text-align:center;">
+							<f:convertDateTime pattern="yyyy-MM-dd" />
+						</h:outputText>
+					</p:column>
+					<p:column headerText="#{etiquetas['hora.entrada']}"
+						sortBy="#{pl.horaInicio}" filterBy="#{pl.horaInicio}"
+						filterMatchMode="contains" width="13%">
+						<h:outputText value="#{pl.horaInicio}" style="text-align:center;" />
+					</p:column>
+					<p:column headerText="#{etiquetas['hora.salida']}"
+						sortBy="#{pl.horaFin}" filterBy="#{pl.horaFin}"
+						filterMatchMode="contains" width="13%">
+						<h:outputText value="#{pl.horaFin}" style="text-align:center;" />
+					</p:column>
+					<p:column headerText="#{etiquetas['estado']}" sortBy="#{pl.estado}"
+						filterBy="#{pl.estado}" filterMatchMode="contains" width="10%">
+						<h:outputText value="#{administracionCGRSCtrl.obtenerEstado(pl.estado)}" style="text-align:center;" />
+					</p:column>
+				</p:dataTable>
+				<b:panelGrid id="pnlBtnNuevo" colSpans="4,4,4" style="margin: 4px 5px;">
+					<p:commandButton id="btnNuevo" value="#{etiquetas['nueva.planificacion']}"
+						action="#{administracionCGRSCtrl.nuevaPlanificacion}"
+						style="margin-right:20px;"                                          
+						icon="fa fa-fw fa-plus-square"
+						update="formFormulario, formFormulario:pnlFormulario"
+						disabled="#{administracionCGRSCtrl.renderNuevo}"/>
+				</b:panelGrid>
+			</b:panel>
+		</h:form>
+
+		<h:form id="formFormulario">
+			<b:panel id="pnlFormulario" rendered="#{administracionCGRSCtrl.renderPlanificacion}">
+				<h:panelGrid columns="2"
+					columnClasses="form-label-derecha ui-grid-col-1, form-input-izquierda">
+					<p:outputLabel value="#{etiquetas['tipo.ventanilla']}:*" />
+					<b:selectOneMenu id="cmbTipoVentanilla"
+						value="#{administracionCGRSCtrl.planificacionRegistro.tipoVentanilla.tipoVentanillaId}" required="true"
+						required-message="#{etiquetas['tipo.ventanilla']} #{mensajes['requerido']}"
+						styleClass="form-combo-centrado"
+						style="width: 35%;">
+						<f:selectItem itemLabel="#{etiquetas['seleccionar']}"
+							itemValue="-1" noSelectionOption="true" />
+						<f:selectItems
+							value="#{administracionCGRSCtrl.tipoVentanillaList}" var="tv"
+							itemLabel="#{tv.nombre}" itemValue="#{tv.tipoVentanillaId}" />
+					</b:selectOneMenu>
+					<p:outputLabel value="#{etiquetas['numero.ventanilla']}:*" />
+                    <p:inputNumber id="txtCantidadVentanillas" 
+                    	value="#{administracionCGRSCtrl.planificacionRegistro.ventanilla}" 
+                    	required="true" 
+                    	requiredMessage="#{etiquetas['numero.ventanilla']} #{mensajes['requerido']}"
+                    	minValue="0" maxValue="99" decimalPlaces="0" 
+                    	style="width: 25%" title="Cantidad de Ventanillas Disponibles"/>
+					<p:outputLabel value="#{etiquetas['tiempo.atencion']}:*" />
+					<p:inputNumber id="txtTiempoAtencion" 
+						value="#{administracionCGRSCtrl.planificacionRegistro.duracionTramite}" 
+						required="true"
+						requiredMessage="#{etiquetas['tiempo.atencion']} #{mensajes['requerido']}" 
+						minValue="0" maxValue="99" decimalPlaces="0" 
+						style="width: 25%" 
+						title="Promedio del Tiempo de Atención por Trámite en Minutos"/>
+
+					<p:outputLabel value="#{etiquetas['hora.entrada']}:*" />
+					<p:inputMask id="txtHoraEntrada" 
+						value="#{administracionCGRSCtrl.planificacionRegistro.horaInicio}" 
+						required="true"
+						requiredMessage="#{etiquetas['hora.entrada']} #{mensajes['requerido']}" 
+						mask="99:99" >
+						<f:validator validatorId="timeValidator" />
+					</p:inputMask>
+					<p:outputLabel value="#{etiquetas['hora.salida']}:*" />
+					<p:inputMask id="txtHoraSalida" 
+						value="#{administracionCGRSCtrl.planificacionRegistro.horaFin}" 
+						required="true" 
+						requiredMessage="#{etiquetas['hora.salida']} #{mensajes['requerido']}"
+						mask="99:99" >
+						<f:validator validatorId="timeValidator" />
+					</p:inputMask>
+					<p:outputLabel value="#{etiquetas['fecha.vigencia']}:*" />
+					<b:dateTimePicker id="calFechaVigencia"
+						show-time="false"
+						value="#{administracionCGRSCtrl.planificacionRegistro.fechaVigencia}"
+						format="YYYY/MM/DD"
+						allow-input-toggle="true"
+						ondtchange="ajax:administracionCGRS.validarFechas" 
+						process="@this"
+						update="calFechaCaducidad"
+						required="true"
+						required-message="#{etiquetas['fecha.vigencia']} #{mensajes['requerido']}"
+						label-col-sm="3" col-sm="6"
+						style="width: 35%" />
+					<p:outputLabel value="#{etiquetas['fecha.caducidad']}" />
+					<b:dateTimePicker id="calFechaCaducidad"
+						show-time="false"
+						value="#{administracionCGRSCtrl.planificacionRegistro.fechaCaducidad}"
+						format="YYYY/MM/DD"
+						allow-input-toggle="true"
+						min-date="#{administracionCGRSCtrl.planificacionRegistro.fechaVigencia}"
+						label-col-sm="3" col-sm="6"
+						style="width: 35%" />
+					<p:outputLabel value="#{etiquetas['estado']}" />
+					<b:selectOneMenu id="cmbEstado" 
+						value="#{administracionCGRSCtrl.planificacionRegistro.estado}"
+						required="true"
+						required-message="#{etiquetas['estado']} #{mensajes['requerido']}"
+						styleClass="form-combo-centrado"
+						style="width: 20%">
+						<f:selectItem itemLabel="#{etiquetas['seleccionar']}" itemValue="-1" noSelectionOption="true" />
+						<f:selectItems value="#{administracionCGRSCtrl.estado}" />
+					</b:selectOneMenu>
+				</h:panelGrid>
+				<b:panelGrid colSpans="6,6"
+					style="width: 50%; margin: 4px 5px; text-align: center;">
+					<p:commandButton value="Guardar" id="guardarBtn"
+						action="#{administracionCGRSCtrl.guardarPlanificacion}"
+						style="margin-right:20px;" icon="fa fa-fw fa-save"
+						update="formAdminCGRS, msgMensajes, formFormulario, pnlFormulario" />
+					<p:commandButton value="Cancelar" id="cancelarBtn"
+						action="#{administracionCGRSCtrl.limpiarCampos}"
+						style="margin-right:20px;" icon="fa fa-fw fa-ban"
+						process="@this"
+						update="formAdminCGRS, msgMensajes, formFormulario, pnlFormulario" />
+				</b:panelGrid>
+			</b:panel>
+		</h:form>
+
+	</ui:define>
+</ui:composition>
 </html>

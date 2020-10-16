@@ -1,6 +1,8 @@
 package ec.gob.dinardap.turno.modelo;
 
 import java.io.Serializable;
+import java.util.Date;
+
 import javax.persistence.*;
 
 /**
@@ -22,6 +24,24 @@ public class PlanificacionRegistro implements Serializable {
 
     @Column(name = "duracion_tramite")
     private Short duracionTramite;
+    
+    private Short estado;
+    
+    @Temporal(TemporalType.DATE)
+	@Column(name="fecha_caducidad")
+	private Date fechaCaducidad;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name="fecha_creacion")
+	private Date fechaCreacion;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name="fecha_modificacion")
+	private Date fechaModificacion;
+
+	@Temporal(TemporalType.DATE)
+	@Column(name="fecha_vigencia")
+	private Date fechaVigencia;
 
 	@Column(name="hora_fin")
 	private String horaFin;
@@ -35,6 +55,11 @@ public class PlanificacionRegistro implements Serializable {
     @ManyToOne
     @JoinColumn(name = "registro_mercantil_id")
     private RegistroMercantil registroMercantil;
+    
+    //bi-directional many-to-one association to TipoVentanilla
+  	@ManyToOne
+  	@JoinColumn(name="tipo_ventanilla_id")
+  	private TipoVentanilla tipoVentanilla;
 
     public PlanificacionRegistro() {
     }
@@ -54,6 +79,46 @@ public class PlanificacionRegistro implements Serializable {
     public void setDuracionTramite(Short duracionTramite) {
         this.duracionTramite = duracionTramite;
     }
+    
+    public Short getEstado() {
+		return this.estado;
+	}
+
+	public void setEstado(Short estado) {
+		this.estado = estado;
+	}
+
+	public Date getFechaCaducidad() {
+		return this.fechaCaducidad;
+	}
+
+	public void setFechaCaducidad(Date fechaCaducidad) {
+		this.fechaCaducidad = fechaCaducidad;
+	}
+
+	public Date getFechaCreacion() {
+		return this.fechaCreacion;
+	}
+
+	public void setFechaCreacion(Date fechaCreacion) {
+		this.fechaCreacion = fechaCreacion;
+	}
+
+	public Date getFechaModificacion() {
+		return this.fechaModificacion;
+	}
+
+	public void setFechaModificacion(Date fechaModificacion) {
+		this.fechaModificacion = fechaModificacion;
+	}
+
+	public Date getFechaVigencia() {
+		return this.fechaVigencia;
+	}
+
+	public void setFechaVigencia(Date fechaVigencia) {
+		this.fechaVigencia = fechaVigencia;
+	}
 
 	public String getHoraFin() {
 		return this.horaFin;
@@ -86,5 +151,13 @@ public class PlanificacionRegistro implements Serializable {
     public void setRegistroMercantil(RegistroMercantil registroMercantil) {
         this.registroMercantil = registroMercantil;
     }
+    
+    public TipoVentanilla getTipoVentanilla() {
+		return this.tipoVentanilla;
+	}
+
+	public void setTipoVentanilla(TipoVentanilla tipoVentanilla) {
+		this.tipoVentanilla = tipoVentanilla;
+	}
 
 }

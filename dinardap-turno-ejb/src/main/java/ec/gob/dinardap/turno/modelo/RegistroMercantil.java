@@ -36,6 +36,10 @@ public class RegistroMercantil implements Serializable {
 	//bi-directional many-to-one association to Usuario
 	@OneToMany(mappedBy="registroMercantil")
 	private List<UsuarioT> usuarios;
+	
+	//bi-directional many-to-one association to Atencion
+	@OneToMany(mappedBy="registroMercantil")
+	private List<Atencion> atencions;
 
 	public RegistroMercantil() {
 	}
@@ -128,6 +132,28 @@ public class RegistroMercantil implements Serializable {
 		usuario.setRegistroMercantil(null);
 
 		return usuario;
+	}
+	
+	public List<Atencion> getAtencions() {
+		return this.atencions;
+	}
+
+	public void setAtencions(List<Atencion> atencions) {
+		this.atencions = atencions;
+	}
+
+	public Atencion addAtencion(Atencion atencion) {
+		getAtencions().add(atencion);
+		atencion.setRegistroMercantil(this);
+
+		return atencion;
+	}
+
+	public Atencion removeAtencion(Atencion atencion) {
+		getAtencions().remove(atencion);
+		atencion.setRegistroMercantil(null);
+
+		return atencion;
 	}
 
 }

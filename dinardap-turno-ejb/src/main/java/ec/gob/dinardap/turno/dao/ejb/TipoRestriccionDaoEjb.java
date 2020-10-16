@@ -1,15 +1,12 @@
 package ec.gob.dinardap.turno.dao.ejb;
 
 import javax.ejb.Stateless;
+import javax.persistence.Query;
 
 import ec.gob.dinardap.persistence.dao.ejb.GenericDaoEjb;
 import ec.gob.dinardap.turno.dao.TipoRestriccionDao;
 import ec.gob.dinardap.turno.modelo.TipoRestriccion;
-import ec.gob.dinardap.turno.modelo.Turno;
 import ec.gob.dinardap.util.constante.EstadoEnum;
-import java.util.ArrayList;
-import java.util.List;
-import javax.persistence.Query;
 
 @Stateless(name = "TipoRestriccionDao")
 public class TipoRestriccionDaoEjb extends GenericDaoEjb<TipoRestriccion, Integer> implements TipoRestriccionDao {

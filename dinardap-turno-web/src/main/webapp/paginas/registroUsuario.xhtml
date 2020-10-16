@@ -41,6 +41,8 @@
                                      value="#{registroUsuarioCtrl.usuarioDto.registroMercantilId}"
                                      required="true"
                                      required-message="#{etiquetas['registro.mercantil']} #{mensajes['requerido']}"
+                                     ajax="true" onchange="ajax:registroUsuarioCtrl.buscarPerfil"
+                                     process="@this" update="cmbPerfil"
                                      styleClass="form-combo-centrado">
                         <f:selectItem itemLabel="#{etiquetas['seleccionar']}" itemValue="-1" noSelectionOption="true" />
                         <f:selectItems value="#{registroUsuarioCtrl.listaRM}" var="rm" 

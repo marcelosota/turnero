@@ -1,22 +1,28 @@
 package ec.gob.dinardap.turno.controller;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
 import ec.gob.dinardap.turno.modelo.PlanificacionRegistro;
 import ec.gob.dinardap.turno.modelo.RegistroMercantil;
+import ec.gob.dinardap.turno.modelo.TipoVentanilla;
 import ec.gob.dinardap.turno.servicio.PlanificacionRegistroServicio;
 import ec.gob.dinardap.turno.servicio.RegistroMercantilServicio;
+import ec.gob.dinardap.turno.servicio.TipoVentanillaServicio;
+import ec.gob.dinardap.util.constante.EstadoEnum;
 
 @Named(value = "administracionCGRSCtrl")
 @ViewScoped
@@ -26,39 +32,36 @@ public class AdministracionCGRSCtrl extends BaseCtrl implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -8641855730615163434L;
-
-	//Declaración de variables
-    //Variables de control visual
-    private String tituloPagina;
-
-    //Variables de negocio
-    private PlanificacionRegistro planificacionRegistro, planificacionExistente;
-    private RegistroMercantil registroMercantil;
-    private int ventanillas;
-    private int tiempoAtencion;
-    private String horaInicio;
-    private String horaFin;
-
-    private Date fechaHoraInicio;
-    private Date fechaHoraFin;
-
-    //Listas    
-    private List<RegistroMercantil> registroMercantilList;
-
-    @EJB
+	
+	@EJB
     private RegistroMercantilServicio registroMercantilServicio;
 
     @EJB
     private PlanificacionRegistroServicio planificacionRegistroServicio;
+    
+    @EJB
+    private TipoVentanillaServicio tipoVentanillaServicio;
+
+    //Variables de negocio
+    private PlanificacionRegistro planificacionRegistro;
+    private RegistroMercantil registroMercantil;
+    private List<TipoVentanilla> tipoVentanillaList;
+    private List<PlanificacionRegistro> planificacionList;
+    private List<PlanificacionRegistro> planificacionListSelect;
+    private List<PlanificacionRegistro> filtro;
+    private List<RegistroMercantil> registroMercantilList;
+    private List<SelectItem> estado;
+    private Boolean renderPlanificacion;
+    private Boolean renderNuevo;
 
     @PostConstruct
     protected void init() {
-        tituloPagina = "Administración CGRS";
-        fechaHoraInicio = null;
-        planificacionRegistro = new PlanificacionRegistro();
-        registroMercantil = new RegistroMercantil();
+        limpiarCampos();
         registroMercantilList = new ArrayList<RegistroMercantil>();
         registroMercantilList = registroMercantilServicio.getRegistrosMercantiles();
+        tipoVentanillaList = new ArrayList<TipoVentanilla>();
+        tipoVentanillaList = tipoVentanillaServicio.obtenerTipoVentanillaPorEstado(EstadoEnum.ACTIVO.getEstado());
+        renderNuevo = Boolean.TRUE;
     }
 
     public List<RegistroMercantil> completeNombreRegistroMercantil(String query) {
@@ -89,8 +92,8 @@ public class AdministracionCGRSCtrl extends BaseCtrl implements Serializable {
     }
 
     private Boolean validarHoras() {        
-        fechaHoraInicio = null;
-        fechaHoraFin = null;
+        Date fechaHoraInicio = null;
+        Date fechaHoraFin = null;
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(planificacionRegistro.getHoraInicio().split(":")[0]));
         calendar.set(Calendar.MINUTE, Integer.parseInt(planificacionRegistro.getHoraInicio().split(":")[1]));
@@ -106,45 +109,60 @@ public class AdministracionCGRSCtrl extends BaseCtrl implements Serializable {
     }
 
     public void buscarPlanificacion() {
-        //horaInicio = null;
-        //horaFin = null;
-        fechaHoraInicio = null;
-        fechaHoraFin = null;
-        RegistroMercantil registroMercantilAux = new RegistroMercantil();
-        registroMercantilAux = planificacionRegistro.getRegistroMercantil();
-        planificacionExistente = new PlanificacionRegistro();
-        planificacionExistente = planificacionRegistroServicio.getPlanificacionRegistro(planificacionRegistro.getRegistroMercantil().getRegistroMercantilId());
-        if (planificacionExistente.getPlanificacionId() != null) {
-            planificacionRegistro = planificacionExistente;
-        } else {
-            planificacionRegistro = new PlanificacionRegistro();
-            planificacionRegistro.setRegistroMercantil(registroMercantilAux);
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información: Planificación no Registrada ", ""));
-        }
+    	planificacionList = planificacionRegistroServicio.getPlanificacionRegistroList(registroMercantil.getRegistroMercantilId());
+    	limpiarCampos();
+    	if(planificacionList != null && planificacionList.size() > 0) {
+    		renderPlanificacion = Boolean.FALSE;
+    	}else {
+    		renderPlanificacion = Boolean.TRUE;
+    	}
+    	renderNuevo = Boolean.FALSE;
     }
 
     public void guardarPlanificacion() {        
         if ( validarVentanillas() && validarTiempoAtencion() && validarHoras()) {
             if (planificacionRegistro.getPlanificacionId() != null) {
+            	planificacionRegistro.setFechaModificacion(new Timestamp (new Date().getTime()));
                 planificacionRegistroServicio.update(planificacionRegistro);
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información: Se actualizó la planificación exitosamente. ", ""));
             } else {
                 planificacionRegistro.setPlanificacionId(null);
+                planificacionRegistro.setRegistroMercantil(getRegistroMercantil());
+                planificacionRegistro.setFechaCreacion(new Timestamp (new Date().getTime()));
                 planificacionRegistroServicio.create(planificacionRegistro);
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información: Se ha registrado la planificación exitosamente.", ""));
             }
+            buscarPlanificacion();
         }
     }
+    
+    public void nuevaPlanificacion() {
+    	limpiarCampos();
+    	renderPlanificacion = Boolean.TRUE;
+    }
+    
+   
+    public void limpiarCampos() {
+    	planificacionRegistro = new PlanificacionRegistro();
+    	planificacionRegistro.setTipoVentanilla(new TipoVentanilla());
+    	planificacionRegistro.setRegistroMercantil(new RegistroMercantil());
+    	renderPlanificacion = Boolean.FALSE;
+    }
+    
+    public void validarFechas() {
+    	if(planificacionRegistro.getFechaVigencia().compareTo(planificacionRegistro.getFechaCaducidad()) < 0)
+    		planificacionRegistro.setFechaCaducidad(null);
+    }
+    
+    public void onSelectPlanificacion(){
+    	renderPlanificacion = Boolean.TRUE;
+    }
+    
+    public String obtenerEstado(Short estado) {
+		return EstadoEnum.obtenerEstadoPorCodigo(estado).name();
+	}
 
     //Getters & Setters
-    public String getTituloPagina() {
-        return tituloPagina;
-    }
-
-    public void setTituloPagina(String tituloPagina) {
-        this.tituloPagina = tituloPagina;
-    }
-
     public PlanificacionRegistro getPlanificacionRegistro() {
         return planificacionRegistro;
     }
@@ -161,55 +179,6 @@ public class AdministracionCGRSCtrl extends BaseCtrl implements Serializable {
         this.registroMercantilList = registroMercantilList;
     }
 
-    public PlanificacionRegistro getPlanificacionExistente() {
-        return planificacionExistente;
-    }
-
-    public void setPlanificacionExistente(PlanificacionRegistro planificacionExistente) {
-        this.planificacionExistente = planificacionExistente;
-    }
-
-    /*
-    public RegistroMercantil getRegistroMercantil() {
-        return registroMercantil;
-    }
-
-    public void setRegistroMercantil(RegistroMercantil registroMercantil) {
-        this.registroMercantil = registroMercantil;
-    }
-     */
-    public int getVentanillas() {
-        return ventanillas;
-    }
-
-    public void setVentanillas(int ventanillas) {
-        this.ventanillas = ventanillas;
-    }
-
-    public int getTiempoAtencion() {
-        return tiempoAtencion;
-    }
-
-    public void setTiempoAtencion(int tiempoAtencion) {
-        this.tiempoAtencion = tiempoAtencion;
-    }
-
-    public String getHoraInicio() {
-        return horaInicio;
-    }
-
-    public void setHoraInicio(String horaInicio) {
-        this.horaInicio = horaInicio;
-    }
-
-    public String getHoraFin() {
-        return horaFin;
-    }
-
-    public void setHoraFin(String horaFin) {
-        this.horaFin = horaFin;
-    }
-
     public RegistroMercantil getRegistroMercantil() {
         return registroMercantil;
     }
@@ -218,20 +187,68 @@ public class AdministracionCGRSCtrl extends BaseCtrl implements Serializable {
         this.registroMercantil = registroMercantil;
     }
 
-    public Date getFechaHoraInicio() {
-        return fechaHoraInicio;
-    }
+    public List<SelectItem> getEstado() {
+		if(this.estado == null) {
+			List<EstadoEnum> lista = new ArrayList<EstadoEnum>(EnumSet.allOf(EstadoEnum.class));
+			this.estado = new ArrayList<SelectItem>();
+			for(EstadoEnum valor : lista) {
+				SelectItem item = new SelectItem(valor.getEstado(), valor.name());
+				this.estado.add(item);
+			}
+		}
+		return estado;
+	}
 
-    public void setFechaHoraInicio(Date fechaHoraInicio) {
-        this.fechaHoraInicio = fechaHoraInicio;
-    }
+	public void setEstado(List<SelectItem> estado) {
+		this.estado = estado;
+	}
 
-    public Date getFechaHoraFin() {
-        return fechaHoraFin;
-    }
+	public List<TipoVentanilla> getTipoVentanillaList() {
+		return tipoVentanillaList;
+	}
 
-    public void setFechaHoraFin(Date fechaHoraFin) {
-        this.fechaHoraFin = fechaHoraFin;
-    }
+	public void setTipoVentanillaList(List<TipoVentanilla> tipoVentanillaList) {
+		this.tipoVentanillaList = tipoVentanillaList;
+	}
+
+	public List<PlanificacionRegistro> getPlanificacionList() {
+		return planificacionList;
+	}
+
+	public void setPlanificacionList(List<PlanificacionRegistro> planificacionList) {
+		this.planificacionList = planificacionList;
+	}
+
+	public List<PlanificacionRegistro> getPlanificacionListSelect() {
+		return planificacionListSelect;
+	}
+
+	public void setPlanificacionListSelect(List<PlanificacionRegistro> planificacionListSelect) {
+		this.planificacionListSelect = planificacionListSelect;
+	}
+
+	public List<PlanificacionRegistro> getFiltro() {
+		return filtro;
+	}
+
+	public void setFiltro(List<PlanificacionRegistro> filtro) {
+		this.filtro = filtro;
+	}
+
+	public Boolean getRenderPlanificacion() {
+		return renderPlanificacion;
+	}
+
+	public void setRenderPlanificacion(Boolean renderPlanificacion) {
+		this.renderPlanificacion = renderPlanificacion;
+	}
+
+	public Boolean getRenderNuevo() {
+		return renderNuevo;
+	}
+
+	public void setRenderNuevo(Boolean renderTabla) {
+		this.renderNuevo = renderTabla;
+	}
 
 }

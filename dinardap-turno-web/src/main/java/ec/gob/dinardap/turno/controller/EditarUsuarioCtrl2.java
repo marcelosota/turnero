@@ -1,13 +1,18 @@
 package ec.gob.dinardap.turno.controller;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
+import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import ec.gob.dinardap.autorizacion.util.EncriptarCadenas;
 import ec.gob.dinardap.seguridad.constante.TipoPerfilEnum;
@@ -21,13 +26,14 @@ import ec.gob.dinardap.turno.servicio.RegistroMercantilServicio;
 import ec.gob.dinardap.turno.servicio.UsuarioServicio;
 import ec.gob.dinardap.util.constante.EstadoEnum;
 
-
-public class EditarUsuarioCtrl extends BaseCtrl{
+@Named
+@ViewScoped
+public class EditarUsuarioCtrl2 extends BaseCtrl implements Serializable{
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -770751950500324855L;
+	private static final long serialVersionUID = 2525661733927942070L;
 
 	@EJB
 	private UsuarioServicio usuarioServicio;
@@ -38,6 +44,9 @@ public class EditarUsuarioCtrl extends BaseCtrl{
 	@EJB
 	private PerfilServicio perfilServicio;
 	
+	@Inject
+	private MisUsuariosCtrl misUsuariosCtrl;
+	
 	private UsuarioT usuario;
 	private UsuarioDto usuarioDto;
 	private List<RegistroMercantil> listaRM;
@@ -45,8 +54,9 @@ public class EditarUsuarioCtrl extends BaseCtrl{
 	private List<Perfil> listaPerfil;
 	private String perfil;
 	
-	public void cargarDatos(Integer usuarioId) {
-		usuario = usuarioServicio.findByPk(usuarioId);
+	@PostConstruct
+	public void init() {
+		usuario = usuarioServicio.findByPk(misUsuariosCtrl.getUsuarioId());
 		usuarioDto = new UsuarioDto();
 		getUsuarioDto().setUsuarioId(getUsuario().getUsuarioId());
 		getUsuarioDto().setCedula(getUsuario().getCedula());
@@ -93,8 +103,10 @@ public class EditarUsuarioCtrl extends BaseCtrl{
 	
 	public void regresar() {
 		try {
+			//misUsuariosCtrl.terminar();
 			FacesContext.getCurrentInstance().getExternalContext().redirect("misUsuarios.jsf");
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

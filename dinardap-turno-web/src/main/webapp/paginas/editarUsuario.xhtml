@@ -9,52 +9,65 @@
 <ui:composition template="/template/general.xhtml">
 	<ui:define name="content">
 		<h1 class="h-wai">#{etiquetas['nombre.sistema']} - Editar Usuario</h1>
-		<h:form id="formInicio">
+		<f:event listener="#{misUsuariosCtrl.cargarDatos}" type="preRenderView" />
+		<h:form id="formEditarUsuario">
 			<h:panelGrid columns="2" id="logueo" style="width:50%;"
 				columnClasses="form-label-derecha ui-grid-col-1, form-input-izquierda, 
 						form-label-derecha ui-grid-col-1, form-input-izquierda">
 				<p:outputLabel value="#{etiquetas['cedula']}:" />
 				<p:inputText id="txtCedula"
-					value="#{editarUsuarioCtrl.usuarioDto.cedula}"
+					value="#{misUsuariosCtrl.usuarioDto.cedula}"
 					disabled="true"
 					maxlength="10" >
 				</p:inputText>
 				<p:outputLabel value="#{etiquetas['nombre']}:" />
 				<p:inputText id="txtNombre" 
-					value="#{editarUsuarioCtrl.usuarioDto.nombre}"
+					value="#{misUsuariosCtrl.usuarioDto.nombre}"
 					disabled="true"
 					size="40" />
 				<p:outputLabel value="#{etiquetas['contrasena']}:" />
 				<p:password id="txtContrasena" 
-					value="#{editarUsuarioCtrl.usuarioDto.contrasena}" 
+					value="#{misUsuariosCtrl.usuarioDto.contrasena}" 
 					size="40" />
 				<p:outputLabel value="#{etiquetas['registro.mercantil']}:" />
 				<b:selectOneMenu id="cmbEntidades" 
-					value="#{editarUsuarioCtrl.usuarioDto.registroMercantilId}"
+					value="#{misUsuariosCtrl.usuarioDto.registroMercantilId}"
 					required="true"
 					required-message="#{etiquetas['registro.mercantil']} #{mensajes['requerido']}"
+					ajax="true" onchange="ajax:misUsuariosCtrl.buscarPerfil"
+					process="@this" update="cmbPerfil"
 					styleClass="form-combo-centrado">
 					<f:selectItem itemLabel="#{etiquetas['seleccionar']}" itemValue="-1" noSelectionOption="true" />
-					<f:selectItems value="#{editarUsuarioCtrl.listaRM}" var="rm" 
+					<f:selectItems value="#{misUsuariosCtrl.listaRM}" var="rm" 
 						itemLabel="#{rm.nombre}" itemValue="#{rm.registroMercantilId}" />
 				</b:selectOneMenu>
+				<p:outputLabel value="#{etiquetas['perfil']}:" />
+				<b:selectOneMenu id="cmbPerfil" 
+					value="#{misUsuariosCtrl.usuarioDto.perfilId}"
+					required="true"
+					required-message="#{etiquetas['perfil']} #{mensajes['requerido']}"
+					styleClass="form-combo-centrado">
+					<f:selectItem itemLabel="#{etiquetas['seleccionar']}" itemValue="-1" noSelectionOption="true" />
+					<f:selectItems value="#{misUsuariosCtrl.listaPerfil}" var="pr" 
+						itemLabel="#{pr.nombre}" itemValue="#{pr.perfilId}" />
+                    </b:selectOneMenu>
 				<p:outputLabel value="#{etiquetas['estado']}:" />
 				<b:selectOneMenu id="cmbEstado" 
-					value="#{editarUsuarioCtrl.usuarioDto.estado}"
+					value="#{misUsuariosCtrl.usuarioDto.estado}"
 					required="true"
 					required-message="#{etiquetas['estado']} #{mensajes['requerido']}"
 					styleClass="form-combo-centrado"
 					process="@this">
 					<f:selectItem itemLabel="#{etiquetas['seleccionar']}" itemValue="-1" noSelectionOption="true" />
-					<f:selectItems value="#{editarUsuarioCtrl.estado}" />
+					<f:selectItems value="#{misUsuariosCtrl.estado}" />
 				</b:selectOneMenu>
 			</h:panelGrid>
 			<p:commandButton value="#{etiquetas['guardar']}"
-				actionListener="#{editarUsuarioCtrl.guardarUsuario}"
+				actionListener="#{misUsuariosCtrl.guardarUsuario}"
 				update="txtCedula txtNombre txtContrasena cmbEntidades"/>
 			<p:spacer width="10px" />
 			<p:commandButton value="#{etiquetas['cancelar']}"
-				actionListener="#{editarUsuarioCtrl.regresar}"
+				actionListener="#{misUsuariosCtrl.regresar}"
 				update="txtCedula txtNombre txtContrasena cmbEntidades"
 				process="@this" />
 		</h:form>

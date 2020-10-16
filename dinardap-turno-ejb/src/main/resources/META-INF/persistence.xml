@@ -9,6 +9,10 @@
 		<class>ec.gob.dinardap.turno.modelo.TipoRestriccion</class>
 		<class>ec.gob.dinardap.turno.modelo.Baneo</class>
 		<class>ec.gob.dinardap.turno.modelo.UsuarioT</class>
+		<class>ec.gob.dinardap.turno.modelo.Atencion</class>
+		<class>ec.gob.dinardap.turno.modelo.ListaBlanca</class>
+		<class>ec.gob.dinardap.turno.modelo.TipoAtencion</class>
+		<class>ec.gob.dinardap.turno.modelo.TipoVentanilla</class>
 		<class>ec.gob.dinardap.seguridad.modelo.Asignacion</class>
 		<class>ec.gob.dinardap.seguridad.modelo.AsignacionInstitucion</class>
 		<class>ec.gob.dinardap.seguridad.modelo.Campo</class>

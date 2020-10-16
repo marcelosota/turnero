@@ -42,4 +42,15 @@ public class PlanificacionRegistroServicioImpl extends GenericServiceImpl<Planif
         }
         return planificacionRegistro;
     }
+
+	@Override
+	public List<PlanificacionRegistro> getPlanificacionRegistroList(Integer registroMercantilId) {
+        String[] criteriaNombres = {"registroMercantil.registroMercantilId"};
+        CriteriaTypeEnum[] criteriaTipos = {CriteriaTypeEnum.INTEGER_EQUALS};
+        Object[] criteriaValores = {registroMercantilId};
+        String[] orderBy = {"planificacionId"};
+        boolean[] asc = {true};
+        Criteria criteria = new Criteria(criteriaNombres, criteriaTipos, criteriaValores, orderBy, asc);
+		return findByCriterias(criteria);
+	}
 }

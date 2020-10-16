@@ -1,13 +1,16 @@
 package ec.gob.dinardap.turno.servicio.impl;
 
-import ec.gob.dinardap.persistence.constante.CriteriaTypeEnum;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
+import ec.gob.dinardap.persistence.constante.CriteriaTypeEnum;
 import ec.gob.dinardap.persistence.dao.GenericDao;
 import ec.gob.dinardap.persistence.servicio.impl.GenericServiceImpl;
 import ec.gob.dinardap.persistence.util.Criteria;
-import ec.gob.dinardap.turno.constante.TipoRestriccionEnum;
 import ec.gob.dinardap.turno.dao.BaneoDao;
 import ec.gob.dinardap.turno.dao.TipoRestriccionDao;
 import ec.gob.dinardap.turno.dao.TurnoDao;
@@ -15,9 +18,6 @@ import ec.gob.dinardap.turno.modelo.Baneo;
 import ec.gob.dinardap.turno.modelo.TipoRestriccion;
 import ec.gob.dinardap.turno.servicio.BaneoServicio;
 import ec.gob.dinardap.util.constante.EstadoEnum;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 @Stateless(name = "BaneoServicio")
 public class BaneoServicioImpl extends GenericServiceImpl<Baneo, Integer> implements BaneoServicio {

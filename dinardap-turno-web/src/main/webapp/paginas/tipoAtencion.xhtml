@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui">
+<ui:composition template="/template/general.xhtml">
+	<ui:define name="content">
+		<h1 class="h-wai">#{etiquetas['nombre.sistema']} -
+			#{etiquetas['tipo.atencion']}</h1>
+
+		<h:form id="formListaAtencion">
+			<b:panel>
+				<h:panelGrid columns="1" style="width: 60%;">
+					<p:dataTable id="dtbTipoAtencion"
+						value="#{tipoAtencionCtrl.listaTipoAtencion}" var="ta"
+						filteredValue="#{tipoAtencionCtrl.filtro}"
+						rowKey="#{ta.tipoAtencionId}"
+						selection="#{tipoAtencionCtrl.tipoAtencion}"
+						selectionMode="single" reflow="true" rows="5" paginator="true"
+						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						rowsPerPageTemplate="5,10,25,50" tableStyle="width:auto">
+						<p:ajax event="rowSelect"
+							listener="#{tipoAtencionCtrl.tipoAtencionSeleccionada}"
+							update="formTipoAtencion" />
+						<p:column headerText="" sortBy="#{ta.tipoAtencionId}"
+							filterBy="#{ta.tipoAtencionId}" filterMatchMode="contains"
+							visible="false">
+							<h:outputText value="#{ta.tipoAtencionId}" />
+						</p:column>
+						<p:column headerText="#{etiquetas['descripcion.atencion']}"
+							sortBy="#{ta.descripcion}" filterBy="#{ta.descripcion}"
+							filterMatchMode="contains" width="50%" style="text-align: center">
+							<h:outputText value="#{ta.descripcion}" />
+						</p:column>
+						<p:column headerText="#{etiquetas['estado']}"
+							sortBy="#{ta.estado}" filterBy="#{ta.estado}" width="25%"
+							style="text-align: center">
+							<h:outputText value="#{tipoAtencionCtrl.obtenerEstado(ta.estado)}" />
+						</p:column>
+					</p:dataTable>
+
+				</h:panelGrid>
+				<b:panelGrid id="btnPnl" colSpans="4,4,4"
+					style="width: 75%; margin: 4px 5px;">
+					<p:commandButton value="#{etiquetas['nueva.atencion']}"
+						action="#{tipoAtencionCtrl.nuevaAtencion}"
+						style="margin-right:20px; width: 100%"
+						icon="fa fa-fw fa-plus-square"
+						update="formTipoAtencion, formTipoAtencion:pnlFormulario" />
+
+				</b:panelGrid>
+			</b:panel>
+		</h:form>
+		<h:form id="formTipoAtencion">
+			<b:panel id="pnlFormulario" style="width: 60%"
+				rendered="#{tipoAtencionCtrl.nuevoTipoAtencion}">
+				<h:panelGrid style="width: 60%; margin: 4px 5px;" columns="2"
+					columnClasses="form-label-derecha ui-grid-col-1, form-input-izquierda">
+
+					<p:outputLabel value="#{etiquetas['descripcion.atencion']}:*" />
+					<p:inputText id="descripcionAtencion"
+						value="#{tipoAtencionCtrl.tipoAtencion.descripcion}"
+						requiredMessage="#{etiquetas['descripcion.atencion']} #{mensajes['requerido']}"
+						required="true" style="width: 90%"/>
+
+					<p:outputLabel value="#{etiquetas['estado']}:*" />
+					<b:selectOneMenu id="cmbEstado"
+						value="#{tipoAtencionCtrl.tipoAtencion.estado}"
+						required="true"
+						required-message="#{etiquetas['estado']} #{mensajes['requerido']}"
+						styleClass="form-combo-centrado" style="width: 40%">
+						<f:selectItem itemLabel="#{etiquetas['seleccionar']}" itemValue="-1" noSelectionOption="true" />
+						<f:selectItems value="#{tipoAtencionCtrl.estado}" />
+					</b:selectOneMenu>
+				</h:panelGrid>
+				<b:panelGrid colSpans="6,6"
+					style="width: 60%; margin: 4px 5px; text-align: center;">
+					<p:commandButton value="#{etiquetas['guardar']}"
+						action="#{tipoAtencionCtrl.guardar}" style="margin-right:20px;"
+						icon="fa fa-fw fa-save"
+						update="formTipoAtencion, formListaAtencion, msgMensajes" />
+					<p:commandButton id="btnCancelar" value="#{etiquetas['cancelar']}"
+						action="#{tipoAtencionCtrl.limpiarCampos}"
+						update="formTipoAtencion, formTipoAtencion:pnlFormulario"
+						process="@this" style="margin-right:20px;"
+						icon="fa fa-fw fa-trash" />
+				</b:panelGrid>
+			</b:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>
