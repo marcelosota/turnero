@@ -102,8 +102,8 @@ public class TurnoServicioImpl extends GenericServiceImpl<Turno, Integer> implem
     }
 
     @Override
-    public Integer getTurnosDisponibles(Integer ventanillas, Date dia, String hora, Integer registroMercantilId) {
-        return turnoDao.getTurnosDisponibles(ventanillas, dia, hora, registroMercantilId);
+    public Integer getTurnosDisponibles(Integer ventanillas, Date dia, String hora, Integer planificacionId) {
+        return turnoDao.getTurnosDisponibles(ventanillas, dia, hora, planificacionId);
     }
 
     @Override

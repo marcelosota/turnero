@@ -29,10 +29,6 @@ public class RegistroMercantil implements Serializable {
 	@OneToMany(mappedBy="registroMercantil")
 	private List<PlanificacionRegistro> planificacionRegistros;
 
-	//bi-directional many-to-one association to Turno
-	@OneToMany(mappedBy="registroMercantil")
-	private List<Turno> turnos;
-
 	//bi-directional many-to-one association to Usuario
 	@OneToMany(mappedBy="registroMercantil")
 	private List<UsuarioT> usuarios;
@@ -88,28 +84,6 @@ public class RegistroMercantil implements Serializable {
 		planificacionRegistro.setRegistroMercantil(null);
 
 		return planificacionRegistro;
-	}
-
-	public List<Turno> getTurnos() {
-		return this.turnos;
-	}
-
-	public void setTurnos(List<Turno> turnos) {
-		this.turnos = turnos;
-	}
-
-	public Turno addTurno(Turno turno) {
-		getTurnos().add(turno);
-		turno.setRegistroMercantil(this);
-
-		return turno;
-	}
-
-	public Turno removeTurno(Turno turno) {
-		getTurnos().remove(turno);
-		turno.setRegistroMercantil(null);
-
-		return turno;
 	}
 
 	public List<UsuarioT> getUsuarios() {

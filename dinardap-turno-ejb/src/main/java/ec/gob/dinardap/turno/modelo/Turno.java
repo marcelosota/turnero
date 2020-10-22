@@ -51,8 +51,8 @@ public class Turno implements Serializable {
 
     //bi-directional many-to-one association to RegistroMercantil
     @ManyToOne
-    @JoinColumn(name = "registro_mercantil_id")
-    private RegistroMercantil registroMercantil;
+    @JoinColumn(name = "planificacion_id")
+    private PlanificacionRegistro planificacionRegistro;
 
     public Turno() {
     }
@@ -137,12 +137,12 @@ public class Turno implements Serializable {
         this.validador = validador;
     }
 
-    public RegistroMercantil getRegistroMercantil() {
-        return this.registroMercantil;
+    public PlanificacionRegistro getPlanificacionRegistro() {
+        return this.planificacionRegistro;
     }
 
-    public void setRegistroMercantil(RegistroMercantil registroMercantil) {
-        this.registroMercantil = registroMercantil;
+    public void setPlanificacionRegistro(PlanificacionRegistro planificacionRegistro) {
+        this.planificacionRegistro = planificacionRegistro;
     }
 
     public Date getFechaGeneracion() {

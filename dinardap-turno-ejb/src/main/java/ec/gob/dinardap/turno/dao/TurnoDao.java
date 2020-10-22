@@ -15,7 +15,7 @@ public interface TurnoDao extends GenericDao<Turno, Integer> {
 
     public List<AgendadaAtendidasDto> reporteAgendamiento(Integer registroMercantilId, String fecha, Short estadoAgendado, Short estadoAtendido);
 
-    public Integer getTurnosDisponibles(Integer ventanillas, Date dia, String hora, Integer registroMercantilId);
+    public Integer getTurnosDisponibles(Integer ventanillas, Date dia, String hora, Integer planificacionId);
 
     public List<Turno> getTurnos(Turno turno);
 

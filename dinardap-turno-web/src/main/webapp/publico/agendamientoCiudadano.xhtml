@@ -23,7 +23,7 @@
                             <p:column style="font-weight: bold;">Registro Mercantil:</p:column>
                             <p:column>
                                 <h:outputText
-                                    value="#{agendamientoCiudadanoCtrl.turnoGenerado.registroMercantil.nombre}" />
+                                    value="#{agendamientoCiudadanoCtrl.turnoGenerado.planificacionRegistro.registroMercantil.nombre}" />
                             </p:column>
                         </p:row>
                         <p:row>
@@ -136,7 +136,7 @@
                                              onclick="$('.modalPseudoClass').modal()"
                                              update="formRegistroCiudadano, formHorarios, formGeneracionTurnoDlg, msgMensajes">
                                 <p:confirm header="Confirmación"
-                                           message="¿Está segur@ que desea agendar su cita para la hora Seleccionada?"
+                                           message="¿Está seguro/a que desea agendar su cita para la hora Seleccionada?"
                                            icon="fa fa-fw fa-warning" />
                             </p:commandButton>
                             <p:commandButton value="Cancelar" style="margin:2px;"
@@ -164,20 +164,23 @@
 
                         <p:outputLabel for="registroMercantil" value="Registro Mercantil:" />
                         <p:autoComplete id="registroMercantil" dropdown="true"
-                                        value="#{agendamientoCiudadanoCtrl.turno.registroMercantil}"
-                                        completeMethod="#{agendamientoCiudadanoCtrl.completeNombreRegistroMercantil}"
-                                        converter="#{registroMercantilConverter}" var="registroMercantil"
-                                        itemLabel="#{registroMercantil.nombre}"
-                                        itemValue="#{registroMercantil}" style="width: 100%"
-                                        inputStyle="width: 100%" maxResults="20" required="true"
-                                        title="#{agendamientoCiudadanoCtrl.turno.registroMercantil.nombre}" />
-
-                        <p:outputLabel for="cedula" value="Cédula:" />
-                        <p:inputText id="cedula"
-                                     value="#{agendamientoCiudadanoCtrl.turno.cedula}" maxlength="10"
-                                     style="width:100%" required="true">
-                            <p:keyFilter regEx="/[\d]/" />
-                        </p:inputText>
+                            value="#{agendamientoCiudadanoCtrl.turno.planificacionRegistro.registroMercantil}"
+                            completeMethod="#{agendamientoCiudadanoCtrl.completeNombreRegistroMercantil}"
+                            converter="#{registroMercantilConverter}" var="registroMercantil"
+                            itemLabel="#{registroMercantil.nombre}"
+                            itemValue="#{registroMercantil}" style="width: 100%"
+                            inputStyle="width: 100%" maxResults="20" required="true"
+                            title="#{agendamientoCiudadanoCtrl.turno.planificacionRegistro.registroMercantil.nombre}">
+							<p:ajax event="itemSelect" listener="#{agendamientoCiudadanoCtrl.buscarPlanificacion}" update="cmbCantidadTramites"/>
+						</p:autoComplete>
+                        
+                        <p:outputLabel for="cmbCantidadTramites" value="#{etiquetas['cantidad.tramites']}:" />
+                        <p:selectOneMenu id="cmbCantidadTramites"
+                        	value="#{agendamientoCiudadanoCtrl.turno.planificacionRegistro.planificacionId}">
+                        	<f:selectItem itemLabel="#{etiquetas['seleccionar']}" itemValue="-1" noSelectionOption="true"/>
+                        	<f:selectItems value="#{agendamientoCiudadanoCtrl.planificacionRegistroList}" var="pr"
+                        		itemLabel="#{pr.tipoVentanilla.nombre}" itemValue="#{pr.planificacionId}"></f:selectItems>
+                        </p:selectOneMenu>
 
                         <p:outputLabel for="fecha" value="Fecha:" />                       
                         <p:calendar id="fecha"
@@ -190,6 +193,13 @@
                                     style="width: 100%"
                                     inputStyle="width: 100%" 
                                     locale="es" />
+                                    
+						<p:outputLabel for="cedula" value="Cédula:" />
+                        <p:inputText id="cedula"
+                                     value="#{agendamientoCiudadanoCtrl.turno.cedula}" maxlength="10"
+                                     style="width:100%" required="true">
+                            <p:keyFilter regEx="/[\d]/" />
+                        </p:inputText>
 
                         <p:outputLabel for="correoElectronico" value="Correo electrónico:" />
                         <p:inputText id="correoElectronico"
@@ -275,7 +285,7 @@
 
                                 <h:outputText value="Registro Mercantil:" />
                                 <h:outputText
-                                    value="#{agendamientoCiudadanoCtrl.turno.registroMercantil.nombre}" />
+                                    value="#{agendamientoCiudadanoCtrl.turno.planificacionRegistro.registroMercantil.nombre}" />
 
                                 <h:outputText value="Cédula:" />
                                 <h:outputText value="#{agendamientoCiudadanoCtrl.turno.cedula}" />

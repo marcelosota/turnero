@@ -19,6 +19,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
 import org.primefaces.PrimeFaces;
+import org.primefaces.event.SelectEvent;
 
 import ec.gob.dinardap.correo.mdb.cliente.ClienteQueueMailServicio;
 import ec.gob.dinardap.correo.util.MailMessage;
@@ -67,6 +68,7 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
     //Listas    
     private List<RegistroMercantil> registroMercantilList;
     private List<HorarioDTO> horarioDTOList;
+    private List<PlanificacionRegistro> planificacionRegistroList;
 
     @EJB
     private RegistroMercantilServicio registroMercantilServicio;
@@ -100,12 +102,15 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
         fechaMin = calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.DAY_OF_MONTH);
 
         turno = new Turno();
+        turno.setPlanificacionRegistro(new PlanificacionRegistro());
         turnoGenerado = new Turno();
         horarioDTOSelected = new HorarioDTO();
         registroMercantilList = new ArrayList<RegistroMercantil>();
         registroMercantilList = registroMercantilServicio.getRegistrosMercantiles();
         horarioDTOList = new ArrayList<HorarioDTO>();
         codigoIngresado = "";
+        
+        planificacionRegistroList = new ArrayList<PlanificacionRegistro>();
     }
 
     public List<RegistroMercantil> completeNombreRegistroMercantil(String query) {
@@ -119,13 +124,13 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
         return filteredRegistroMercantil;
     }
 
-    @SuppressWarnings("unused")
     public void buscarDisponibilidad() {
         renderCancelacionTurno = Boolean.FALSE;
         renderRemitirTurno = Boolean.FALSE;
         turnoGenerado = new Turno();
         PlanificacionRegistro planificacionRegistro = null;
-        planificacionRegistro = planificacionRegistroServicio.getPlanificacionRegistro(turno.getRegistroMercantil().getRegistroMercantilId());
+        //planificacionRegistro = planificacionRegistroServicio.getPlanificacionRegistro(turno.getPlanificacionRegistro().getRegistroMercantil().getRegistroMercantilId());
+        planificacionRegistro = planificacionRegistroServicio.findByPk(turno.getPlanificacionRegistro().getPlanificacionId());
 //        String nombreCiudadano = "Chris";//Añadir el metodo getNombreCiudadano para consumir el ws de Jady
         String nombreCiudadano = getNombreCiudadano();
         horarioDTOList = new ArrayList<HorarioDTO>();
@@ -160,9 +165,9 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
         Boolean validacionIdentificacion = Boolean.FALSE;
         Boolean validacionCorreo = Boolean.FALSE;
         Boolean validacionCelular = Boolean.FALSE;
-        validacionIdentificacion = baneoServicio.getValidacionCuota(turno.getDia(), turno.getRegistroMercantil().getRegistroMercantilId(), TipoRestriccionEnum.IDENTIFICACION.getParametro(), turno.getCedula());
-        validacionCorreo = baneoServicio.getValidacionCuota(turno.getDia(), turno.getRegistroMercantil().getRegistroMercantilId(), TipoRestriccionEnum.CORREO.getParametro(), turno.getCorreoElectronico());
-        validacionCelular = baneoServicio.getValidacionCuota(turno.getDia(), turno.getRegistroMercantil().getRegistroMercantilId(), TipoRestriccionEnum.CELULAR.getParametro(), turno.getCelular());
+        validacionIdentificacion = baneoServicio.getValidacionCuota(turno.getDia(), turno.getPlanificacionRegistro().getRegistroMercantil().getRegistroMercantilId(), TipoRestriccionEnum.IDENTIFICACION.getParametro(), turno.getCedula());
+        validacionCorreo = baneoServicio.getValidacionCuota(turno.getDia(), turno.getPlanificacionRegistro().getRegistroMercantil().getRegistroMercantilId(), TipoRestriccionEnum.CORREO.getParametro(), turno.getCorreoElectronico());
+        validacionCelular = baneoServicio.getValidacionCuota(turno.getDia(), turno.getPlanificacionRegistro().getRegistroMercantil().getRegistroMercantilId(), TipoRestriccionEnum.CELULAR.getParametro(), turno.getCelular());
         return validacionIdentificacion || validacionCorreo || validacionCelular;
     }
 
@@ -235,7 +240,7 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
         turno.setEstado(EstadoTurnoEnum.AGENDADO.getEstado());
         turno.setValidador(getGeneracionValidacion());
         PlanificacionRegistro pr = null;
-        pr = planificacionRegistroServicio.getPlanificacionRegistro(turno.getRegistroMercantil().getRegistroMercantilId());
+        pr = planificacionRegistroServicio.findByPk(turno.getPlanificacionRegistro().getPlanificacionId());
         PrimeFaces.current().executeScript("PF('agendarTurnoDlg').hide()");
 
         Calendar horaActual = Calendar.getInstance();
@@ -247,12 +252,14 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
         horaTurno.set(Calendar.MINUTE, Integer.parseInt(turno.getHora().split(":")[1]));
         horaTurno.set(Calendar.SECOND, 0);
         horaTurno.set(Calendar.MILLISECOND, 0);
-        if ((turnoServicio.getTurnosDisponibles(pr.getVentanilla().intValue(), turno.getDia(), turno.getHora(), turno.getRegistroMercantil().getRegistroMercantilId()) > 0)
+        if ((turnoServicio.getTurnosDisponibles(pr.getVentanilla().intValue(), turno.getDia(), turno.getHora(), pr.getPlanificacionId()) > 0)
                 && (horaActual.getTime().before(horaTurno.getTime()))) {
             turnoAgendado = Boolean.TRUE;
             turnoServicio.crearTurno(turno);
             turnoGenerado = turno;
             turno = new Turno();
+            turno.setPlanificacionRegistro(new PlanificacionRegistro());
+            planificacionRegistroList.clear();
             renderHorarios = Boolean.FALSE;
             renderInformacionTurno = Boolean.FALSE;
         } else {
@@ -291,7 +298,7 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
             StringBuilder html = new StringBuilder("<center><h1><B>Sistema para el Agendamiento de Turnos en Registros Mercantiles</B></h1></center><br/><br/>");
             html.append("Estimado(a) " + turno.getNombre() + ", <br /><br />");
             html.append("Le informamos que se ha generado un turno con la siguiente descripción:<br />");
-            html.append("<B>REGISTRO MERCANTIL: </B>" + turno.getRegistroMercantil().getNombre() + "<br/>");
+            html.append("<B>REGISTRO MERCANTIL: </B>" + turno.getPlanificacionRegistro().getRegistroMercantil().getNombre() + "<br/>");
             html.append("<B>CÉDULA: </B>" + turno.getCedula() + "<br/>");
             html.append("<B>NOMBRE: </B>" + turno.getNombre() + "<br/>");
             html.append("<B>FECHA: </B>" + new SimpleDateFormat("yyyy-MM-dd").format(turno.getDia()) + "<br/>");
@@ -376,22 +383,23 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
                 renderInformacionTurno = Boolean.FALSE;
                 while (horaInicio.getTime().before(horaFin.getTime())) {
                     String hora = new SimpleDateFormat("HH:mm").format(horaInicio.getTime());
-                    HorarioDTO horario = new HorarioDTO(hora, pr.getVentanilla().intValue(), turnoServicio.getTurnosDisponibles(pr.getVentanilla().intValue(), turno.getDia(), hora, pr.getRegistroMercantil().getRegistroMercantilId()));
+                    HorarioDTO horario = new HorarioDTO(hora, pr.getVentanilla().intValue(), turnoServicio.getTurnosDisponibles(pr.getVentanilla().intValue(), turno.getDia(), hora, pr.getPlanificacionId()));
                     if (horaActual.getTime().before(horaInicio.getTime())) {
                         horarioList.add(horario);
                     }
-                    try {
+                    /*try {
                         //Validacion eventual para 7 de septiembre
                         Date fechaCambio = new SimpleDateFormat("yyyy-MM-dd").parse("2020-09-06");
                         if (turno.getDia().after(fechaCambio)
-                                && turno.getRegistroMercantil().getRegistroMercantilId() == 11) {
+                                && turno.getPlanificacionRegistro().getRegistroMercantil().getRegistroMercantilId() == 11) {
                             horaInicio.add(Calendar.MINUTE, 5);
                         } else {
                             horaInicio.add(Calendar.MINUTE, pr.getDuracionTramite());
                         }
                     } catch (ParseException ex) {
                         Logger.getLogger(AgendamientoCiudadanoCtrl.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                    }*/
+                    horaInicio.add(Calendar.MINUTE, pr.getDuracionTramite());
                 }
             } else {
                 renderHorarios = Boolean.TRUE;
@@ -418,6 +426,11 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
             claveGenerada = claveGenerada + str.substring(numero, numero + 1);
         }
         return claveGenerada;
+    }
+    
+    public void buscarPlanificacion(SelectEvent event) {
+    	planificacionRegistroList = new ArrayList<PlanificacionRegistro>();
+    	planificacionRegistroList = planificacionRegistroServicio.getPlanificacionRegistroList(turno.getPlanificacionRegistro().getRegistroMercantil().getRegistroMercantilId());
     }
 
     //Getters & Setters
@@ -469,7 +482,15 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
         this.horarioDTOList = horarioDTOList;
     }
 
-    public HorarioDTO getHorarioDTOSelected() {
+    public List<PlanificacionRegistro> getPlanificacionRegistroList() {
+		return planificacionRegistroList;
+	}
+
+	public void setPlanificacionRegistroList(List<PlanificacionRegistro> planificacionRegistroList) {
+		this.planificacionRegistroList = planificacionRegistroList;
+	}
+
+	public HorarioDTO getHorarioDTOSelected() {
         return horarioDTOSelected;
     }
 
