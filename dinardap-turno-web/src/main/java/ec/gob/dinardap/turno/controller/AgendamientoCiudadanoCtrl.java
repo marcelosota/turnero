@@ -430,7 +430,8 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
     
     public void buscarPlanificacion(SelectEvent event) {
     	planificacionRegistroList = new ArrayList<PlanificacionRegistro>();
-    	planificacionRegistroList = planificacionRegistroServicio.getPlanificacionRegistroList(turno.getPlanificacionRegistro().getRegistroMercantil().getRegistroMercantilId());
+    	planificacionRegistroList = planificacionRegistroServicio.getPlanificacionRegistroActivasList(turno.getPlanificacionRegistro().getRegistroMercantil().getRegistroMercantilId());
+    	System.out.println(planificacionRegistroList.size());
     }
 
     //Getters & Setters

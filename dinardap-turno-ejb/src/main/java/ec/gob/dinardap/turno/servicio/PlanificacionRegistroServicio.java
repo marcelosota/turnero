@@ -12,5 +12,6 @@ public interface PlanificacionRegistroServicio extends GenericService<Planificac
 
     public PlanificacionRegistro getPlanificacionRegistro(Integer registroMercantilId);
     public List<PlanificacionRegistro> getPlanificacionRegistroList(Integer registroMercantilId);
+    public List<PlanificacionRegistro> getPlanificacionRegistroActivasList(Integer registroMercantilId);
 
 }

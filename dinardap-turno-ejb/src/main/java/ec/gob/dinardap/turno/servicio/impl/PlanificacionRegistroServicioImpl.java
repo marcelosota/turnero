@@ -13,6 +13,7 @@ import ec.gob.dinardap.persistence.util.Criteria;
 import ec.gob.dinardap.turno.dao.PlanificacionRegistroDao;
 import ec.gob.dinardap.turno.modelo.PlanificacionRegistro;
 import ec.gob.dinardap.turno.servicio.PlanificacionRegistroServicio;
+import ec.gob.dinardap.util.constante.EstadoEnum;
 
 @Stateless(name = "PlanificacionRegistroServicio")
 public class PlanificacionRegistroServicioImpl extends GenericServiceImpl<PlanificacionRegistro, Integer>
@@ -53,4 +54,17 @@ public class PlanificacionRegistroServicioImpl extends GenericServiceImpl<Planif
         Criteria criteria = new Criteria(criteriaNombres, criteriaTipos, criteriaValores, orderBy, asc);
 		return findByCriterias(criteria);
 	}
+
+	@Override
+	public List<PlanificacionRegistro> getPlanificacionRegistroActivasList(Integer registroMercantilId) {
+		String[] criteriaNombres = {"registroMercantil.registroMercantilId", "estado"};
+        CriteriaTypeEnum[] criteriaTipos = {CriteriaTypeEnum.INTEGER_EQUALS, CriteriaTypeEnum.SHORT_EQUALS};
+        Object[] criteriaValores = {registroMercantilId, EstadoEnum.ACTIVO.getEstado()};
+        String[] orderBy = {"planificacionId"};
+        boolean[] asc = {true};
+        Criteria criteria = new Criteria(criteriaNombres, criteriaTipos, criteriaValores, orderBy, asc);
+		return findByCriterias(criteria);
+	}
+	
+	
 }
