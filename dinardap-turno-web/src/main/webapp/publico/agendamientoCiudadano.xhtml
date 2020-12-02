@@ -65,7 +65,7 @@
                         </p:row>
                         <p:row>
                             <p:column colspan="2" style="text-align: justify">
-                                <h:outputText value="NOTA: Turno válido únicamente para un trámite."
+                                <h:outputText value="#{agendamientoCiudadanoCtrl.cantidadTurnosSeleccionados}"
                                               style="font-size: 14pt;font-weight:900;" />                                
                             </p:column>
                         </p:row>
@@ -171,17 +171,9 @@
                             itemValue="#{registroMercantil}" style="width: 100%"
                             inputStyle="width: 100%" maxResults="20" required="true"
                             title="#{agendamientoCiudadanoCtrl.turno.planificacionRegistro.registroMercantil.nombre}">
-							<p:ajax event="itemSelect" listener="#{agendamientoCiudadanoCtrl.buscarPlanificacion}" update="cmbCantidadTramites"/>
+							<p:ajax event="itemSelect" update="fecha"/>
 						</p:autoComplete>
                         
-                        <p:outputLabel for="cmbCantidadTramites" value="#{etiquetas['cantidad.tramites']}:" />
-                        <p:selectOneMenu id="cmbCantidadTramites"
-                        	value="#{agendamientoCiudadanoCtrl.turno.planificacionRegistro.planificacionId}">
-                        	<f:selectItem itemLabel="#{etiquetas['seleccionar']}" itemValue="-1" noSelectionOption="true"/>
-                        	<f:selectItems value="#{agendamientoCiudadanoCtrl.planificacionRegistroList}" var="pr"
-                        		itemLabel="#{pr.tipoVentanilla.nombre}" itemValue="#{pr.planificacionId}"></f:selectItems>
-                        </p:selectOneMenu>
-
                         <p:outputLabel for="fecha" value="Fecha:" />                       
                         <p:calendar id="fecha"
                                     value="#{agendamientoCiudadanoCtrl.turno.dia}"
@@ -192,8 +184,19 @@
                                     mindate="#{agendamientoCiudadanoCtrl.fechaMin}"
                                     style="width: 100%"
                                     inputStyle="width: 100%" 
-                                    locale="es" />
+                                    locale="es">
+							<p:ajax event="dateSelect" listener="#{agendamientoCiudadanoCtrl.buscarPlanificacion}" update="cmbCantidadTramites"/>
+						</p:calendar>
                                     
+						<p:outputLabel for="cmbCantidadTramites" value="#{etiquetas['cantidad.tramites']}:" />
+                        <p:selectOneMenu id="cmbCantidadTramites"
+                        	value="#{agendamientoCiudadanoCtrl.turno.planificacionRegistro.planificacionId}">
+                        	<f:selectItem itemLabel="#{etiquetas['seleccionar']}" itemValue="-1" noSelectionOption="true"/>
+                        	<f:selectItems value="#{agendamientoCiudadanoCtrl.planificacionRegistroList}" var="pr"
+                        		itemLabel="#{pr.tipoVentanilla.nombre}" itemValue="#{pr.planificacionId}">
+                        		</f:selectItems>
+                        </p:selectOneMenu>
+                        
 						<p:outputLabel for="cedula" value="Cédula:" />
                         <p:inputText id="cedula"
                                      value="#{agendamientoCiudadanoCtrl.turno.cedula}" maxlength="10"

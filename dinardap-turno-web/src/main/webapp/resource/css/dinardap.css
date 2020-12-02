@@ -410,5 +410,58 @@ table.pf,
 /*Enlace*/
 
 
+.columna-etiqueta{
+    width: 20%;
+    height: 40px;
+    text-align: right;
+}
+.columna-req{
+    width: 2%;
+    height: 40px;
+    text-align: center;
+}
+.columna-entrada{
+    text-align: left;
+    width: 5%;
+    height: 40px;
+}
 
 
+.columna3-etiqueta{
+    width: 20%;
+    height: 40px;
+    text-align: right;
+}
+.columna3-req{
+    width: 2%;
+    height: 40px;
+    text-align: center;
+}
+.columna3-entrada{
+    text-align: left;
+    width: 20%;
+    height: 40px;
+}
+
+
+.columna-mensaje{
+    width: 25%;
+    text-align: left;
+    height: 40px;
+}
+
+.ui-selectonmenu_full_width{
+min-width: 178px;
+max-width: 178px;
+}
+
+.ui-selectonemenu-items-wrapper,.ui-selectonemenu-panel {
+	display:inline;
+}
+
+.ui-selectonemenu{
+     width: 100% !important;
+}
+.ui-selectonemenu-label{
+     width: 100% !important;
+} 

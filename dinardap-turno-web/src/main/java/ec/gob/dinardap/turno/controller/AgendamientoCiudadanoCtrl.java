@@ -30,14 +30,17 @@ import ec.gob.dinardap.turno.constante.EstadoTurnoEnum;
 import ec.gob.dinardap.turno.constante.InteroperabilidadEnum;
 import ec.gob.dinardap.turno.constante.ParametroEnum;
 import ec.gob.dinardap.turno.constante.TipoRestriccionEnum;
+import ec.gob.dinardap.turno.dao.PlanificacionRegistroDao;
 import ec.gob.dinardap.turno.dto.HorarioDTO;
 import ec.gob.dinardap.turno.modelo.Baneo;
 import ec.gob.dinardap.turno.modelo.PlanificacionRegistro;
 import ec.gob.dinardap.turno.modelo.RegistroMercantil;
 import ec.gob.dinardap.turno.modelo.Turno;
+import ec.gob.dinardap.turno.servicio.AtencionServicio;
 import ec.gob.dinardap.turno.servicio.BaneoServicio;
 import ec.gob.dinardap.turno.servicio.PlanificacionRegistroServicio;
 import ec.gob.dinardap.turno.servicio.RegistroMercantilServicio;
+import ec.gob.dinardap.turno.servicio.TipoVentanillaServicio;
 import ec.gob.dinardap.turno.servicio.TurnoServicio;
 
 @Named(value = "agendamientoCiudadanoCtrl")
@@ -64,6 +67,8 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
     private HorarioDTO horarioDTOSelected;
     private String codigoIngresado;
     private String correoIngresado;
+    private String cantidadTurnosSeleccionados;
+    private String festivosArray;
 
     //Listas    
     private List<RegistroMercantil> registroMercantilList;
@@ -87,6 +92,15 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
 
     @EJB
     private BaneoServicio baneoServicio;
+    
+    @EJB
+    private TipoVentanillaServicio tipoVentanillaServicio;
+    
+    @EJB
+    private AtencionServicio atencionServicio;
+    
+    @EJB
+    private PlanificacionRegistroDao planificacionRegistroDao;
 
     @PostConstruct
     protected void init() {
@@ -241,6 +255,7 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
         turno.setValidador(getGeneracionValidacion());
         PlanificacionRegistro pr = null;
         pr = planificacionRegistroServicio.findByPk(turno.getPlanificacionRegistro().getPlanificacionId());
+        cantidadTurnos();
         PrimeFaces.current().executeScript("PF('agendarTurnoDlg').hide()");
 
         Calendar horaActual = Calendar.getInstance();
@@ -430,8 +445,28 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
     
     public void buscarPlanificacion(SelectEvent event) {
     	planificacionRegistroList = new ArrayList<PlanificacionRegistro>();
-    	planificacionRegistroList = planificacionRegistroServicio.getPlanificacionRegistroActivasList(turno.getPlanificacionRegistro().getRegistroMercantil().getRegistroMercantilId());
+    	//planificacionRegistroList = planificacionRegistroServicio.getPlanificacionRegistroActivasList(turno.getPlanificacionRegistro().getRegistroMercantil().getRegistroMercantilId());
+    	planificacionRegistroList = planificacionRegistroDao.getPlanificacionRegistroFechas(turno.getPlanificacionRegistro().getRegistroMercantil().getRegistroMercantilId(), turno.getDia());
     	System.out.println(planificacionRegistroList.size());
+    	
+    	/*festivosArray="[";
+    	List<Atencion> fechas = atencionServicio.obtenerAtencionSuspensionPorInstitucion(turno.getPlanificacionRegistro().getRegistroMercantil().getRegistroMercantilId(), AtencionSuspensionEnum.SUSPENSION.getatencionSuspension());
+    	for(Atencion item : fechas) {
+    		festivosArray += "'" + item.getFechaDesde() + "',";
+    		if(item.getFechaDesde().compareTo(item.getFechaHasta()) != 0) {
+    			Date
+    			while()
+    		}
+    			
+    	}*/
+    	
+    }
+    
+    public void cantidadTurnos() {
+    	setCantidadTurnosSeleccionados("NOTA: Turno válido para ventanilla ".
+    			concat(tipoVentanillaServicio.findByPk(
+    					turno.getPlanificacionRegistro().getTipoVentanilla().getTipoVentanillaId()).
+    					getNombre()));
     }
 
     //Getters & Setters
@@ -554,5 +589,21 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
     public void setCorreoIngresado(String correoIngresado) {
         this.correoIngresado = correoIngresado;
     }
+
+	public String getCantidadTurnosSeleccionados() {
+		return cantidadTurnosSeleccionados;
+	}
+
+	public void setCantidadTurnosSeleccionados(String cantidadTurnosSeleccionados) {
+		this.cantidadTurnosSeleccionados = cantidadTurnosSeleccionados;
+	}
+
+	public String getFestivosArray() {
+		return festivosArray;
+	}
+
+	public void setFestivosArray(String festivosArray) {
+		this.festivosArray = festivosArray;
+	}
 
 }

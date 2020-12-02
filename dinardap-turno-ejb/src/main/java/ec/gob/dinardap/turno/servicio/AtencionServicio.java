@@ -11,5 +11,6 @@ import ec.gob.dinardap.turno.modelo.Atencion;
 public interface AtencionServicio extends GenericService<Atencion, Integer> {
 	
 	public List<Atencion> obtenerVacacionesPorIstitucion(Integer registroMercantilId);
+	public List<Atencion> obtenerAtencionSuspensionPorInstitucion(Integer registroMercantilId, Short atencionSuspension); 
 
 }

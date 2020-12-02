@@ -35,4 +35,15 @@ public class AtencionServicioImpl extends GenericServiceImpl<Atencion, Integer> 
 		return findByCriterias(criteria);
 	}
 
+	@Override
+	public List<Atencion> obtenerAtencionSuspensionPorInstitucion(Integer registroMercantilId, Short atencionSuspension) {
+		String[] criteriaNombre = {"registroMercantil.registroMercantilId", "atencionSuspension"};
+		CriteriaTypeEnum[] criteriaTipos = {CriteriaTypeEnum.INTEGER_EQUALS, CriteriaTypeEnum.SHORT_EQUALS};
+		Object[] criteriaValores = {registroMercantilId, atencionSuspension};
+		String[] orderBy = {"fechaCreacion"};
+		boolean[] asc = {true};
+		Criteria criteria = new Criteria(criteriaNombre, criteriaTipos, criteriaValores, orderBy, asc);
+		return findByCriterias(criteria);
+	}
+
 }

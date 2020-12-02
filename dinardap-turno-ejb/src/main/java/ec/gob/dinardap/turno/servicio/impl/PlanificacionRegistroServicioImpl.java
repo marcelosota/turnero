@@ -65,6 +65,6 @@ public class PlanificacionRegistroServicioImpl extends GenericServiceImpl<Planif
         Criteria criteria = new Criteria(criteriaNombres, criteriaTipos, criteriaValores, orderBy, asc);
 		return findByCriterias(criteria);
 	}
-	
+
 	
 }
