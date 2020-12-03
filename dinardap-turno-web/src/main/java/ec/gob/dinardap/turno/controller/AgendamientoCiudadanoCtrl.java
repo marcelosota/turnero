@@ -245,6 +245,9 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
 
     public void seleccionarHorario() {
         turnoGenerado = new Turno();
+        PlanificacionRegistro pr = null;
+        pr = planificacionRegistroServicio.findByPk(turno.getPlanificacionRegistro().getPlanificacionId());
+        setCantidadTurnosSeleccionados("NOTA: Turno válido para ventanilla ".concat(pr.getTipoVentanilla().getNombre()));
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información", "Usted a seleccionado el horario de " + horarioDTOSelected.getHora()));
         turno.setHora(horarioDTOSelected.getHora());
     }
@@ -255,7 +258,7 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
         turno.setValidador(getGeneracionValidacion());
         PlanificacionRegistro pr = null;
         pr = planificacionRegistroServicio.findByPk(turno.getPlanificacionRegistro().getPlanificacionId());
-        cantidadTurnos();
+        setCantidadTurnosSeleccionados("NOTA: Turno válido para ventanilla ".concat(pr.getTipoVentanilla().getNombre()));
         PrimeFaces.current().executeScript("PF('agendarTurnoDlg').hide()");
 
         Calendar horaActual = Calendar.getInstance();
@@ -319,8 +322,9 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
             html.append("<B>FECHA: </B>" + new SimpleDateFormat("yyyy-MM-dd").format(turno.getDia()) + "<br/>");
             html.append("<B>HORA: </B>" + turno.getHora() + "<br/>");
             html.append("<B>CÓDIGO VALIDACIÓN: </B>" + turno.getValidador() + "<br/><br/>");
-
-            html.append("<B>NOTA: <B/>Favor guardar el  Código de Validación, ya que este será solicitado en Ventanilla para su atención. "
+            
+            html.append(getCantidadTurnosSeleccionados()+" <br/>");
+            html.append("Favor guardar el  Código de Validación, ya que este será solicitado en Ventanilla para su atención.<br/>"
                     + "Si desea cancelar el turno se deberá ingresar el Código de Validación en la misma Plataforma.<br/>");
             html.append("Gracias por usar nuestros servicios.<br /><br />");
             html.append("<FONT FACE=\"Arial Narrow, sans-serif\"><B> ");
@@ -462,11 +466,9 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
     	
     }
     
-    public void cantidadTurnos() {
-    	setCantidadTurnosSeleccionados("NOTA: Turno válido para ventanilla ".
-    			concat(tipoVentanillaServicio.findByPk(
-    					turno.getPlanificacionRegistro().getTipoVentanilla().getTipoVentanillaId()).
-    					getNombre()));
+    public void institucionSeleccionada() {
+    	turno.setDia(null);
+    	planificacionRegistroList.clear();
     }
 
     //Getters & Setters

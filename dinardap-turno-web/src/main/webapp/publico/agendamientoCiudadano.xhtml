@@ -123,6 +123,7 @@
                 <h:form id="formAgendarTurno">
                     <b:panel style="width: 100%">
                         <b:panelGrid colSpans="12">
+                            <h:outputLabel value="#{agendamientoCiudadanoCtrl.cantidadTurnosSeleccionados}"/>
                             <h:outputLabel value="#{etiquetas['recordatorio.turno']}"/>
                             <h:outputLabel
                                 value="Usted seleccionó el horario de: #{agendamientoCiudadanoCtrl.horarioDTOSelected.hora}.¿Desea agendar su Turno para este Horario?" />
@@ -171,7 +172,7 @@
                             itemValue="#{registroMercantil}" style="width: 100%"
                             inputStyle="width: 100%" maxResults="20" required="true"
                             title="#{agendamientoCiudadanoCtrl.turno.planificacionRegistro.registroMercantil.nombre}">
-							<p:ajax event="itemSelect" update="fecha"/>
+							<p:ajax event="itemSelect" listener="#{agendamientoCiudadanoCtrl.institucionSeleccionada}" update="fecha, cmbCantidadTramites"/>
 						</p:autoComplete>
                         
                         <p:outputLabel for="fecha" value="Fecha:" />                       
@@ -194,7 +195,7 @@
                         	<f:selectItem itemLabel="#{etiquetas['seleccionar']}" itemValue="-1" noSelectionOption="true"/>
                         	<f:selectItems value="#{agendamientoCiudadanoCtrl.planificacionRegistroList}" var="pr"
                         		itemLabel="#{pr.tipoVentanilla.nombre}" itemValue="#{pr.planificacionId}">
-                        		</f:selectItems>
+                        	</f:selectItems>
                         </p:selectOneMenu>
                         
 						<p:outputLabel for="cedula" value="Cédula:" />

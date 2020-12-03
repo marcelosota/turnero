@@ -9,6 +9,7 @@ import javax.persistence.Query;
 import ec.gob.dinardap.persistence.dao.ejb.GenericDaoEjb;
 import ec.gob.dinardap.turno.dao.PlanificacionRegistroDao;
 import ec.gob.dinardap.turno.modelo.PlanificacionRegistro;
+import ec.gob.dinardap.util.constante.EstadoEnum;
 
 @Stateless(name="PlanificacionReistroDao")
 public class PlanificacionRegistroDaoEjb extends GenericDaoEjb<PlanificacionRegistro, Integer>
@@ -20,9 +21,12 @@ public class PlanificacionRegistroDaoEjb extends GenericDaoEjb<PlanificacionRegi
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<PlanificacionRegistro> getPlanificacionRegistroFechas(Integer registroMercantilId, Date desde) {
-		Query query = em.createQuery("SELECT p FROM Planificacion WHERE :desde BETWEEN p.fechaVigencia AND p.fechaCaducidad");
-		query.setParameter("desde", desde);
+	public List<PlanificacionRegistro> getPlanificacionRegistroFechas(Integer registroMercantilId, Date fecha) {
+		Query query = em.createQuery("SELECT p FROM PlanificacionRegistro p WHERE p.registroMercantil.registroMercantilId = :registroMercantilId "
+				+ "AND p.fechaVigencia <= :fecha AND (p.fechaCaducidad is null OR :fecha <= p.fechaCaducidad) AND p.estado = :estado" );
+		query.setParameter("registroMercantilId", registroMercantilId);
+		query.setParameter("fecha", fecha);
+		query.setParameter("estado", EstadoEnum.ACTIVO.getEstado());
 		
 		return query.getResultList();
 	}

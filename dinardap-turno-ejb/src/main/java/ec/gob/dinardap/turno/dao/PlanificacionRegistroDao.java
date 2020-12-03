@@ -11,5 +11,5 @@ import ec.gob.dinardap.turno.modelo.PlanificacionRegistro;
 @Local
 public interface PlanificacionRegistroDao extends GenericDao<PlanificacionRegistro, Integer> {
 
-	public List<PlanificacionRegistro> getPlanificacionRegistroFechas(Integer registroMercantilId, Date desde);
+	public List<PlanificacionRegistro> getPlanificacionRegistroFechas(Integer registroMercantilId, Date fecha);
 }
