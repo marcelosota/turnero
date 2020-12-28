@@ -3,20 +3,21 @@ package ec.gob.dinardap.turno.controller;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
 import ec.gob.dinardap.turno.constante.AtencionSuspensionEnum;
+import ec.gob.dinardap.turno.constante.TipoAtencionEnum;
 import ec.gob.dinardap.turno.dao.AtencionDao;
+import ec.gob.dinardap.turno.dao.TipoAtencionDao;
 import ec.gob.dinardap.turno.modelo.Atencion;
 import ec.gob.dinardap.turno.modelo.RegistroMercantil;
 import ec.gob.dinardap.turno.modelo.TipoAtencion;
@@ -45,6 +46,9 @@ public class FechasHabilitadasCtrl extends BaseCtrl implements Serializable {
     
     @EJB
     private AtencionDao atencionDao;
+    
+    @EJB
+    private TipoAtencionDao tipoAtencionDao;
 
     //Variables de negocio
     private Atencion atencion;
@@ -64,14 +68,12 @@ public class FechasHabilitadasCtrl extends BaseCtrl implements Serializable {
         limpiarCampos();
         construirListaRegistroMercantil();
         tipoAtencionList = new ArrayList<TipoAtencion>();
-        tipoAtencionList = tipoAtencionServicio.obtenerTipoAtencionPorEstado(EstadoEnum.ACTIVO.getEstado());
         renderNuevo = Boolean.TRUE;
     }
     
     private void construirListaRegistroMercantil() {
     	RegistroMercantil rm = new RegistroMercantil();
     	registroMercantilList = new ArrayList<RegistroMercantil>();
-    	//registroMercantilList = registroMercantilServicio.getRegistrosMercantiles();
     	rm.setRegistroMercantilId(0);
     	rm.setNombre("TODOS");
         registroMercantilList.add(rm);
@@ -90,10 +92,20 @@ public class FechasHabilitadasCtrl extends BaseCtrl implements Serializable {
     }
     
     public void buscarVacaciones() {
-    	if(registroMercantil.getRegistroMercantilId() > 0) 
-	    	atencionList = atencionServicio.obtenerVacacionesPorIstitucion(registroMercantil.getRegistroMercantilId());
-    	else
+    	List<Short> tipoAtencionId = new ArrayList<>();
+    	tipoAtencionId.add(TipoAtencionEnum.SUSPENSION_TEMPORAL_NACIONAL.getTipoAtencion());
+    	tipoAtencionId.add(TipoAtencionEnum.FERIADO_NACIONAL.getTipoAtencion());
+    	tipoAtencionId.add(TipoAtencionEnum.RECUPERACION_NACIONAL.getTipoAtencion());
+    	if(registroMercantil.getRegistroMercantilId() > 0) {
+    		
+    		atencionList = atencionServicio.obtenerVacacionesPorIstitucion(registroMercantil.getRegistroMercantilId());
+    		tipoAtencionList = tipoAtencionDao.obtenerTipoAtencionEstadoFiltrado(tipoAtencionId, EstadoEnum.ACTIVO.getEstado(), false);
+    		
+    	}else {
     		atencionList = atencionDao.obtenerAtencionParaTodaInstitucion();
+    		tipoAtencionList = tipoAtencionDao.obtenerTipoAtencionEstadoFiltrado(tipoAtencionId, EstadoEnum.ACTIVO.getEstado(), true);
+    	}
+    		
 	    limpiarCampos();
 	    if(atencionList != null && atencionList.size() > 0) {
 	    	renderFormulario = Boolean.FALSE;
@@ -107,7 +119,7 @@ public class FechasHabilitadasCtrl extends BaseCtrl implements Serializable {
     	if (atencion.getAtencionId() != null) {
     		atencion.setFechaModificacion(new Timestamp (new Date().getTime()));
     		atencionServicio.update(atencion);
-    		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información", getBundleMensaje("registro.guardado", null)));
+    		addInfoMessage(getBundleMensaje("registro.guardado", null), null);
     	} else {
     		if(registroMercantil.getRegistroMercantilId() > 0)
     			atencion.setRegistroMercantil(getRegistroMercantil());
@@ -116,7 +128,7 @@ public class FechasHabilitadasCtrl extends BaseCtrl implements Serializable {
     		atencion.setAtencionId(null);
     		atencion.setFechaCreacion(new Timestamp (new Date().getTime()));
     		atencionServicio.create(atencion);
-    		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información", getBundleMensaje("registro.guardado", null)));
+    		addInfoMessage(getBundleMensaje("registro.guardado", null), null);
     	}
     	buscarVacaciones();
     }
@@ -135,7 +147,12 @@ public class FechasHabilitadasCtrl extends BaseCtrl implements Serializable {
     }
     
     public void onSelectAtencion(){
-    	renderFormulario = Boolean.TRUE;
+    	Calendar fecha = Calendar.getInstance();
+    	if(atencion.getFechaHasta() != null && atencion.getFechaHasta().before(fecha.getTime())) {
+    		addInfoMessage("Información",getBundleMensaje("registro.deshabilitado", null));
+    		limpiarCampos();
+    	}else
+    		renderFormulario = Boolean.TRUE;
     }
     
     public void validarFechas() {

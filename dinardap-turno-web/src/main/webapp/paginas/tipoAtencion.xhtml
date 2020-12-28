@@ -17,9 +17,9 @@
 						filteredValue="#{tipoAtencionCtrl.filtro}"
 						rowKey="#{ta.tipoAtencionId}"
 						selection="#{tipoAtencionCtrl.tipoAtencion}"
-						selectionMode="single" reflow="true" rows="5" paginator="true"
+						selectionMode="single" reflow="true" rows="10" paginator="true"
 						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-						rowsPerPageTemplate="5,10,25,50" tableStyle="width:auto">
+						rowsPerPageTemplate="10,25,50" tableStyle="width:auto">
 						<p:ajax event="rowSelect"
 							listener="#{tipoAtencionCtrl.tipoAtencionSeleccionada}"
 							update="formTipoAtencion" />

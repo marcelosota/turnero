@@ -1,0 +1,123 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui">
+<ui:composition template="/template/general.xhtml">
+	<ui:define name="content">
+		<h1 class="h-wai">#{etiquetas['nombre.sistema']} -
+			#{etiquetas['tipo.ventanilla']}</h1>
+
+		<h:form id="formListaInstituciones">
+			<b:panel>
+				<h:panelGrid columns="1" style="width: 95%;">
+					<p:dataTable id="dtbInstitucion"
+						value="#{institucionCtrl.listaInstitucion}" var="ins"
+						filteredValue="#{institucionCtrl.filtro}"
+						rowKey="#{ins.registroMercantilId}"
+						selection="#{institucionCtrl.institucion}"
+						selectionMode="single" reflow="true" rows="5" paginator="true"
+						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						rowsPerPageTemplate="5,10,25,50" tableStyle="width:auto">
+						<p:ajax event="rowSelect"
+							listener="#{institucionCtrl.institucionSeleccted()}"
+							update="formInstitucion" />
+						<p:column headerText="" sortBy="#{ins.registroMercantilId}"
+							filterBy="#{ins.registroMercantilId}" filterMatchMode="contains"
+							visible="false">
+							<h:outputText value="#{ins.registroMercantilId}" />
+						</p:column>
+						<p:column headerText="#{etiquetas['registro.mercantil']}"
+							sortBy="#{ins.nombre}" filterBy="#{ins.nombre}"
+							filterMatchMode="contains" width="60%" style="text-align: left">
+							<h:outputText value="#{ins.nombre}" />
+						</p:column>
+						<p:column headerText="#{etiquetas['tipo.institucion']}"
+							sortBy="#{ins.tipo}" filterBy="#{ins.tipo}"
+							filterMatchMode="contains" width="15%" style="text-align: center">
+							<h:outputText value="#{institucionCtrl.obtenerTipoInstitucion(ins.tipo)}" />
+						</p:column>
+						<p:column headerText="#{etiquetas['periodo.mes']}"
+							sortBy="#{ins.periodoCalendario}" filterBy="#{ins.periodoCalendario}"
+							filterMatchMode="contains" width="40%" style="text-align: center">
+							<h:outputText value="#{ins.periodoCalendario}" />
+						</p:column>						
+						<p:column headerText="#{etiquetas['estado']}"
+							sortBy="#{ins.estado}" filterBy="#{ins.estado}" width="30%"
+							style="text-align: center">
+							<h:outputText value="#{institucionCtrl.obtenerEstado(ins.estado)}" />
+						</p:column>
+					</p:dataTable>
+
+				</h:panelGrid>
+				<b:panelGrid id="btnPnl" colSpans="4,4,4"
+					style="width: 75%; margin: 4px 5px;">
+					<p:commandButton value="#{etiquetas['nueva.institucion']}"
+						action="#{institucionCtrl.registrarNuevaInstitucion()}"
+						style="margin-right:20px; width: 100%"
+						icon="fa fa-fw fa-plus-square"
+						update="formInstitucion, formInstitucion:pnlFormulario" />
+
+				</b:panelGrid>
+			</b:panel>
+		</h:form>
+		<h:form id="formInstitucion">
+			<b:panel id="pnlFormulario" style="width: 60%"
+				rendered="#{institucionCtrl.nuevaInstitucion}">
+				<h:panelGrid style="width: 80%; margin: 4px 5px;" columns="2"
+					columnClasses="form-label-derecha ui-grid-col-1, form-input-izquierda">
+
+					<p:outputLabel value="#{etiquetas['registro.mercantil']}:*" />
+					<p:inputText id="nombreInstitucion"
+						value="#{institucionCtrl.institucion.nombre}"
+						style="width: 100%" required="true"
+						requiredMessage="#{etiquetas['nombre.institucion']} #{mensajes['requerido']}" />
+						
+					<p:outputLabel value="#{etiquetas['tipo.institucion']}:*" />
+					<b:selectOneMenu id="cmbTipoInstitucion"
+						value="#{institucionCtrl.institucion.tipo}"
+						required="true"
+						required-message="#{etiquetas['tipo.institucion']} #{mensajes['requerido']}"
+						styleClass="form-combo-centrado" style="width: 40%">
+						<f:selectItem itemLabel="#{etiquetas['seleccionar']}" itemValue="-1" noSelectionOption="true" />
+						<f:selectItems value="#{institucionCtrl.tipoInstitucion}" />
+					</b:selectOneMenu>
+					
+					<p:outputLabel value="#{etiquetas['periodo.mes']}:*" />
+					<b:selectOneMenu id="cmbPeriodo"
+						value="#{institucionCtrl.institucion.periodoCalendario}"
+						required="true"
+						required-message="#{etiquetas['periodo.mes']} #{mensajes['requerido']}"
+						styleClass="form-combo-centrado" style="width: 40%">
+						<f:selectItem itemLabel="#{etiquetas['seleccionar']}" itemValue="-1" noSelectionOption="true" />
+						<f:selectItems value="#{institucionCtrl.periodo}" />
+					</b:selectOneMenu>
+
+					<p:outputLabel value="#{etiquetas['estado']}:*" />
+					<b:selectOneMenu id="cmbEstado"
+						value="#{institucionCtrl.institucion.estado}"
+						required="true"
+						required-message="#{etiquetas['estado']} #{mensajes['requerido']}"
+						styleClass="form-combo-centrado" style="width: 40%">
+						<f:selectItem itemLabel="#{etiquetas['seleccionar']}" itemValue="-1" noSelectionOption="true" />
+						<f:selectItems value="#{institucionCtrl.estado}" />
+					</b:selectOneMenu>
+				</h:panelGrid>
+				<b:panelGrid colSpans="6,6"
+					style="width: 60%; margin: 4px 5px; text-align: center;">
+					<p:commandButton value="#{etiquetas['guardar']}"
+						action="#{institucionCtrl.guardar()}" style="margin-right:20px;"
+						icon="fa fa-fw fa-save"
+						update="formInstitucion, formListaInstituciones, msgMensajes" />
+					<p:commandButton id="btnCancelar" value="#{etiquetas['cancelar']}"
+						action="#{institucionCtrl.limpiarCampos}"
+						update="formInstitucion, formInstitucion:pnlFormulario"
+						process="@this" style="margin-right:20px;"
+						icon="fa fa-fw fa-trash" />
+				</b:panelGrid>
+			</b:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

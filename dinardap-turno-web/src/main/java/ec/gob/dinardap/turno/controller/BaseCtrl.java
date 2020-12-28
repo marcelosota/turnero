@@ -134,12 +134,9 @@ public class BaseCtrl implements Serializable {
 	 * @param detail the detail
 	 */
 	protected void addInfoMessage(String summary, String detail) {
-		FacesMessage facesMsg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-				summary, detail);
-
-		FacesContext fc = FacesContext.getCurrentInstance();
-
-		fc.addMessage(null, facesMsg);
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, summary, detail));
+		
+		
 	}
 	
 	/**

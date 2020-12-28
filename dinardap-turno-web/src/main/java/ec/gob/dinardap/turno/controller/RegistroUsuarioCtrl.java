@@ -41,10 +41,12 @@ public class RegistroUsuarioCtrl extends BaseCtrl {
 	private UsuarioDto usuarioDto;
 	private List<RegistroMercantil> listaRM;
 	private List<Perfil> listaPerfil;
+	private Boolean deshabilitaGuardar;
 	
 	@PostConstruct
 	protected void init() {
 		usuarioDto = new UsuarioDto();
+		deshabilitaGuardar = Boolean.TRUE;
 	}
 	
 	public void buscarUsuario() {
@@ -56,9 +58,15 @@ public class RegistroUsuarioCtrl extends BaseCtrl {
 			if (objWs != null) {
 				getUsuarioDto().setNombre( objWs.getPaquete().getEntidades().getEntidad().get(0).getFilas().getFila().get(0)
 						.getColumnas().getColumna().get(3).getValor());
+				deshabilitaGuardar = Boolean.FALSE;
+			}else {
+				addErrorMessage(null, "Error", getBundleMensaje("error.documento.identificacion", null));
+				deshabilitaGuardar = Boolean.TRUE;
 			}
-		}else
+		}else {
 			addErrorMessage(null, getBundleMensaje("usuario.existe", null), null);
+			deshabilitaGuardar = Boolean.TRUE;
+		}
 	}
 	
 	public void buscarPerfil() {
@@ -88,6 +96,7 @@ public class RegistroUsuarioCtrl extends BaseCtrl {
 	
 	public void limpiarCampos() {
 		usuarioDto = new UsuarioDto();
+		deshabilitaGuardar = Boolean.TRUE;
 	}
 	
 	public UsuarioDto getUsuarioDto() {
@@ -116,6 +125,14 @@ public class RegistroUsuarioCtrl extends BaseCtrl {
 
 	public void setListaPerfil(List<Perfil> listaPerfil) {
 		this.listaPerfil = listaPerfil;
+	}
+
+	public Boolean getDeshabilitaGuardar() {
+		return deshabilitaGuardar;
+	}
+
+	public void setDeshabilitaGuardar(Boolean deshabilitaGuardar) {
+		this.deshabilitaGuardar = deshabilitaGuardar;
 	}
 	
 

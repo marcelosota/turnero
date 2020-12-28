@@ -12,6 +12,7 @@ import ec.gob.dinardap.persistence.util.Criteria;
 import ec.gob.dinardap.turno.dao.AtencionDao;
 import ec.gob.dinardap.turno.modelo.Atencion;
 import ec.gob.dinardap.turno.servicio.AtencionServicio;
+import ec.gob.dinardap.util.constante.EstadoEnum;
 
 @Stateless(name="AtencionServicio")
 public class AtencionServicioImpl extends GenericServiceImpl<Atencion, Integer> implements AtencionServicio {
@@ -37,9 +38,9 @@ public class AtencionServicioImpl extends GenericServiceImpl<Atencion, Integer> 
 
 	@Override
 	public List<Atencion> obtenerAtencionSuspensionPorInstitucion(Integer registroMercantilId, Short atencionSuspension) {
-		String[] criteriaNombre = {"registroMercantil.registroMercantilId", "atencionSuspension"};
-		CriteriaTypeEnum[] criteriaTipos = {CriteriaTypeEnum.INTEGER_EQUALS, CriteriaTypeEnum.SHORT_EQUALS};
-		Object[] criteriaValores = {registroMercantilId, atencionSuspension};
+		String[] criteriaNombre = {"registroMercantil.registroMercantilId", "atencionSuspension", "estado"};
+		CriteriaTypeEnum[] criteriaTipos = {CriteriaTypeEnum.INTEGER_EQUALS, CriteriaTypeEnum.SHORT_EQUALS, CriteriaTypeEnum.SHORT_EQUALS};
+		Object[] criteriaValores = {registroMercantilId, atencionSuspension, EstadoEnum.ACTIVO.getEstado()};
 		String[] orderBy = {"fechaCreacion"};
 		boolean[] asc = {true};
 		Criteria criteria = new Criteria(criteriaNombre, criteriaTipos, criteriaValores, orderBy, asc);

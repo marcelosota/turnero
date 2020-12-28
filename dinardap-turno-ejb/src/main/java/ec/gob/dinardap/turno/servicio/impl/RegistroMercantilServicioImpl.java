@@ -1,6 +1,7 @@
 package ec.gob.dinardap.turno.servicio.impl;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -60,5 +61,19 @@ public class RegistroMercantilServicioImpl extends GenericServiceImpl<RegistroMe
         registroMercantilList = findByCriterias(criteria);
         return registroMercantilList;
     }
+
+	@Override
+	public void guardarInstitucion(RegistroMercantil registroMercantil) {
+		Calendar calendario = Calendar.getInstance();
+		if(registroMercantil.getRegistroMercantilId() != null) {
+			registroMercantil.setFechaModificacion(calendario.getTime());
+			update(registroMercantil);
+		}else {
+			registroMercantil.setFechaCreacion(calendario.getTime());
+			create(registroMercantil);
+		}
+	}
+    
+    
 
 }

@@ -4,8 +4,11 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:b="http://bootsfaces.net/ui"
-      xmlns:p="http://primefaces.org/ui">    
+      xmlns:p="http://primefaces.org/ui">
+   
     <ui:composition template="/template/general.xhtml">
+        <!--h:outputScript library="javascript" name="http://code.jquery.com/jquery-1.9.1.min.js" />
+        <h:outputScript library="javascript" name="util.js" /-->
         <ui:define name="content">
             <!--Dialog-->          
 
@@ -172,9 +175,10 @@
                             itemValue="#{registroMercantil}" style="width: 100%"
                             inputStyle="width: 100%" maxResults="20" required="true"
                             title="#{agendamientoCiudadanoCtrl.turno.planificacionRegistro.registroMercantil.nombre}">
-							<p:ajax event="itemSelect" listener="#{agendamientoCiudadanoCtrl.institucionSeleccionada}" update="fecha, cmbCantidadTramites"/>
+							<p:ajax event="itemSelect" listener="#{agendamientoCiudadanoCtrl.institucionSeleccionada}" update="fecha, cmbCantidadTramites, txtFechasOcultas"/>
 						</p:autoComplete>
-                        
+                        <p:outputLabel style="display: none" />
+                        <h:inputHidden id="txtFechasOcultas" value="#{agendamientoCiudadanoCtrl.festivosArray}" />
                         <p:outputLabel for="fecha" value="Fecha:" />                       
                         <p:calendar id="fecha"
                                     value="#{agendamientoCiudadanoCtrl.turno.dia}"
@@ -183,9 +187,11 @@
                                     pattern="yyyy-MM-dd"
                                     readonlyInput="true" 
                                     mindate="#{agendamientoCiudadanoCtrl.fechaMin}"
+                                    maxdate="#{agendamientoCiudadanoCtrl.fechaMax}"
                                     style="width: 100%"
                                     inputStyle="width: 100%" 
-                                    locale="es">
+                                    locale="es"
+                                    beforeShowDay="suspensionRecuperacion">
 							<p:ajax event="dateSelect" listener="#{agendamientoCiudadanoCtrl.buscarPlanificacion}" update="cmbCantidadTramites"/>
 						</p:calendar>
                                     

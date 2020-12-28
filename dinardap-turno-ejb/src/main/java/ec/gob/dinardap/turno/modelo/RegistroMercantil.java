@@ -2,6 +2,8 @@ package ec.gob.dinardap.turno.modelo;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import java.util.Date;
 import java.util.List;
 
 
@@ -20,8 +22,21 @@ public class RegistroMercantil implements Serializable {
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="REGISTRO_MERCANTIL_REGISTROMERCANTILID_GENERATOR")
 	@Column(name="registro_mercantil_id")
 	private Integer registroMercantilId;
+	
+	private Short estado;
+	
+	@Column(name="fecha_creacion")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date fechaCreacion;
+	
+	@Column(name="fecha_modificacion")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date fechaModificacion;
 
 	private String nombre;
+	
+	@Column(name="periodo_calendario")
+	private Short periodoCalendario;
 
 	private Short tipo;
 
@@ -48,12 +63,44 @@ public class RegistroMercantil implements Serializable {
 		this.registroMercantilId = registroMercantilId;
 	}
 
+	public Short getEstado() {
+		return estado;
+	}
+
+	public void setEstado(Short estado) {
+		this.estado = estado;
+	}
+
+	public Date getFechaCreacion() {
+		return fechaCreacion;
+	}
+
+	public void setFechaCreacion(Date fechaCreacion) {
+		this.fechaCreacion = fechaCreacion;
+	}
+
+	public Date getFechaModificacion() {
+		return fechaModificacion;
+	}
+
+	public void setFechaModificacion(Date fechaModificacion) {
+		this.fechaModificacion = fechaModificacion;
+	}
+
 	public String getNombre() {
 		return this.nombre;
 	}
 
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
+	}
+
+	public Short getPeriodoCalendario() {
+		return periodoCalendario;
+	}
+
+	public void setPeriodoCalendario(Short periodoCalendario) {
+		this.periodoCalendario = periodoCalendario;
 	}
 
 	public Short getTipo() {

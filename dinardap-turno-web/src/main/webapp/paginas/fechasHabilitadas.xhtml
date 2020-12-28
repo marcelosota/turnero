@@ -51,7 +51,7 @@
 					rowKey="#{al.atencionId}">
 					<p:ajax event="rowSelect"
 						listener="#{fechasHabilitadasCtrl.onSelectAtencion()}"
-						update="formFormulario" />
+						update="formFormulario, msgMensajes" />
 					<p:column headerText=""
 						sortBy="#{al.atencionId}"
 						filterBy="#{al.atencionId}"

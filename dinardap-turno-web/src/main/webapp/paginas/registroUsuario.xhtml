@@ -21,7 +21,7 @@
                                  required="true"
                                  requiredMessage="#{etiquetas['cedula']} #{mensajes['requerido']}">
                         <f:validateRegex pattern="[0-9]+" />
-                        <p:ajax event="blur" listener="#{registroUsuarioCtrl.buscarUsuario}" update="txtNombre	"/>
+                        <p:ajax event="blur" listener="#{registroUsuarioCtrl.buscarUsuario}" update="txtNombre btnGuardar msgMensajes"/>
                     </p:inputText>
                     <p:outputLabel value="#{etiquetas['nombre']}:" />
                     <p:inputText id="txtNombre" 
@@ -59,9 +59,11 @@
                                        itemLabel="#{pr.nombre}" itemValue="#{pr.perfilId}" />
                     </b:selectOneMenu>
                 </h:panelGrid>
-                <p:commandButton value="#{etiquetas['guardar']}"
-                                 actionListener="#{registroUsuarioCtrl.guardarUsuario}"
-                                 update="txtCedula txtNombre txtContrasena cmbEntidades msgMensajes"/>
+                <p:commandButton id="btnGuardar"
+                	value="#{etiquetas['guardar']}"
+                	disabled="#{registroUsuarioCtrl.deshabilitaGuardar}"
+					actionListener="#{registroUsuarioCtrl.guardarUsuario}"
+					update="txtCedula txtNombre txtContrasena cmbEntidades msgMensajes btnGuardar"/>
                 <p:spacer width="10px" />
                 <p:commandButton value="#{etiquetas['cancelar']}"
                                  actionListener="#{registroUsuarioCtrl.limpiarCampos}"

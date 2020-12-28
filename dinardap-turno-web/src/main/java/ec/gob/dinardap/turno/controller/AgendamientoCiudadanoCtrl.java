@@ -26,17 +26,20 @@ import ec.gob.dinardap.correo.util.MailMessage;
 import ec.gob.dinardap.interoperadorv2.cliente.servicio.ServicioDINARDAP;
 import ec.gob.dinardap.interoperadorv2.ws.ConsultarResponse;
 import ec.gob.dinardap.seguridad.servicio.ParametroServicio;
+import ec.gob.dinardap.turno.constante.AtencionSuspensionEnum;
 import ec.gob.dinardap.turno.constante.EstadoTurnoEnum;
 import ec.gob.dinardap.turno.constante.InteroperabilidadEnum;
 import ec.gob.dinardap.turno.constante.ParametroEnum;
+import ec.gob.dinardap.turno.constante.TipoAtencionEnum;
 import ec.gob.dinardap.turno.constante.TipoRestriccionEnum;
+import ec.gob.dinardap.turno.dao.AtencionDao;
 import ec.gob.dinardap.turno.dao.PlanificacionRegistroDao;
 import ec.gob.dinardap.turno.dto.HorarioDTO;
+import ec.gob.dinardap.turno.modelo.Atencion;
 import ec.gob.dinardap.turno.modelo.Baneo;
 import ec.gob.dinardap.turno.modelo.PlanificacionRegistro;
 import ec.gob.dinardap.turno.modelo.RegistroMercantil;
 import ec.gob.dinardap.turno.modelo.Turno;
-import ec.gob.dinardap.turno.servicio.AtencionServicio;
 import ec.gob.dinardap.turno.servicio.BaneoServicio;
 import ec.gob.dinardap.turno.servicio.PlanificacionRegistroServicio;
 import ec.gob.dinardap.turno.servicio.RegistroMercantilServicio;
@@ -51,10 +54,12 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
      *
      */
     private static final long serialVersionUID = 4955068063614741302L;
+
     //Declaraci�n de variables
     //Variables de control visual
     private String tituloPagina;
     private String fechaMin;
+    private String fechaMax;
 
     private Boolean renderHorarios;
     private Boolean renderInformacionTurno;
@@ -97,7 +102,7 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
     private TipoVentanillaServicio tipoVentanillaServicio;
     
     @EJB
-    private AtencionServicio atencionServicio;
+    private AtencionDao atencionDao;
     
     @EJB
     private PlanificacionRegistroDao planificacionRegistroDao;
@@ -375,9 +380,15 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
 
     private List<HorarioDTO> generacionListadoHorario(PlanificacionRegistro pr) {
         List<HorarioDTO> horarioList = new ArrayList<>();
+        List<Atencion> fechas =  new ArrayList<>();
+        List<Short> tipoAtencionId = new ArrayList<>();
+        tipoAtencionId.add(TipoAtencionEnum.SUSPENSION_TEMPORAL_NACIONAL.getTipoAtencion());
+        tipoAtencionId.add(TipoAtencionEnum.SUSPENSION_TEMPORAL_LOCAL.getTipoAtencion());
+        boolean flag = true;
+        
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 
         Calendar horaActual = Calendar.getInstance();
-
         Calendar horaInicio = Calendar.getInstance();
         horaInicio.setTime(turno.getDia());
         String horaInicial = pr.getHoraInicio();
@@ -394,30 +405,53 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
         horaFin.set(Calendar.MINUTE, Integer.parseInt(horaFinal.split(":")[1]));
         horaFin.set(Calendar.SECOND, 0);
         horaFin.set(Calendar.MILLISECOND, 0);
+        
+        Calendar recesoDesde = Calendar.getInstance();
+        Calendar recesoHasta = Calendar.getInstance();
+        recesoDesde.setTime(turno.getDia());
+        recesoHasta.setTime(turno.getDia());
 
         if (turnoServicio.validacionDiariaPersona(turno)) {
 
             if (!validacionTurnosFuturos()) {
                 renderHorarios = Boolean.TRUE;
                 renderInformacionTurno = Boolean.FALSE;
-                while (horaInicio.getTime().before(horaFin.getTime())) {
+                
+                fechas = atencionDao.obtenerSuspensionTemporalPorInstitucionFecha(
+                		turno.getPlanificacionRegistro().getRegistroMercantil().getRegistroMercantilId(), 
+                		AtencionSuspensionEnum.SUSPENSION.getatencionSuspension(), 
+                		turno.getDia(), tipoAtencionId);
+                
+                while (horaInicio.getTime().before(horaFin.getTime()) && flag) {
                     String hora = new SimpleDateFormat("HH:mm").format(horaInicio.getTime());
                     HorarioDTO horario = new HorarioDTO(hora, pr.getVentanilla().intValue(), turnoServicio.getTurnosDisponibles(pr.getVentanilla().intValue(), turno.getDia(), hora, pr.getPlanificacionId()));
                     if (horaActual.getTime().before(horaInicio.getTime())) {
-                        horarioList.add(horario);
+                    	if(fechas.size() > 0) {
+                    		for(Atencion fecha : fechas) {
+	                    		recesoDesde.set(Calendar.HOUR_OF_DAY, Integer.parseInt(sdf.format(fecha.getHoraDesde().getTime()).split(":")[0]));
+	                    		recesoDesde.set(Calendar.MINUTE, Integer.parseInt(sdf.format(fecha.getHoraDesde().getTime()).split(":")[1]));
+	                    		recesoDesde.set(Calendar.SECOND, 0);
+	                            recesoDesde.set(Calendar.MILLISECOND, 0);
+	                            if(fecha.getHoraHasta() != null) {
+	                            	recesoHasta.set(Calendar.HOUR_OF_DAY, Integer.parseInt(sdf.format(fecha.getHoraHasta().getTime()).split(":")[0]));
+		                    		recesoHasta.set(Calendar.MINUTE, Integer.parseInt(sdf.format(fecha.getHoraHasta().getTime()).split(":")[1]));
+		                    		recesoHasta.set(Calendar.SECOND, 0);
+		                            recesoHasta.set(Calendar.MILLISECOND, 0);
+		                            if(horaInicio.getTime().compareTo(recesoDesde.getTime()) >= 0 && horaInicio.getTime().compareTo(recesoHasta.getTime()) <= 0) { 
+		                            	if(recesoHasta.getTime().before(horaFin.getTime())) {
+			                            	horaInicio.setTime(recesoHasta.getTime());
+			                            	horario = new HorarioDTO(sdf.format(recesoHasta.getTime()), pr.getVentanilla().intValue(), turnoServicio.getTurnosDisponibles(pr.getVentanilla().intValue(), turno.getDia(), sdf.format(recesoHasta.getTime()), pr.getPlanificacionId()));
+			                    			//horario.setHora(sdf.format(recesoHasta.getTime()));
+		                            	}else
+		                            		flag = false;
+		                            }
+	                            }
+                    		}
+                    	}
+                    	if(flag)
+                    		horarioList.add(horario);
                     }
-                    /*try {
-                        //Validacion eventual para 7 de septiembre
-                        Date fechaCambio = new SimpleDateFormat("yyyy-MM-dd").parse("2020-09-06");
-                        if (turno.getDia().after(fechaCambio)
-                                && turno.getPlanificacionRegistro().getRegistroMercantil().getRegistroMercantilId() == 11) {
-                            horaInicio.add(Calendar.MINUTE, 5);
-                        } else {
-                            horaInicio.add(Calendar.MINUTE, pr.getDuracionTramite());
-                        }
-                    } catch (ParseException ex) {
-                        Logger.getLogger(AgendamientoCiudadanoCtrl.class.getName()).log(Level.SEVERE, null, ex);
-                    }*/
+
                     horaInicio.add(Calendar.MINUTE, pr.getDuracionTramite());
                 }
             } else {
@@ -449,26 +483,76 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
     
     public void buscarPlanificacion(SelectEvent event) {
     	planificacionRegistroList = new ArrayList<PlanificacionRegistro>();
-    	//planificacionRegistroList = planificacionRegistroServicio.getPlanificacionRegistroActivasList(turno.getPlanificacionRegistro().getRegistroMercantil().getRegistroMercantilId());
     	planificacionRegistroList = planificacionRegistroDao.getPlanificacionRegistroFechas(turno.getPlanificacionRegistro().getRegistroMercantil().getRegistroMercantilId(), turno.getDia());
     	System.out.println(planificacionRegistroList.size());
-    	
-    	/*festivosArray="[";
-    	List<Atencion> fechas = atencionServicio.obtenerAtencionSuspensionPorInstitucion(turno.getPlanificacionRegistro().getRegistroMercantil().getRegistroMercantilId(), AtencionSuspensionEnum.SUSPENSION.getatencionSuspension());
-    	for(Atencion item : fechas) {
-    		festivosArray += "'" + item.getFechaDesde() + "',";
-    		if(item.getFechaDesde().compareTo(item.getFechaHasta()) != 0) {
-    			Date
-    			while()
-    		}
-    			
-    	}*/
-    	
     }
     
     public void institucionSeleccionada() {
     	turno.setDia(null);
     	planificacionRegistroList.clear();
+    	Calendar dia = Calendar.getInstance();
+    	//turno.getPlanificacionRegistro().getRegistroMercantil().setP
+    	dia.add(Calendar.MONTH, turno.getPlanificacionRegistro().getRegistroMercantil().getPeriodoCalendario());
+    	fechaMax = dia.get(Calendar.YEAR) + "-" + (dia.get(Calendar.MONTH) + 1)  + "-" + dia.get(Calendar.DAY_OF_MONTH);
+    	
+    	festivosArray="";
+		dia.setTime(new Date());
+		List<Atencion> fechas = atencionDao.obtenerAtencionSuspensionPorInstitucionFecha(
+				turno.getPlanificacionRegistro().getRegistroMercantil().getRegistroMercantilId(),
+				AtencionSuspensionEnum.SUSPENSION.getatencionSuspension(), dia.getTime(),
+				TipoAtencionEnum.FERIADO_LOCAL.getTipoAtencion());
+		determinarFechas(fechas);
+
+		if (!festivosArray.equals(""))
+			festivosArray += ",";
+		fechas = atencionDao.obtenerAtencionSuspensionPorInstitucionFecha(
+				null,
+				AtencionSuspensionEnum.SUSPENSION.getatencionSuspension(), dia.getTime(),
+				TipoAtencionEnum.FERIADO_NACIONAL.getTipoAtencion());
+		determinarFechas(fechas);
+		
+		festivosArray += ";";
+		fechas = atencionDao.obtenerAtencionSuspensionPorInstitucionFecha(
+				turno.getPlanificacionRegistro().getRegistroMercantil().getRegistroMercantilId(),
+				AtencionSuspensionEnum.ATENCION.getatencionSuspension(), dia.getTime(),
+				TipoAtencionEnum.RECUPERACION_LOCAL.getTipoAtencion());
+		determinarFechas(fechas);
+		
+		festivosArray += ",";
+		fechas = atencionDao.obtenerAtencionSuspensionPorInstitucionFecha(
+				null,
+				AtencionSuspensionEnum.ATENCION.getatencionSuspension(), dia.getTime(),
+				TipoAtencionEnum.RECUPERACION_NACIONAL.getTipoAtencion());
+		determinarFechas(fechas);
+    }
+    
+    public void determinarFechas(List<Atencion> fechas) {
+    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-d");
+		Calendar dia = Calendar.getInstance();
+		boolean flag = false;
+		
+		try {
+			for(Atencion item : fechas) {
+				if(flag)
+					festivosArray += ",";
+				flag = true;
+				festivosArray += sdf.format(item.getFechaDesde());
+				if(item.getFechaDesde().compareTo(item.getFechaHasta()) != 0) {
+					//Calendar dia = Calendar.getInstance();
+					Calendar fin = Calendar.getInstance();
+					dia.setTime(sdf.parse(item.getFechaDesde().toString()));
+					fin.setTime(sdf.parse(item.getFechaHasta().toString()));
+					dia.add(Calendar.DAY_OF_MONTH, 1);
+					while(dia.compareTo(fin) <= 0) {
+						festivosArray += "," + sdf.format(dia.getTime());
+						dia.add(Calendar.DAY_OF_MONTH, 1);
+					}
+				}
+			}
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
     //Getters & Setters
@@ -504,7 +588,15 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
         this.fechaMin = fechaMin;
     }
 
-    public Boolean getRenderHorarios() {
+    public String getFechaMax() {
+		return fechaMax;
+	}
+
+	public void setFechaMax(String fechaMax) {
+		this.fechaMax = fechaMax;
+	}
+
+	public Boolean getRenderHorarios() {
         return renderHorarios;
     }
 
