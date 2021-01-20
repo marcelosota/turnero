@@ -74,6 +74,7 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
     private String correoIngresado;
     private String cantidadTurnosSeleccionados;
     private String festivosArray;
+    private String mensajePuntualidad;
 
     //Listas    
     private List<RegistroMercantil> registroMercantilList;
@@ -148,7 +149,6 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
         renderRemitirTurno = Boolean.FALSE;
         turnoGenerado = new Turno();
         PlanificacionRegistro planificacionRegistro = null;
-        //planificacionRegistro = planificacionRegistroServicio.getPlanificacionRegistro(turno.getPlanificacionRegistro().getRegistroMercantil().getRegistroMercantilId());
         planificacionRegistro = planificacionRegistroServicio.findByPk(turno.getPlanificacionRegistro().getPlanificacionId());
 //        String nombreCiudadano = "Chris";//Añadir el metodo getNombreCiudadano para consumir el ws de Jady
         String nombreCiudadano = getNombreCiudadano();
@@ -261,9 +261,10 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
         turno.setTurnoId(null);
         turno.setEstado(EstadoTurnoEnum.AGENDADO.getEstado());
         turno.setValidador(getGeneracionValidacion());
+        establecerMensajes();
         PlanificacionRegistro pr = null;
         pr = planificacionRegistroServicio.findByPk(turno.getPlanificacionRegistro().getPlanificacionId());
-        setCantidadTurnosSeleccionados("NOTA: Turno válido para ventanilla ".concat(pr.getTipoVentanilla().getNombre()));
+        //setCantidadTurnosSeleccionados("NOTA: Turno válido para ventanilla ".concat(pr.getTipoVentanilla().getNombre()));
         PrimeFaces.current().executeScript("PF('agendarTurnoDlg').hide()");
 
         Calendar horaActual = Calendar.getInstance();
@@ -280,8 +281,13 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
             turnoAgendado = Boolean.TRUE;
             turnoServicio.crearTurno(turno);
             turnoGenerado = turno;
+            
+            setCorreoIngresado(turno.getCorreoElectronico());
+            confirmarRemitirTurno();
+            
             turno = new Turno();
             turno.setPlanificacionRegistro(new PlanificacionRegistro());
+            setCorreoIngresado(null);
             planificacionRegistroList.clear();
             renderHorarios = Boolean.FALSE;
             renderInformacionTurno = Boolean.FALSE;
@@ -317,24 +323,30 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
 
     public void confirmarRemitirTurno() {
         if (turno.getCorreoElectronico().equals(correoIngresado)) {
+        	establecerMensajes();
+        	
             MailMessage mailMessage = new MailMessage();
             StringBuilder html = new StringBuilder("<center><h1><B>Sistema para el Agendamiento de Turnos en Registros Mercantiles</B></h1></center><br/><br/>");
             html.append("Estimado(a) " + turno.getNombre() + ", <br /><br />");
             html.append("Le informamos que se ha generado un turno con la siguiente descripción:<br />");
-            html.append("<B>REGISTRO MERCANTIL: </B>" + turno.getPlanificacionRegistro().getRegistroMercantil().getNombre() + "<br/>");
-            html.append("<B>CÉDULA: </B>" + turno.getCedula() + "<br/>");
-            html.append("<B>NOMBRE: </B>" + turno.getNombre() + "<br/>");
-            html.append("<B>FECHA: </B>" + new SimpleDateFormat("yyyy-MM-dd").format(turno.getDia()) + "<br/>");
-            html.append("<B>HORA: </B>" + turno.getHora() + "<br/>");
-            html.append("<B>CÓDIGO VALIDACIÓN: </B>" + turno.getValidador() + "<br/><br/>");
+            html.append("<table border=\"1\"><tr><th colspan=\"2\" style=\"color: #ffffff; background:#3465a4\">Agendamiento de turno</th></tr>");
+            html.append("<tr><th style=\"text-align: right;\">REGISTRO MERCANTIL: </th><td>").append(turno.getPlanificacionRegistro().getRegistroMercantil().getNombre()).append("</td></tr>");
+            html.append("<tr><th style=\"text-align: right;\">CÉDULA: </th><td>").append(turno.getCedula()).append("</td></tr>");
+            html.append("<tr><th style=\"text-align: right;\">NOMBRE: </th><td>").append(turno.getNombre()).append("</td></tr>");
+            html.append("<tr><th style=\"text-align: right;\">FECHA: </th><td>").append(new SimpleDateFormat("yyyy-MM-dd").format(turno.getDia())).append("</td></tr>");
+            html.append("<tr><th style=\"text-align: right;\">HORA: </th><td>").append(turno.getHora()).append("</td></tr>");
+            html.append("<tr><th style=\"text-align: right;\">CÓDIGO VALIDACIÓN: </th><td style=\"font-size: 16pt;font-weight:900; color:#3558A2 \">").append(turno.getValidador()).append("</td></tr></table><br/>");
             
-            html.append(getCantidadTurnosSeleccionados()+" <br/>");
-            html.append("Favor guardar el  Código de Validación, ya que este será solicitado en Ventanilla para su atención.<br/>"
-                    + "Si desea cancelar el turno se deberá ingresar el Código de Validación en la misma Plataforma.<br/>");
-            html.append("Gracias por usar nuestros servicios.<br /><br />");
-            html.append("<FONT FACE=\"Arial Narrow, sans-serif\"><B> ");
-            html.append("Dirección Nacional de Registros de Datos Públicos");
-            html.append("</B></FONT>");
+            html.append("<p>").append(getCantidadTurnosSeleccionados()).append(" </p>");
+            html.append("<p>").append(getBundleEtiquetas("mensaje.informativo", null)).append("<br/>");
+            html.append(getBundleMensaje("presentar.turno", null)).append("</p>");
+            
+            html.append("<p>").append(getMensajePuntualidad()).append("</p>");
+            html.append("<p>").append(getBundleMensaje("cancelar.turno", null)).append("</p>");
+            html.append("<p>Gracias por usar nuestros servicios.</p>");
+            html.append("<p style=\"font:Arial Narrow, sans-serif;font-weight:900;\"");
+            html.append("Dirección Nacional de Registros de Datos Públicos</p>");
+
             List<String> to = new ArrayList<String>();
             StringBuilder asunto = new StringBuilder(200);
             to.add(turno.getCorreoElectronico());
@@ -554,6 +566,17 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
 			e.printStackTrace();
 		}
     }
+    
+    private void establecerMensajes() {
+    	PlanificacionRegistro pr = planificacionRegistroServicio.findByPk(turno.getPlanificacionRegistro().getPlanificacionId());
+        setCantidadTurnosSeleccionados("NOTA: Turno válido para ventanilla ".concat(pr.getTipoVentanilla().getNombre()));
+        
+    	Object[] param = new Object[1];
+        //param[0] = turno.getPlanificacionRegistro().getDuracionTramite();
+        param[0] = pr.getDuracionTramite();
+    	setMensajePuntualidad(getBundleEtiquetas("mensaje.informativoPuntualidad", param));
+       
+    }
 
     //Getters & Setters
     public String getTituloPagina() {
@@ -698,6 +721,14 @@ public class AgendamientoCiudadanoCtrl extends BaseCtrl implements Serializable 
 
 	public void setFestivosArray(String festivosArray) {
 		this.festivosArray = festivosArray;
+	}
+
+	public String getMensajePuntualidad() {
+		return mensajePuntualidad;
+	}
+
+	public void setMensajePuntualidad(String mensajePuntualidad) {
+		this.mensajePuntualidad = mensajePuntualidad;
 	}
 
 }

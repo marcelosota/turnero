@@ -14,7 +14,6 @@
 
             <b:modal id="generacionTurnoDlg" title="Generación de turno" styleClass="modalPseudoClass">
                 <h:form id="formGeneracionTurnoDlg">
-                    <!--<p:scrollPanel mode="native" styleClass="scrollA">-->
                     <p:panelGrid id="turnoGenerado"
                                  rendered="#{agendamientoCiudadanoCtrl.turnoAgendado}">
                         <f:facet name="header">
@@ -59,17 +58,23 @@
                                     value="#{agendamientoCiudadanoCtrl.turnoGenerado.hora}" />
                             </p:column>
                         </p:row>
-                        <p:row>
+                        <!--p:row>
                             <p:column style="font-weight: bold;">Código de validación:</p:column>
                             <p:column>
                                 <h:outputText style="font-size: 16pt;font-weight:900; color:#3558A2 "
                                               value="#{agendamientoCiudadanoCtrl.turnoGenerado.validador}"/>
                             </p:column>
-                        </p:row>
+                        </p:row-->
                         <p:row>
                             <p:column colspan="2" style="text-align: justify">
                                 <h:outputText value="#{agendamientoCiudadanoCtrl.cantidadTurnosSeleccionados}"
                                               style="font-size: 14pt;font-weight:900;" />                                
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column colspan="2" style="text-align: justify">
+                                <h:outputText value="#{mensajes['envio.turno']}"
+                                              style="font-size: 14pt;font-weight:900; color: #C41933; " />                                
                             </p:column>
                         </p:row>
                         <p:row>
@@ -80,16 +85,17 @@
                         </p:row>
                         <p:row>
                             <p:column colspan="2" style="text-align: justify">
-                                <h:outputText value="#{etiquetas['mensaje.informativoPuntualidad']}"
+                                <h:outputText value="#{agendamientoCiudadanoCtrl.mensajePuntualidad}"
                                               style="font-size: 12pt;font-weight:900; color: #EC6508" />
                             </p:column>
                         </p:row>
                         <p:row>
                             <p:column colspan="2">
-                                <p:commandButton value="Imprimir" type="button"
+                                <b:button value="Cerrar" dismiss="modal" look="primary" />
+                                <!--p:commandButton value="Cerrar" type="button"
                                                  icon="fa fa-fw fa-print" style="display:block; margin:auto">
                                     <p:printer target="turnoGenerado" />
-                                </p:commandButton>
+                                </p:commandButton-->
                             </p:column>
                         </p:row>
                     </p:panelGrid>
